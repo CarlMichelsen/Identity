@@ -64,8 +64,22 @@ public class DiscordLoginClient(
                     {
                         return codeResponseResult.Error!;
                     }
-                
-                    return await this.GetUser(codeResponseResult.Unwrap().AccessToken);
+                    
+                    var userResult = await this.GetUser(codeResponseResult.Unwrap().AccessToken);
+                    if (userResult.IsError)
+                    {
+                        return userResult.Error!;
+                    }
+
+                    var user = (DiscordUserDto)userResult.Unwrap();
+                    if (!user.Verified)
+                    {
+                        return new ResultError(
+                            ResultErrorType.Unauthorized,
+                            "Discord user is not verified");
+                    }
+
+                    return user;
                 });
 
             if (loginProcessResult.IsError)
