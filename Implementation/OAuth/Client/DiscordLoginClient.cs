@@ -45,12 +45,12 @@ public class DiscordLoginClient(
         {
             return new ResultError(
                 ResultErrorType.Exception,
-                "An exception was thrown during login completion",
+                "An exception was thrown during CreateOAuthRedirect",
                 e);
         }
     }
 
-    public async Task<Result<LoginProcessContext>> CompleteLogin(Dictionary<string, string> queryParameters)
+    public async Task<Result<LoginProcessContext>> GetProviderLoginData(Dictionary<string, string> queryParameters)
     {
         try
         {
@@ -93,7 +93,7 @@ public class DiscordLoginClient(
         {
             return new ResultError(
                 ResultErrorType.Exception,
-                "An exception was thrown during login completion",
+                "An exception was thrown during GetProviderLoginData",
                 e);
         }
     }
@@ -143,7 +143,7 @@ public class DiscordLoginClient(
         return parsedJson;
     }
 
-    private async Task<Result<IUserConvertible>> GetUser(string accessToken)
+    private async Task<Result<IOAuthUserConvertible>> GetUser(string accessToken)
     {
         var request = new HttpRequestMessage
         {

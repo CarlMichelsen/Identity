@@ -16,27 +16,37 @@ public sealed class DevelopmentLoginClient(
 {
     public async Task<Result<Uri>> CreateOAuthRedirect(LoginRedirectInformation loginRedirectInformation)
     {
-        if (oAuthOptions.Value.Development is null)
+        try
         {
-            throw new Exception("Can't do development login if there is no configuration");
-        }
+            if (oAuthOptions.Value.Development is null)
+            {
+                throw new Exception("Can't do development login if there is no configuration");
+            }
         
-        var processContextResult = await accessControl.GetProcessIdentifier(loginRedirectInformation);
-        if (processContextResult.IsError)
-        {
-            return processContextResult.Error!;
-        }
+            var processContextResult = await accessControl.GetProcessIdentifier(loginRedirectInformation);
+            if (processContextResult.IsError)
+            {
+                return processContextResult.Error!;
+            }
 
-        var processContext = processContextResult.Unwrap();
-        return new OAuthUriBuilder(new Uri(oAuthOptions.Value.Development.OAuthEndpoint), true)
-            .SetQueryParameter("response_type", "code")
-            .SetQueryParameter("client_id", oAuthOptions.Value.Development.ClientId)
-            .SetQueryParameter("redirect_uri", oAuthOptions.Value.Development.OAuthReturnEndpoint)
-            .SetQueryParameter("state", processContext.Identifier.State.ToString())
-            .GetUrl();
+            var processContext = processContextResult.Unwrap();
+            return new OAuthUriBuilder(new Uri(oAuthOptions.Value.Development.OAuthEndpoint), true)
+                .SetQueryParameter("response_type", "code")
+                .SetQueryParameter("client_id", oAuthOptions.Value.Development.ClientId)
+                .SetQueryParameter("redirect_uri", oAuthOptions.Value.Development.OAuthReturnEndpoint)
+                .SetQueryParameter("state", processContext.Identifier.State.ToString())
+                .GetUrl();
+        }
+        catch (Exception e)
+        {
+            return new ResultError(
+                ResultErrorType.Exception,
+                "An exception was thrown during CreateOAuthRedirect",
+                e);
+        }
     }
 
-    public async Task<Result<LoginProcessContext>> CompleteLogin(Dictionary<string, string> queryParameters)
+    public async Task<Result<LoginProcessContext>> GetProviderLoginData(Dictionary<string, string> queryParameters)
     {
         try
         {
@@ -45,7 +55,7 @@ public sealed class DevelopmentLoginClient(
                 LoginContextRetriever.GetStateAndCodeFromQuery, 
                 async code =>
                 {
-                    var codeResponseResult = await this.ExchangeCode(code);
+                    var codeResponseResult = await ExchangeCode(code);
                     if (codeResponseResult.IsError)
                     {
                         return codeResponseResult.Error!;
@@ -65,12 +75,12 @@ public sealed class DevelopmentLoginClient(
         {
             return new ResultError(
                 ResultErrorType.Exception,
-                "An exception was thrown during login completion",
+                "An exception was thrown during GetProviderLoginData",
                 e);
         }
     }
     
-    private Task<Result<DevelopmentCodeDto>> ExchangeCode(string code)
+    private static Task<Result<DevelopmentCodeDto>> ExchangeCode(string code)
     {
         if (string.IsNullOrWhiteSpace(code))
         {
@@ -86,7 +96,7 @@ public sealed class DevelopmentLoginClient(
         return Task.FromResult<Result<DevelopmentCodeDto>>(codeResponse);
     }
 
-    private async Task<Result<IUserConvertible>> GetUser(string accessToken)
+    private async Task<Result<IOAuthUserConvertible>> GetUser(string accessToken)
     {
         var developmentUserResult = await developmentUserService
             .GetDevelopmentUserFromAccessToken(accessToken);

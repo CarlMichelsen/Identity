@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Database.Entity;
 
-public class LoginRecordEntity : ClientInfo
+public class OldInformationRecordEntity
 {
     public long Id { get; set; }
     
@@ -10,10 +10,10 @@ public class LoginRecordEntity : ClientInfo
     
     public required UserEntity User { get; init; }
     
-    [StringLength(1048576, ErrorMessage = "The {0} must be at most {1} characters long.")]
-    public required string OAuthJson { get; init; }
+    public required OldInformation Type { get; init; }
     
-    public required List<RefreshRecordEntity> RefreshRecords { get; init; }
+    [StringLength(2056, ErrorMessage = "The {0} must be at most {1} characters long.")]
+    public required string Information { get; init; }
     
     public required DateTime CreatedUtc { get; init; }
 }

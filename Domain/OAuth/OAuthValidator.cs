@@ -15,42 +15,36 @@ public static class OAuthValidator
         {
             return new ResultError(
                 ResultErrorType.MapError,
-                "Id is null or empty when mapping IUserConvertible");
-        }
-        
-        var authMethodResult = provider.MapToProviderString();
-        if (authMethodResult.IsError)
-        {
-            return authMethodResult.Error!;
+                $"Id is null or empty when mapping to {nameof(OAuthUser)}");
         }
         
         if (string.IsNullOrWhiteSpace(username))
         {
             return new ResultError(
                 ResultErrorType.MapError,
-                "Username is null or empty when mapping IUserConvertible");
+                $"Username is null or empty when mapping to {nameof(OAuthUser)}");
         }
         
         if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
         {
             return new ResultError(
                 ResultErrorType.MapError,
-                "Email is null or empty or invalid when mapping IUserConvertible");
+                $"Email is null or empty or invalid when mapping to {nameof(OAuthUser)}");
         }
         
         if (!Uri.TryCreate(avatarUrl, default(UriCreationOptions), out var uri))
         {
             return new ResultError(
                 ResultErrorType.MapError,
-                "AvatarUrl is invalid when mapping IUserConvertible");
+                $"AvatarUrl is invalid when mapping to {nameof(OAuthUser)}");
         }
 
         return new OAuthUser
         {
-            Id = id,
-            AuthenticationProvider = authMethodResult.Unwrap(),
+            ProviderId = id,
+            AuthenticationProvider = provider,
             Username = username,
-            AvatarUrl = avatarUrl,
+            AvatarUrl = uri.AbsoluteUri,
             Email = email,
         };
     }

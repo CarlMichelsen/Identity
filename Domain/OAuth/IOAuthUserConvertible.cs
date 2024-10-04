@@ -2,7 +2,7 @@ using Domain.Abstraction;
 
 namespace Domain.OAuth;
 
-public interface IUserConvertible
+public interface IOAuthUserConvertible
 {
     Result<OAuthUser> ToUser();
 }

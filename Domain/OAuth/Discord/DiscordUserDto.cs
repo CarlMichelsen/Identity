@@ -3,7 +3,7 @@ using Domain.Abstraction;
 
 namespace Domain.OAuth.Discord;
 
-public class DiscordUserDto : IUserConvertible
+public class DiscordUserDto : IOAuthUserConvertible
 {
     private const string DiscordCdnBaseUrl = "https://cdn.discordapp.com";
     

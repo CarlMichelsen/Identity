@@ -3,7 +3,7 @@ using Domain.Abstraction;
 
 namespace Domain.OAuth.Github;
 
-public class GithubUserDto : GithubSimpleUserDto, IUserConvertible
+public class GithubUserDto : GithubSimpleUserDto, IOAuthUserConvertible
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }

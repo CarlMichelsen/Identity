@@ -20,7 +20,7 @@ dotnet tool update --global dotnet-ef
 
 ### create migration if there are changes to the database
 ```bash
-dotnet ef migrations add InitialCreate --project App
+dotnet ef migrations add IdentityInitialCreate --project App
 ```
 
 ### update database with latest migration

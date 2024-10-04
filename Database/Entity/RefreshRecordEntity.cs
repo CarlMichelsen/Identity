@@ -2,7 +2,7 @@ namespace Database.Entity;
 
 public class RefreshRecordEntity : ClientInfo
 {
-    public required long Id { get; set; }
+    public long Id { get; set; }
     
     public required long LoginRecordId { get; init; }
     

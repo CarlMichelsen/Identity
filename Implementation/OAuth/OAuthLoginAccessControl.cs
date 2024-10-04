@@ -41,7 +41,7 @@ public class OAuthLoginAccessControl(
     public async Task<Result<LoginProcessContext>> ValidateLoginProcess(
         Dictionary<string, string> queryParameters,
         Func<Dictionary<string, string>,  Result<(Guid State, string Additional)>> stateCode,
-        Func<string, Task<Result<IUserConvertible>>> getUser)
+        Func<string, Task<Result<IOAuthUserConvertible>>> getUser)
     {
         var stateAndCodeResult = stateCode(queryParameters);
         if (stateAndCodeResult.IsError)
@@ -84,7 +84,7 @@ public class OAuthLoginAccessControl(
             return removeResult.Error!;
         }
 
-        existingLoginContext.User = userResult.Unwrap();
+        existingLoginContext.OAuthUserConvertible = userResult.Unwrap();
         return existingLoginContext;
     }
 }

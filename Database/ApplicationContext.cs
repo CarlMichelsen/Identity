@@ -44,7 +44,19 @@ public class ApplicationContext(
                 .HasForeignKey(o => o.UserId);
             
             entity
+                .Property(e => e.OAuthJson)
+                .HasColumnType("jsonb");
+            
+            entity
                 .HasMany(o => o.RefreshRecords);
+        });
+        
+        modelBuilder.Entity<OldInformationRecordEntity>(entity =>
+        {
+            entity
+                .HasOne(o => o.User)
+                .WithMany(c => c.OldInformationRecords)
+                .HasForeignKey(o => o.UserId);
         });
 
         modelBuilder.Entity<RefreshRecordEntity>(entity =>

@@ -11,5 +11,5 @@ public interface IOAuthLoginAccessControl
     Task<Result<LoginProcessContext>> ValidateLoginProcess(
         Dictionary<string, string> queryParameters,
         Func<Dictionary<string, string>, Result<(Guid State, string Additional)>> stateCode,
-        Func<string, Task<Result<IUserConvertible>>> getUser);
+        Func<string, Task<Result<IOAuthUserConvertible>>> getUser);
 }

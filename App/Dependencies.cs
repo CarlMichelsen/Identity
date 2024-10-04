@@ -12,7 +12,6 @@ using Interface.Handler;
 using Interface.OAuth;
 using Interface.Repository;
 using Interface.Service;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -32,6 +31,7 @@ public static class Dependencies
         builder.Services
             .Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName))
             .Configure<OAuthOptions>(builder.Configuration.GetSection(OAuthOptions.SectionName))
+            .Configure<IdentityCookieOptions>(builder.Configuration.GetSection(IdentityCookieOptions.SectionName))
             .Configure<FeatureFlagOptions>(builder.Configuration.GetSection(FeatureFlagOptions.SectionName));
         
         // Configure Serilog from "appsettings.(env).json
@@ -93,6 +93,8 @@ public static class Dependencies
         
         // Services
         builder.Services
+            .AddScoped<IFirstLoginNotifierService, FirstLoginNotifierService>()
+            .AddScoped<ILoginCookieWriterService, LoginCookieWriterService>()
             .AddScoped<IErrorLogService, ErrorLogService>()
             .AddScoped<IOAuthRedirectService, OAuthRedirectService>()
             .AddScoped<ICacheService, CacheService>()

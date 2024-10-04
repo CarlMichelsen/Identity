@@ -7,5 +7,5 @@ public interface IOAuthClient
 {
     Task<Result<Uri>> CreateOAuthRedirect(LoginRedirectInformation loginRedirectInformation);
     
-    Task<Result<LoginProcessContext>> CompleteLogin(Dictionary<string, string> queryParameters);
+    Task<Result<LoginProcessContext>> GetProviderLoginData(Dictionary<string, string> queryParameters);
 }

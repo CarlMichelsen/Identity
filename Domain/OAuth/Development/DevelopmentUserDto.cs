@@ -2,7 +2,7 @@ using Domain.Abstraction;
 
 namespace Domain.OAuth.Development;
 
-public class DevelopmentUserDto : IUserConvertible
+public class DevelopmentUserDto : IOAuthUserConvertible
 {
     public required string Id { get; init; }
     

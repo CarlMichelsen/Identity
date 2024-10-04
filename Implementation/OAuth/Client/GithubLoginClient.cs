@@ -46,12 +46,12 @@ public class GithubLoginClient(
         {
             return new ResultError(
                 ResultErrorType.Exception,
-                "An exception was thrown during login completion",
+                "An exception was thrown during oAuth redirection",
                 e);
         }
     }
 
-    public async Task<Result<LoginProcessContext>> CompleteLogin(Dictionary<string, string> queryParameters)
+    public async Task<Result<LoginProcessContext>> GetProviderLoginData(Dictionary<string, string> queryParameters)
     {
         try
         {
@@ -80,7 +80,7 @@ public class GithubLoginClient(
         {
             return new ResultError(
                 ResultErrorType.Exception,
-                "An exception was thrown during login completion",
+                "An exception was thrown getting provider login data",
                 e);
         }
     }
@@ -130,7 +130,7 @@ public class GithubLoginClient(
         return parsedJson;
     }
 
-    private async Task<Result<IUserConvertible>> GetUser(string accessToken)
+    private async Task<Result<IOAuthUserConvertible>> GetUser(string accessToken)
     {
         var baseUri = new Uri(oAuthOptions.Value.Github.OAuthEndpoint);
         var request = new HttpRequestMessage

@@ -1,3 +1,5 @@
+using Domain.Dto;
+
 namespace Domain.OAuth;
 
 public class LoginProcessContext
@@ -6,5 +8,11 @@ public class LoginProcessContext
     
     public required LoginRedirectInformation Redirect { get; init; }
     
-    public IUserConvertible? User { get; set; }
+    public IOAuthUserConvertible? OAuthUserConvertible { get; set; }
+    
+    public UserDto? User { get; set; }
+    
+    public long? LoginId { get; set; }
+    
+    public long? RefreshId { get; set; }
 }
