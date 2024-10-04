@@ -46,7 +46,6 @@ public class CompleteLoginService(
         var loginUserResult = await userRepository.LoginUser(
             loginContext.OAuthUserConvertible,
             loginContext.Identifier);
-
         if (loginUserResult.IsError)
         {
             return loginUserResult.Error!;

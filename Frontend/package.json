@@ -1,0 +1,26 @@
+{
+  "name": "identity-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "VITE_APP_ENV=development vite --port 5773",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "4.0.0-next.6",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/uuid": "^10.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.42",
+    "svelte": "^5.0.0-next.242",
+    "svelte-check": "^4.0.4",
+    "svelte-routing": "^2.13.0",
+    "tailwindcss": "^3.4.13",
+    "tslib": "^2.7.0",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8"
+  }
+}
