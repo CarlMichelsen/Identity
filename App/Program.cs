@@ -26,16 +26,26 @@ app.UseMiddleware<EndpointLogMiddleware>();
 
 app.UseMiddleware<UnhandledExceptionMiddleware>();
 
-var apiGroup = app.MapGroup("api/v1");
-
-apiGroup.RegisterLoginEndpoints(
-    app.Services.GetRequiredService<IOptions<FeatureFlagOptions>>().Value);
-
 if (app.Environment.IsDevelopment())
 {
     app.UseCors(ApplicationConstants.DevelopmentCorsPolicyName);
-    apiGroup.RegisterDevelopmentEndpoints();
 }
+
+var apiGroup = app.MapGroup("api/v1");
+
+apiGroup.RegisterLoginEndpoints();
+
+apiGroup.RegisterUserEndpoints();
+
+var featureFlags = app.Services.GetRequiredService<IOptions<FeatureFlagOptions>>().Value;
+if (featureFlags.DevelopmentLoginEnabled)
+{
+    apiGroup.RegisterDevelopmentEndpoints();
+    app.UseStaticFiles(StaticFileOptionsFactory.Create());
+    app.MapFallbackToFile("index.html");
+}
+
+app.MapGet("health", () => Results.Ok());
 
 app.Services.GetRequiredService<ILogger<Program>>()
     .LogInformation("Identity service has started");

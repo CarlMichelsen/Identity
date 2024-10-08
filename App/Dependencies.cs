@@ -94,6 +94,7 @@ public static class Dependencies
         // Services
         builder.Services
             .AddScoped<IFirstLoginNotifierService, FirstLoginNotifierService>()
+            .AddScoped<IRedirectValidationService, RedirectValidationService>()
             .AddScoped<ILoginCookieWriterService, LoginCookieWriterService>()
             .AddScoped<IErrorLogService, ErrorLogService>()
             .AddScoped<IOAuthRedirectService, OAuthRedirectService>()

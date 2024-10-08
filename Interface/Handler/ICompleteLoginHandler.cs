@@ -5,5 +5,5 @@ namespace Interface.Handler;
 
 public interface ICompleteLoginHandler
 {
-    Task<IResult> CompleteLogin(OAuthProvider provider);
+    Task<IResult> CompleteLogin(string authenticationMethod);
 }

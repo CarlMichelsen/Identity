@@ -1,16 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <IsRiderBuild>false</IsRiderBuild> <!-- This is the default. -->
+    </PropertyGroup>
+
+    <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)'=='Debug'">
-        <!--
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)'=='Debug' AND '$(IsRiderBuild)'=='false'">
         <Exec Command="npm install" />
         <Exec Command="npm run build" />
-        -->
 
         <ItemGroup>
             <DistFiles Include="$(MSBuildProjectDirectory)/dist/**/*.*"/>

@@ -8,8 +8,7 @@ namespace App.Endpoints;
 public static class LoginEndpoints
 {
     public static void RegisterLoginEndpoints(
-        this IEndpointRouteBuilder apiGroup,
-        FeatureFlagOptions featureFlag)
+        this IEndpointRouteBuilder apiGroup)
     {
         var loginGroup = apiGroup
             .MapGroup("login")
@@ -19,29 +18,10 @@ public static class LoginEndpoints
             "{authenticationMethod}",
             async ([FromRoute] string authenticationMethod, [FromQuery] string dest, [FromServices] IOAuthRedirectHandler handler) =>
                 await handler.CreateOAuthRedirect(authenticationMethod, dest));
-
-        var completeGroup = loginGroup.MapGroup("complete");
-        if (featureFlag.DevelopmentLoginEnabled)
-        {
-            completeGroup.MapGet(
-                "development",
-                async ([FromServices] ICompleteLoginHandler handler) =>
-                    await handler.CompleteLogin(OAuthProvider.Development));
-        }
         
-        completeGroup.MapGet(
-            "discord",
-            async ([FromServices] ICompleteLoginHandler handler) =>
-                await handler.CompleteLogin(OAuthProvider.Discord));
-        
-        completeGroup.MapGet(
-            "github",
-            async ([FromServices] ICompleteLoginHandler handler) =>
-                await handler.CompleteLogin(OAuthProvider.Github));
-        
-        completeGroup.MapGet(
-            "guest",
-            async ([FromServices] ICompleteLoginHandler handler) =>
-                await handler.CompleteLogin(OAuthProvider.Guest));
+        loginGroup.MapGet(
+            "complete/{authenticationMethod}",
+            async ([FromServices] ICompleteLoginHandler handler, [FromRoute] string authenticationMethod) =>
+            await handler.CompleteLogin(authenticationMethod));
     }
 }

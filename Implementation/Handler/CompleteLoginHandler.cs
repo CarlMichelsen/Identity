@@ -11,9 +11,16 @@ public class CompleteLoginHandler(
     ILoginCookieWriterService loginCookieWriterService)
     : ICompleteLoginHandler
 {
-    public async Task<IResult> CompleteLogin(OAuthProvider provider)
+    public async Task<IResult> CompleteLogin(string authenticationMethod)
     {
-        var completeLoginResult = await completeLoginService.CompleteLogin(provider);
+        var providerResult = OAuthProviderExtensions.MapToProvider(authenticationMethod);
+        if (providerResult.IsError)
+        {
+            errorLogService.Log(providerResult.Error!);
+            return Results.StatusCode(500);
+        }
+        
+        var completeLoginResult = await completeLoginService.CompleteLogin(providerResult.Unwrap());
         if (completeLoginResult.IsError)
         {
             errorLogService.Log(completeLoginResult.Error!);
