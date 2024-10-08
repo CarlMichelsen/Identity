@@ -1,7 +1,6 @@
-using Database.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database;
+namespace Domain.OAuth;
 
 /// <summary>
 /// EntityFramework application context.
@@ -20,6 +19,8 @@ public class ApplicationContext(
     public DbSet<LoginRecordEntity> LoginRecord { get; init; }
     
     public DbSet<RefreshRecordEntity> RefreshRecord { get; init; }
+    
+    public DbSet<AccessRecordEntity> AccessRecord { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,6 +66,14 @@ public class ApplicationContext(
                 .HasOne(o => o.LoginRecord)
                 .WithMany(c => c.RefreshRecords)
                 .HasForeignKey(o => o.LoginRecordId);
+        });
+        
+        modelBuilder.Entity<AccessRecordEntity>(entity =>
+        {
+            entity
+                .HasOne(o => o.RefreshRecord)
+                .WithMany(c => c.AccessRecords)
+                .HasForeignKey(o => o.RefreshRecordId);
         });
     }
 }

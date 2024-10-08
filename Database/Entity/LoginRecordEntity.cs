@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Database.Entity;
+namespace Domain.OAuth;
 
 public class LoginRecordEntity : ClientInfo
 {

@@ -3,36 +3,13 @@ using Domain.Abstraction;
 
 namespace Domain.OAuth;
 
-public enum OAuthProvider
-{
-    /// <summary>
-    /// Development login.
-    /// </summary>
-    Development = 1,
-    
-    /// <summary>
-    /// Guest login.
-    /// </summary>
-    Guest = 2,
-    
-    /// <summary>
-    /// Discord login.
-    /// </summary>
-    Discord = 3,
-    
-    /// <summary>
-    /// GitHub login.
-    /// </summary>
-    Github = 4,
-}
-
 [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "It makes sense to have these close to each other.")]
 [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1649:FileNameShouldMatchFirstTypeName", Justification = "It makes sense to have these close to each other.")]
 public static class OAuthProviderExtensions
 {
     private static readonly Dictionary<string, OAuthProvider> StringProviderMap =
         Enum.GetValues<OAuthProvider>()
-        .ToDictionary(op => SafeString(Enum.GetName(op)!), op => op); 
+            .ToDictionary(op => SafeString(Enum.GetName(op)!), op => op); 
     
     public static Result<string> MapToProviderString(this OAuthProvider provider)
     {

@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Database;
-using Database.Entity;
 using Domain.Abstraction;
 using Domain.OAuth;
 using Interface.Repository;
@@ -59,7 +57,7 @@ public class UserRepository(
         }
     }
 
-    public async Task<Result<(UserEntity User, long LoginId, long RefreshId, bool FirstLogin)>> LoginUser(
+    public async Task<Result<PostLoginData>> LoginUser(
         IOAuthUserConvertible userConvertible,
         IClientInfo clientInfo)
     {
@@ -108,20 +106,44 @@ public class UserRepository(
             user.LoginRecords.Add(loginRecord);
             
             await applicationContext.SaveChangesAsync();
-            
+
+            var refreshJwtId = Guid.NewGuid().ToString();
             var refreshRecord = new RefreshRecordEntity
             {
                 LoginRecordId = loginRecord.Id,
                 LoginRecord = loginRecord,
                 CreatedUtc = DateTime.UtcNow,
+                AccessRecords = [],
                 Ip = clientInfo.Ip,
+                JwtId = refreshJwtId,
                 UserAgent = clientInfo.UserAgent,
             };
             loginRecord.RefreshRecords.Add(refreshRecord);
             
             await applicationContext.SaveChangesAsync();
+            
+            var accessJwtId = Guid.NewGuid().ToString();
+            var accessRecord = new AccessRecordEntity
+            {
+                RefreshRecordId = refreshRecord.Id,
+                RefreshRecord = refreshRecord,
+                CreatedUtc = DateTime.UtcNow,
+                Ip = clientInfo.Ip,
+                JwtId = accessJwtId,
+                UserAgent = clientInfo.UserAgent,
+            };
+            refreshRecord.AccessRecords.Add(accessRecord);
+            
+            await applicationContext.SaveChangesAsync();
             await transaction.CommitAsync();
-            return (User: user, LoginId: loginRecord.Id, RefreshId: refreshRecord.Id, FirstLogin: isFirstLogin);
+            return new PostLoginData(
+                User: user,
+                LoginId: loginRecord.Id,
+                RefreshId: refreshRecord.Id,
+                AccessId: accessRecord.Id,
+                FirstLogin: isFirstLogin,
+                RefreshJwtId: refreshJwtId,
+                AccessJwtId: accessJwtId);
         }
         catch (Exception e)
         {
@@ -133,53 +155,20 @@ public class UserRepository(
         }
     }
 
-    public async Task<Result<RefreshRecordEntity>> RefreshUser(
-        long loginId,
-        OAuthUser oAuthUser,
-        IClientInfo clientInfo)
-    {
-        try
-        {
-            var login = await applicationContext.LoginRecord
-                .FindAsync(loginId);
-            if (login is null)
-            {
-                return new ResultError(
-                    ResultErrorType.NotFound,
-                    "Login was not found");
-            }
-
-            var refreshRecord = new RefreshRecordEntity
-            {
-                LoginRecordId = login.Id,
-                LoginRecord = login,
-                CreatedUtc = DateTime.UtcNow,
-                Ip = clientInfo.Ip,
-                UserAgent = clientInfo.UserAgent,
-            };
-
-            applicationContext.RefreshRecord.Add(refreshRecord);
-            await applicationContext.SaveChangesAsync();
-            return refreshRecord;
-        }
-        catch (Exception e)
-        {
-            return new ResultError(
-                ResultErrorType.Exception,
-                "Exception thrown while refreshing user login",
-                e);
-        }
-    }
-
     private async Task<Result<UserEntity>> GetAndUpdateUser(OAuthUser oAuthUser)
     {
-        var maybeUserResult = await this.GetUser(oAuthUser.AuthenticationProvider, oAuthUser.ProviderId);
-        if (maybeUserResult.IsError)
+        var maybeUser = await applicationContext.User
+            .Include(u => u.OldInformationRecords)
+            .Include(u => u.LoginRecords)
+            .ThenInclude(l => l.RefreshRecords)
+            .ThenInclude(r => r.AccessRecords)
+            .FirstOrDefaultAsync(u => u.AuthenticationProvider == oAuthUser.AuthenticationProvider && u.ProviderId == oAuthUser.ProviderId);
+        
+        if (maybeUser is null)
         {
-            return maybeUserResult.Error!;
+            return new ResultError(ResultErrorType.NotFound, "Did not find user");
         }
-
-        var maybeUser = maybeUserResult.Unwrap();
+        
         if (maybeUser.Username != oAuthUser.Username)
         {
             maybeUser.OldInformationRecords.Add(new OldInformationRecordEntity
@@ -188,7 +177,7 @@ public class UserRepository(
                 User = maybeUser,
                 Type = OldInformation.Username,
                 Information = maybeUser.Username,
-                CreatedUtc = DateTime.UtcNow,
+                ReplacedUtc = DateTime.UtcNow,
             });
             maybeUser.Username = oAuthUser.Username;
         }
@@ -201,7 +190,7 @@ public class UserRepository(
                 User = maybeUser,
                 Type = OldInformation.Email,
                 Information = maybeUser.Email,
-                CreatedUtc = DateTime.UtcNow,
+                ReplacedUtc = DateTime.UtcNow,
             });
             maybeUser.Email = oAuthUser.Email;
         }
@@ -214,7 +203,7 @@ public class UserRepository(
                 User = maybeUser,
                 Type = OldInformation.AvatarUrl,
                 Information = maybeUser.AvatarUrl,
-                CreatedUtc = DateTime.UtcNow,
+                ReplacedUtc = DateTime.UtcNow,
             });
             maybeUser.AvatarUrl = oAuthUser.AvatarUrl;
         }
@@ -237,7 +226,6 @@ public class UserRepository(
         };
 
         await applicationContext.User.AddAsync(user);
-
         return user;
     }
 }

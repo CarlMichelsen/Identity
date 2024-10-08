@@ -4,7 +4,7 @@ using Interface.OAuth;
 using Interface.Service;
 using Microsoft.AspNetCore.Http;
 
-namespace Implementation.OAuth;
+namespace Implementation.Service.OAuth;
 
 public class OAuthLoginAccessControl(
     IHttpContextAccessor httpContextAccessor,

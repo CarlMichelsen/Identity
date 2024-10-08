@@ -25,5 +25,27 @@ public class DevelopmentUserService(
         return userResult.Unwrap();
     }
 
+    public async Task<Result<string>> RegisterUserAccessToken(long developmentUserId)
+    {
+        if (!DevelopmentUsers.Users.TryGetValue(developmentUserId, out var user))
+        {
+            return new ResultError(
+                ResultErrorType.NotFound,
+                "Did not find development user");
+        }
+        
+        var accessToken = Guid.NewGuid().ToString();
+        var registerResult = await cacheService.SetValue(
+            GenerateKeyFromAccessToken(accessToken),
+            user, 
+            TimeSpan.FromMinutes(10));
+        if (registerResult.IsError)
+        {
+            return registerResult.Error!;
+        }
+
+        return accessToken;
+    }
+
     private static string GenerateKeyFromAccessToken(string accessToken) => $"development-user-service-{accessToken}";
 }

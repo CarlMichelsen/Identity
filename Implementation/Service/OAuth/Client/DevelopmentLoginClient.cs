@@ -4,10 +4,9 @@ using Domain.OAuth;
 using Domain.OAuth.Development;
 using Interface.OAuth;
 using Interface.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Implementation.OAuth.Client;
+namespace Implementation.Service.OAuth.Client;
 
 public sealed class DevelopmentLoginClient(
     IOAuthLoginAccessControl accessControl,

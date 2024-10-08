@@ -10,9 +10,15 @@ public class LoginProcessContext
     
     public IOAuthUserConvertible? OAuthUserConvertible { get; set; }
     
-    public UserDto? User { get; set; }
+    public AuthenticatedUser? User { get; set; }
     
     public long? LoginId { get; set; }
     
     public long? RefreshId { get; set; }
+    
+    public long? AccessId { get; set; }
+    
+    public string? RefreshJwtId { get; set; }
+    
+    public string? AccessJwtId { get; set; }
 }

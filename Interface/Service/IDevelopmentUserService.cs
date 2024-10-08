@@ -6,4 +6,6 @@ namespace Interface.Service;
 public interface IDevelopmentUserService
 {
     Task<Result<DevelopmentUserDto>> GetDevelopmentUserFromAccessToken(string accessToken);
+    
+    Task<Result<string>> RegisterUserAccessToken(long developmentUserId);
 }

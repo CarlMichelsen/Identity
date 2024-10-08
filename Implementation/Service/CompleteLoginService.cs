@@ -50,11 +50,14 @@ public class CompleteLoginService(
         {
             return loginUserResult.Error!;
         }
-
+        
         var loginUser = loginUserResult.Unwrap();
+        loginContext.RefreshJwtId = loginUser.RefreshJwtId;
+        loginContext.AccessJwtId = loginUser.AccessJwtId;
         loginContext.LoginId = loginUser.LoginId;
         loginContext.RefreshId = loginUser.RefreshId;
-        loginContext.User = new UserDto(
+        loginContext.AccessId = loginUser.AccessId;
+        loginContext.User = new AuthenticatedUser(
             loginUser.User.Id,
             loginUser.User.Username,
             loginUser.User.AvatarUrl);
@@ -80,6 +83,6 @@ public class CompleteLoginService(
             .Where(kv => kv.Key.Length > 0 && kv.Value.Count > 0)
             .Where(kv => !string.IsNullOrWhiteSpace(kv.Key.First().ToString()))
             .Where(kv => !string.IsNullOrWhiteSpace(kv.Value.FirstOrDefault()?.ToString()))
-            .ToDictionary(kv => kv.Key.First().ToString(), kv => kv.Value.First()!.ToString());
+            .ToDictionary(kv => kv.Key.ToString(), kv => kv.Value.ToString());
     }
 }

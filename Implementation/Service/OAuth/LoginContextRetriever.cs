@@ -2,7 +2,7 @@ using Domain.Abstraction;
 using Domain.OAuth;
 using Microsoft.AspNetCore.Http;
 
-namespace Implementation.OAuth;
+namespace Implementation.Service.OAuth;
 
 public static class LoginContextRetriever
 {

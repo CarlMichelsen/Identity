@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Database.Entity;
+namespace Domain.OAuth;
 
 public class OldInformationRecordEntity
 {
@@ -15,5 +15,5 @@ public class OldInformationRecordEntity
     [StringLength(2056, ErrorMessage = "The {0} must be at most {1} characters long.")]
     public required string Information { get; init; }
     
-    public required DateTime CreatedUtc { get; init; }
+    public required DateTime ReplacedUtc { get; init; }
 }

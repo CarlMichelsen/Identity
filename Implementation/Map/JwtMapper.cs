@@ -14,7 +14,10 @@ public static class JwtMapper
     public static Result<(string AccessToken, string RefreshToken)> GetTokenPair(
         long loginId,
         long refreshId,
-        UserDto user,
+        long accessId,
+        string refreshJwtId,
+        string accessJwtId,
+        AuthenticatedUser authenticatedUser,
         JwtOptions jwtOptions)
     {
         Claim[] sharedClaims = [
@@ -22,15 +25,27 @@ public static class JwtMapper
             new("refresh", refreshId.ToString()),
         ];
         
-        Claim[] accessClaims = [
-            new("jti", Guid.NewGuid().ToString()),
-            new("userid", user.Id.ToString()),
-            new("user", JsonSerializer.Serialize(user)),
+        Claim[] refreshClaims = [
+            new("jti", refreshJwtId),
             ..sharedClaims,
         ];
         
-        Claim[] refreshClaims = [
-            new("jti", Guid.NewGuid().ToString()),
+        var refreshTokenResult = GenerateJwtTokenString(
+            refreshClaims,
+            jwtOptions.RefreshSecret,
+            jwtOptions.Issuer,
+            jwtOptions.Audience, 
+            DateTime.UtcNow.Add(ApplicationConstants.RefreshTokenLifeTime));
+        if (refreshTokenResult.IsError)
+        {
+            return refreshTokenResult.Error!;
+        }
+        
+        Claim[] accessClaims = [
+            new("jti", accessJwtId),
+            new("access", accessId.ToString()),
+            new("userid", authenticatedUser.Id.ToString()),
+            new("user", JsonSerializer.Serialize(authenticatedUser)),
             ..sharedClaims,
         ];
         
@@ -43,17 +58,6 @@ public static class JwtMapper
         if (accessTokenResult.IsError)
         {
             return accessTokenResult.Error!;
-        }
-        
-        var refreshTokenResult = GenerateJwtTokenString(
-            refreshClaims,
-            jwtOptions.RefreshSecret,
-            jwtOptions.Issuer,
-            jwtOptions.Audience, 
-            DateTime.UtcNow.Add(ApplicationConstants.RefreshTokenLifeTime));
-        if (refreshTokenResult.IsError)
-        {
-            return refreshTokenResult.Error!;
         }
 
         return (AccessToken: accessTokenResult.Unwrap(), RefreshToken: refreshTokenResult.Unwrap());

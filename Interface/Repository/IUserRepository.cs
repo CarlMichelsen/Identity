@@ -1,4 +1,3 @@
-using Database.Entity;
 using Domain.Abstraction;
 using Domain.OAuth;
 
@@ -12,12 +11,7 @@ public interface IUserRepository
         OAuthProvider provider,
         string providerId);
 
-    Task<Result<(UserEntity User, long LoginId, long RefreshId, bool FirstLogin)>> LoginUser(
+    Task<Result<PostLoginData>> LoginUser(
         IOAuthUserConvertible userConvertible,
-        IClientInfo clientInfo);
-    
-    Task<Result<RefreshRecordEntity>> RefreshUser(
-        long loginId,
-        OAuthUser oAuthUser,
         IClientInfo clientInfo);
 }

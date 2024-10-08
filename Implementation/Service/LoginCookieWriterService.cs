@@ -34,16 +34,34 @@ public class LoginCookieWriterService(
             return new ResultError(ResultErrorType.MapError, "Refresh id is null");
         }
         
+        if (processContext.AccessId is null)
+        {
+            return new ResultError(ResultErrorType.MapError, "Access id is null");
+        }
+        
         if (processContext.User is null)
         {
             return new ResultError(ResultErrorType.MapError, "User is null");
         }
+        
+        if (string.IsNullOrWhiteSpace(processContext.RefreshJwtId))
+        {
+            return new ResultError(ResultErrorType.MapError, "RefreshJwtId is null or whitespace");
+        }
+        
+        if (string.IsNullOrWhiteSpace(processContext.AccessJwtId))
+        {
+            return new ResultError(ResultErrorType.MapError, "AccessJwtId is null or whitespace");
+        }
 
         var tokenPairResult = JwtMapper.GetTokenPair(
-            (long)processContext.LoginId,
-            (long)processContext.RefreshId,
-            processContext.User,
-            jwtOptions.Value);
+            loginId: (long)processContext.LoginId,
+            refreshId: (long)processContext.RefreshId,
+            accessId: (long)processContext.AccessId,
+            refreshJwtId: processContext.RefreshJwtId,
+            accessJwtId: processContext.AccessJwtId,
+            authenticatedUser: processContext.User,
+            jwtOptions: jwtOptions.Value);
         if (tokenPairResult.IsError)
         {
             return tokenPairResult.Error!;

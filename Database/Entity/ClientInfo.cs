@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Domain.OAuth;
 
-namespace Database.Entity;
+namespace Domain.OAuth;
 
 public abstract class ClientInfo : IClientInfo
 {

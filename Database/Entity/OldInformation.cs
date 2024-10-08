@@ -1,4 +1,4 @@
-namespace Database.Entity;
+namespace Domain.OAuth;
 
 public enum OldInformation
 {

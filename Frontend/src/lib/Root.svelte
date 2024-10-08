@@ -1,6 +1,6 @@
 <script lang="ts">
 </script>
 
-<main>
+<main class="container mx-auto">
     <slot></slot>
 </main>

@@ -1,12 +1,12 @@
 using App.Middleware;
-using Database;
 using Domain.Configuration;
+using Domain.OAuth;
 using Implementation.Factory;
 using Implementation.Handler;
-using Implementation.OAuth;
-using Implementation.OAuth.Client;
 using Implementation.Repository;
 using Implementation.Service;
+using Implementation.Service.OAuth;
+using Implementation.Service.OAuth.Client;
 using Interface.Factory;
 using Interface.Handler;
 using Interface.OAuth;
@@ -105,6 +105,7 @@ public static class Dependencies
         // Handlers
         builder.Services
             .AddScoped<IOAuthRedirectHandler, OAuthRedirectHandler>()
+            .AddScoped<IDevelopmentLoginHandler, DevelopmentLoginHandler>()
             .AddScoped<ICompleteLoginHandler, CompleteLoginHandler>();
         
         // OAuth
@@ -114,9 +115,7 @@ public static class Dependencies
         
         // OAuthClients
         builder.Services
-            .AddTransient<DevelopmentLoginClient>()
-            .AddTransient<DiscordLoginClient>()
-            .AddTransient<GithubLoginClient>();
+            .AddTransient<DevelopmentLoginClient>();
         
         // Auth dependencies
         builder.RegisterAuthDependencies();

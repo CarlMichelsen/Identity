@@ -4,21 +4,20 @@ using System.Text.Json;
 using Domain.Abstraction;
 using Domain.Configuration;
 using Domain.OAuth;
-using Domain.OAuth.Discord;
+using Domain.OAuth.Github;
 using Interface.OAuth;
-using Interface.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Implementation.OAuth.Client;
+namespace Implementation.Service.OAuth.Client;
 
-public class DiscordLoginClient(
+public class GithubLoginClient(
     IOAuthLoginAccessControl accessControl,
     IOptions<OAuthOptions> oAuthOptions,
     HttpClient httpClient) : IOAuthClient
 {
-    private const string AccessTokenPath = "/api/oauth2/token";
-    private const string UserPath = "/api/users/@me";
+    private const string AccessTokenPath = "login/oauth/access_token";
+    private const string UserPath = "user";
+    private const string UserSubdomain = "api";
     
     public async Task<Result<Uri>> CreateOAuthRedirect(LoginRedirectInformation loginRedirectInformation)
     {
@@ -31,21 +30,21 @@ public class DiscordLoginClient(
             }
 
             var processContext = processContextResult.Unwrap();
-            var scopes = new List<string> { "identify", "email", };
-            return new OAuthUriBuilder(new Uri(oAuthOptions.Value.Discord.OAuthEndpoint))
-                .SetQueryParameter("response_type", "code")
-                .SetQueryParameter("client_id", oAuthOptions.Value.Discord.ClientId)
+            var scopes = new List<string> { "read:user", "user:email" };
+            return new OAuthUriBuilder(new Uri(oAuthOptions.Value.Github.OAuthEndpoint))
+                .SetQueryParameter("response_type", "token")
+                .SetQueryParameter("client_id", oAuthOptions.Value.Github.ClientId)
                 .SetQueryParameter("redirect_uri", oAuthOptions.Value.Github.OAuthReturnEndpoint)
                 .SetQueryParameter("scope", string.Join(' ', scopes))
                 .SetQueryParameter("state", processContext.Identifier.State.ToString())
-                .SetQueryParameter("prompt", "consent")
+                .SetQueryParameter("allow_signup", "false")
                 .GetUrl();
         }
         catch (Exception e)
         {
             return new ResultError(
                 ResultErrorType.Exception,
-                "An exception was thrown during CreateOAuthRedirect",
+                "An exception was thrown during oAuth redirection",
                 e);
         }
     }
@@ -58,29 +57,15 @@ public class DiscordLoginClient(
                 queryParameters,
                 LoginContextRetriever.GetStateAndCodeFromQuery, 
                 async code =>
+            {
+                var codeResponseResult = await this.ExchangeCode(code);
+                if (codeResponseResult.IsError)
                 {
-                    var codeResponseResult = await this.ExchangeCode(code);
-                    if (codeResponseResult.IsError)
-                    {
-                        return codeResponseResult.Error!;
-                    }
-                    
-                    var userResult = await this.GetUser(codeResponseResult.Unwrap().AccessToken);
-                    if (userResult.IsError)
-                    {
-                        return userResult.Error!;
-                    }
-
-                    var user = (DiscordUserDto)userResult.Unwrap();
-                    if (!user.Verified)
-                    {
-                        return new ResultError(
-                            ResultErrorType.Unauthorized,
-                            "Discord user is not verified");
-                    }
-
-                    return user;
-                });
+                    return codeResponseResult.Error!;
+                }
+                
+                return await this.GetUser(codeResponseResult.Unwrap().AccessToken);
+            });
 
             if (loginProcessResult.IsError)
             {
@@ -93,21 +78,21 @@ public class DiscordLoginClient(
         {
             return new ResultError(
                 ResultErrorType.Exception,
-                "An exception was thrown during GetProviderLoginData",
+                "An exception was thrown getting provider login data",
                 e);
         }
     }
 
-    private async Task<Result<DiscordCodeDto>> ExchangeCode(string code)
+    private async Task<Result<GithubCodeResponseDto>> ExchangeCode(string code)
     {
         var content = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            { "client_id", oAuthOptions.Value.Discord.ClientId },
-            { "client_secret", oAuthOptions.Value.Discord.ClientSecret },
-            { "grant_type", "authorization_code" },
-            { "code", code },
-            { "redirect_uri", oAuthOptions.Value.Discord.OAuthReturnEndpoint },
-        });
+            {
+                { "client_id", oAuthOptions.Value.Github.ClientId },
+                { "client_secret", oAuthOptions.Value.Github.ClientSecret },
+                { "grant_type", "authorization_code" },
+                { "code", code },
+                { "redirect_uri", oAuthOptions.Value.Github.OAuthReturnEndpoint },
+            });
         
         var response = await httpClient.PostAsync(
             AccessTokenPath,
@@ -119,12 +104,12 @@ public class DiscordLoginClient(
                 ResultErrorType.HttpStatus,
                 $"Code exchange response had a {response.StatusCode} status-code");
         }
-        
-        DiscordCodeDto? parsedJson;
+
+        GithubCodeResponseDto? parsedJson;
         try
         {
             parsedJson = await response.Content
-                .ReadFromJsonAsync<DiscordCodeDto>();
+                .ReadFromJsonAsync<GithubCodeResponseDto>();
             if (parsedJson is null)
             {
                 return new ResultError(
@@ -145,32 +130,35 @@ public class DiscordLoginClient(
 
     private async Task<Result<IOAuthUserConvertible>> GetUser(string accessToken)
     {
+        var baseUri = new Uri(oAuthOptions.Value.Github.OAuthEndpoint);
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(new Uri(oAuthOptions.Value.Github.OAuthEndpoint), UserPath),
+            RequestUri = new Uri(new Uri($"https://{UserSubdomain}.{baseUri.Host}"), UserPath),
         };
-        request.Headers.Authorization =
-            new AuthenticationHeaderValue("Bearer", accessToken);
-        
+        request.Headers.UserAgent.Add(
+            new ProductInfoHeaderValue(ApplicationConstants.ApplicationName, "1.0"));
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await httpClient.SendAsync(request);
         if (!response.IsSuccessStatusCode)
         {
             return new ResultError(
                 ResultErrorType.HttpStatus,
-                $"Code exchange response had a {response.StatusCode} status-code");
+                $"User response had a {response.StatusCode} status-code");
         }
-        
-        DiscordUserDto? parsedJson;
+
+        GithubUserDto? parsedJson;
         try
         {
             parsedJson = await response.Content
-                .ReadFromJsonAsync<DiscordUserDto>();
+                .ReadFromJsonAsync<GithubUserDto>();
+
             if (parsedJson is null)
             {
                 return new ResultError(
                     ResultErrorType.JsonParse,
-                    "Code response was null");
+                    "User response was null");
             }
         }
         catch (JsonException e)

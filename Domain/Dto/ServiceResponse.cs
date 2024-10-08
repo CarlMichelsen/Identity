@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Domain.Dto;
 
-public record class ServiceResponse
+public record ServiceResponse
 {
     public ServiceResponse(params string[] errors)
     {
