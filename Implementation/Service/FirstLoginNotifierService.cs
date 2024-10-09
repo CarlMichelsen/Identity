@@ -18,12 +18,11 @@ public class FirstLoginNotifierService(
         {
             return;
         }
-
-        var providerName = Enum.GetName(login.User.AuthenticationProvider);
-        logger.LogError(
+        
+        logger.LogInformation(
             "First login for \"{Username}\" with |{ProviderName}| from \"{Ip}\"",
             login.User.Username,
-            providerName,
+            Enum.GetName(login.User.AuthenticationProvider),
             login.Ip);
     }
 }

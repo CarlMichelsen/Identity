@@ -81,7 +81,7 @@ public class UserRefreshService(
             var refreshJwtTokenStringResult = JwtMapper.CreateRefreshToken(
                 jwtOptions.Value,
                 loginId,
-                refreshId);
+                recordPair.NewRefreshRecord.Id);
             if (refreshJwtTokenStringResult.IsError)
             {
                 return refreshJwtTokenStringResult.Error!;

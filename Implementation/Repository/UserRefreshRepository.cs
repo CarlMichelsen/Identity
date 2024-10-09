@@ -63,7 +63,7 @@ public class UserRefreshRepository(
                     Ip = clientInfo.Ip,
                 };
                 
-                loginRecord.RefreshRecords.Add(existingRefreshRecord);
+                loginRecord.RefreshRecords.Add(actualRefreshRecord);
                 await applicationContext.SaveChangesAsync();
             }
             else
