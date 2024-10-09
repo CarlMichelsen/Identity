@@ -1,17 +1,19 @@
 using App.Middleware;
+using Database;
 using Domain.Configuration;
-using Domain.OAuth;
 using Implementation.Factory;
 using Implementation.Handler;
 using Implementation.Repository;
 using Implementation.Service;
 using Implementation.Service.OAuth;
 using Implementation.Service.OAuth.Client;
+using Implementation.Util;
 using Interface.Factory;
 using Interface.Handler;
 using Interface.OAuth;
 using Interface.Repository;
 using Interface.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -48,7 +50,7 @@ public static class Dependencies
             {
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
-                    (b) => b.MigrationsAssembly("App"));
+                    b => b.MigrationsAssembly("App"));
                 
                 if (builder.Environment.IsDevelopment())
                 {
@@ -89,12 +91,17 @@ public static class Dependencies
         
         // Repositories
         builder.Services
-            .AddScoped<IUserRepository, UserRepository>();
+            .AddScoped<IUserLogoutRepository, UserLogoutRepository>()
+            .AddScoped<IUserRefreshRepository, UserRefreshRepository>()
+            .AddScoped<IUserLoginRepository, UserLoginRepository>();
         
         // Services
         builder.Services
             .AddScoped<IFirstLoginNotifierService, FirstLoginNotifierService>()
             .AddScoped<IRedirectValidationService, RedirectValidationService>()
+            .AddScoped<IUserReadService, UserReadService>()
+            .AddScoped<IUserRefreshService, UserRefreshService>()
+            .AddScoped<IUserLogoutService, UserLogoutService>()
             .AddScoped<ILoginCookieWriterService, LoginCookieWriterService>()
             .AddScoped<IErrorLogService, ErrorLogService>()
             .AddScoped<IOAuthRedirectService, OAuthRedirectService>()
@@ -105,9 +112,11 @@ public static class Dependencies
         
         // Handlers
         builder.Services
+            .AddScoped<IUserReadHandler, UserReadHandler>()
+            .AddScoped<IUserRefreshHandler, UserRefreshHandler>()
             .AddScoped<IOAuthRedirectHandler, OAuthRedirectHandler>()
-            .AddScoped<IDevelopmentLoginHandler, DevelopmentLoginHandler>()
-            .AddScoped<ICompleteLoginHandler, CompleteLoginHandler>();
+            .AddScoped<ICompleteLoginHandler, CompleteLoginHandler>()
+            .AddScoped<IDevelopmentLoginHandler, DevelopmentLoginHandler>();
         
         // OAuth
         builder.Services
@@ -145,8 +154,31 @@ public static class Dependencies
 
     private static void RegisterAuthDependencies(this WebApplicationBuilder builder)
     {
-        builder.Services.AddAuthentication();
-        builder.Services.AddAuthorizationBuilder();
+        var jwtOptions = builder.Configuration
+            .GetSection(JwtOptions.SectionName)
+            .Get<JwtOptions>() ?? throw new NullReferenceException();
+        
+        var cookieOptions = builder.Configuration
+            .GetSection(IdentityCookieOptions.SectionName)
+            .Get<IdentityCookieOptions>() ?? throw new NullReferenceException();
+        
+        builder.Services.AddAuthentication().AddJwtBearer("CookieScheme", options =>
+        {
+            // Configure JWT settings
+            options.TokenValidationParameters = TokenValidationParametersFactory.AccessValidationParameters(jwtOptions);
+
+            // Get token from cookie
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies[cookieOptions.AccessCookieName];
+                    return Task.CompletedTask;
+                },
+            };
+        });
+        
+        builder.Services.AddAuthorization();
     }
 
     private static string GetEnvironmentName(WebApplicationBuilder builder) =>

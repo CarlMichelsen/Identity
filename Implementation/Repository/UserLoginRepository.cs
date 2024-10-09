@@ -1,62 +1,17 @@
 using System.Text.Json;
+using Database;
+using Database.Entity;
 using Domain.Abstraction;
+using Domain.Configuration;
 using Domain.OAuth;
 using Interface.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Implementation.Repository;
 
-public class UserRepository(
-    ApplicationContext applicationContext) : IUserRepository
+public class UserLoginRepository(
+    ApplicationContext applicationContext) : IUserLoginRepository
 {
-    public async Task<Result<UserEntity>> GetUser(long id)
-    {
-        try
-        {
-            var user = await applicationContext.User
-                .FirstOrDefaultAsync(u => u.Id == id);
-            if (user is null)
-            {
-                return new ResultError(
-                    ResultErrorType.NotFound,
-                    "User was not found");
-            }
-
-            return user;
-        }
-        catch (Exception e)
-        {
-            return new ResultError(
-                ResultErrorType.Exception,
-                "Exception thrown while fetching user",
-                e);
-        }
-    }
-
-    public async Task<Result<UserEntity>> GetUser(OAuthProvider provider, string providerId)
-    {
-        try
-        {
-            var user = await applicationContext.User
-                .FirstOrDefaultAsync(u => u.AuthenticationProvider == provider && u.ProviderId == providerId);
-            if (user is null)
-            {
-                return new ResultError(
-                    ResultErrorType.NotFound,
-                    "User was not found");
-            }
-
-            return user;
-        }
-        catch (Exception e)
-        {
-            return new ResultError(
-                ResultErrorType.Exception,
-                "Exception thrown while fetching user",
-                e);
-        }
-    }
-
     public async Task<Result<PostLoginData>> LoginUser(
         IOAuthUserConvertible userConvertible,
         IClientInfo clientInfo)
@@ -106,30 +61,26 @@ public class UserRepository(
             user.LoginRecords.Add(loginRecord);
             
             await applicationContext.SaveChangesAsync();
-
-            var refreshJwtId = Guid.NewGuid().ToString();
             var refreshRecord = new RefreshRecordEntity
             {
                 LoginRecordId = loginRecord.Id,
                 LoginRecord = loginRecord,
                 CreatedUtc = DateTime.UtcNow,
+                ExpiresUtc = DateTime.UtcNow + ApplicationConstants.RefreshTokenLifeTime,
                 AccessRecords = [],
                 Ip = clientInfo.Ip,
-                JwtId = refreshJwtId,
                 UserAgent = clientInfo.UserAgent,
             };
             loginRecord.RefreshRecords.Add(refreshRecord);
             
             await applicationContext.SaveChangesAsync();
-            
-            var accessJwtId = Guid.NewGuid().ToString();
             var accessRecord = new AccessRecordEntity
             {
                 RefreshRecordId = refreshRecord.Id,
                 RefreshRecord = refreshRecord,
                 CreatedUtc = DateTime.UtcNow,
+                ExpiresUtc = DateTime.UtcNow + ApplicationConstants.AccessTokenLifeTime,
                 Ip = clientInfo.Ip,
-                JwtId = accessJwtId,
                 UserAgent = clientInfo.UserAgent,
             };
             refreshRecord.AccessRecords.Add(accessRecord);
@@ -141,9 +92,7 @@ public class UserRepository(
                 LoginId: loginRecord.Id,
                 RefreshId: refreshRecord.Id,
                 AccessId: accessRecord.Id,
-                FirstLogin: isFirstLogin,
-                RefreshJwtId: refreshJwtId,
-                AccessJwtId: accessJwtId);
+                FirstLogin: isFirstLogin);
         }
         catch (Exception e)
         {

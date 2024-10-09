@@ -10,6 +10,7 @@ public static class DevelopmentEndpoints
     {
         var developmentGroup = apiGroup
             .MapGroup("development")
+            .AllowAnonymous()
             .WithTags("Development");
 
         developmentGroup.MapPost(

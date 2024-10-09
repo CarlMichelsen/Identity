@@ -1,5 +1,5 @@
+using Database.Entity;
 using Domain.Abstraction;
-using Domain.OAuth;
 using Interface.OAuth;
 
 namespace Interface.Factory;

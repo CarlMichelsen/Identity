@@ -1,3 +1,5 @@
+using Database.Entity;
+
 namespace Domain.OAuth;
 
 public class OAuthUser

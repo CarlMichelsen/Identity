@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Domain.OAuth;
+namespace Database.Entity;
 
 public class UserEntity
 {

@@ -11,56 +11,67 @@ namespace Implementation.Map;
 
 public static class JwtMapper
 {
-    public static Result<(string AccessToken, string RefreshToken)> GetTokenPair(
-        long loginId,
-        long refreshId,
-        long accessId,
-        string refreshJwtId,
-        string accessJwtId,
-        AuthenticatedUser authenticatedUser,
-        JwtOptions jwtOptions)
+    public static Result<string> CreateAccessToken(
+        JwtOptions jwtOptions,
+        Claim[] claims)
     {
-        Claim[] sharedClaims = [
-            new("login", loginId.ToString()),
-            new("refresh", refreshId.ToString()),
-        ];
-        
+        return GenerateJwtTokenString(
+            claims,
+            jwtOptions.AccessSecret,
+            jwtOptions.Issuer,
+            jwtOptions.Audience, 
+            DateTime.UtcNow.Add(ApplicationConstants.AccessTokenLifeTime));
+    }
+    
+    public static Result<string> CreateRefreshToken(
+        JwtOptions jwtOptions,
+        long loginId,
+        long refreshId)
+    {
         Claim[] refreshClaims = [
-            new("jti", refreshJwtId),
-            ..sharedClaims,
+            new("login", loginId.ToString()),
+            new("jti", refreshId.ToString()),
         ];
         
-        var refreshTokenResult = GenerateJwtTokenString(
+        return GenerateJwtTokenString(
             refreshClaims,
             jwtOptions.RefreshSecret,
             jwtOptions.Issuer,
             jwtOptions.Audience, 
             DateTime.UtcNow.Add(ApplicationConstants.RefreshTokenLifeTime));
+    }
+    
+    public static Result<(string AccessToken, string RefreshToken)> GetTokenPair(
+        long loginId,
+        long refreshId,
+        long accessId,
+        AuthenticatedUser authenticatedUser,
+        JwtOptions jwtOptions)
+    {
+        var refreshTokenResult = CreateRefreshToken(jwtOptions, loginId, refreshId);
         if (refreshTokenResult.IsError)
         {
             return refreshTokenResult.Error!;
         }
         
         Claim[] accessClaims = [
-            new("jti", accessJwtId),
-            new("access", accessId.ToString()),
+            new("login", loginId.ToString()),
+            new("refresh", refreshId.ToString()),
+            new("jti", accessId.ToString()),
+            new("email", authenticatedUser.Email),
             new("userid", authenticatedUser.Id.ToString()),
-            new("user", JsonSerializer.Serialize(authenticatedUser)),
-            ..sharedClaims,
+            new("user", JsonSerializer.Serialize(authenticatedUser))
         ];
         
-        var accessTokenResult = GenerateJwtTokenString(
-            accessClaims,
-            jwtOptions.AccessSecret,
-            jwtOptions.Issuer,
-            jwtOptions.Audience, 
-            DateTime.UtcNow.Add(ApplicationConstants.AccessTokenLifeTime));
+        var accessTokenResult = CreateAccessToken(jwtOptions, accessClaims);
         if (accessTokenResult.IsError)
         {
             return accessTokenResult.Error!;
         }
 
-        return (AccessToken: accessTokenResult.Unwrap(), RefreshToken: refreshTokenResult.Unwrap());
+        return (
+            AccessToken: accessTokenResult.Unwrap(),
+            RefreshToken: refreshTokenResult.Unwrap());
     }
     
     private static Result<string> GenerateJwtTokenString(

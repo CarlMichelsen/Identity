@@ -2,6 +2,7 @@ using Domain.Abstraction;
 using Domain.Configuration;
 using Domain.OAuth;
 using Implementation.Map;
+using Implementation.Util;
 using Interface.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -43,23 +44,11 @@ public class LoginCookieWriterService(
         {
             return new ResultError(ResultErrorType.MapError, "User is null");
         }
-        
-        if (string.IsNullOrWhiteSpace(processContext.RefreshJwtId))
-        {
-            return new ResultError(ResultErrorType.MapError, "RefreshJwtId is null or whitespace");
-        }
-        
-        if (string.IsNullOrWhiteSpace(processContext.AccessJwtId))
-        {
-            return new ResultError(ResultErrorType.MapError, "AccessJwtId is null or whitespace");
-        }
 
         var tokenPairResult = JwtMapper.GetTokenPair(
             loginId: (long)processContext.LoginId,
             refreshId: (long)processContext.RefreshId,
             accessId: (long)processContext.AccessId,
-            refreshJwtId: processContext.RefreshJwtId,
-            accessJwtId: processContext.AccessJwtId,
             authenticatedUser: processContext.User,
             jwtOptions: jwtOptions.Value);
         if (tokenPairResult.IsError)
@@ -70,12 +59,7 @@ public class LoginCookieWriterService(
         try
         {
             var tokenPair = tokenPairResult.Unwrap();
-            var cookieConfigurationOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = !featureFlags.Value.DevelopmentLoginEnabled,
-                Expires = DateTimeOffset.UtcNow.Add(ApplicationConstants.RefreshTokenLifeTime),
-            };
+            var cookieConfigurationOptions = CookieOptionsFactory.CreateOptions(featureFlags.Value);
         
             contextAccessor.HttpContext.Response.Cookies.Append(
                 cookieOptions.Value.AccessCookieName,

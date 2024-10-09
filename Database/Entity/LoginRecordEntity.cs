@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Domain.OAuth;
+namespace Database.Entity;
 
 public class LoginRecordEntity : ClientInfo
 {
@@ -16,4 +16,6 @@ public class LoginRecordEntity : ClientInfo
     public required List<RefreshRecordEntity> RefreshRecords { get; init; }
     
     public required DateTime CreatedUtc { get; init; }
+    
+    public DateTime? InvalidatedUtc { get; set; }
 }

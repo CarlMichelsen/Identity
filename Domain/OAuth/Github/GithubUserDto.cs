@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Database.Entity;
 using Domain.Abstraction;
 
 namespace Domain.OAuth.Github;

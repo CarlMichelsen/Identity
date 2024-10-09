@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Domain.OAuth;
+namespace Database.Entity;
 
 public class AccessRecordEntity : ClientInfo
 {
@@ -10,8 +10,7 @@ public class AccessRecordEntity : ClientInfo
     
     public required RefreshRecordEntity RefreshRecord { get; init; }
     
-    [StringLength(1028, ErrorMessage = "The {0} must be at most {1} characters long.")]
-    public required string JwtId { get; init; }
+    public required DateTime ExpiresUtc { get; init; }
     
     public required DateTime CreatedUtc { get; init; }
 }

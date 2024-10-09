@@ -1,3 +1,4 @@
+using Database.Entity;
 using Domain.Abstraction;
 using Domain.OAuth;
 

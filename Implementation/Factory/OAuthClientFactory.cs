@@ -1,6 +1,6 @@
+using Database.Entity;
 using Domain.Abstraction;
 using Domain.Configuration;
-using Domain.OAuth;
 using Implementation.Service.OAuth.Client;
 using Interface.Factory;
 using Interface.OAuth;

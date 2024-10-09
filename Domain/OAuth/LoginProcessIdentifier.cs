@@ -1,3 +1,5 @@
+using Database;
+
 namespace Domain.OAuth;
 
 public record LoginProcessIdentifier(

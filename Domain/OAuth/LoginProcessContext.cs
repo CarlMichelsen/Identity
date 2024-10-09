@@ -17,8 +17,4 @@ public class LoginProcessContext
     public long? RefreshId { get; set; }
     
     public long? AccessId { get; set; }
-    
-    public string? RefreshJwtId { get; set; }
-    
-    public string? AccessJwtId { get; set; }
 }

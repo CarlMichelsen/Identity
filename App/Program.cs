@@ -1,8 +1,8 @@
 using App;
 using App.Endpoints;
 using App.Middleware;
+using Database.Entity;
 using Domain.Configuration;
-using Domain.OAuth;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +31,11 @@ if (app.Environment.IsDevelopment())
     app.UseCors(ApplicationConstants.DevelopmentCorsPolicyName);
 }
 
-var apiGroup = app.MapGroup("api/v1");
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+var apiGroup = app.MapGroup("api/v1").RequireAuthorization();
 
 apiGroup.RegisterLoginEndpoints();
 

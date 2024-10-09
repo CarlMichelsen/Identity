@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Database.Entity;
 using Domain.Abstraction;
 
 namespace Domain.OAuth;

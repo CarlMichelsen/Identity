@@ -1,3 +1,5 @@
+using Database.Entity;
+
 namespace Domain.OAuth;
 
 public record PostLoginData(
@@ -5,6 +7,4 @@ public record PostLoginData(
     long LoginId,
     long RefreshId,
     long AccessId,
-    bool FirstLogin,
-    string RefreshJwtId,
-    string AccessJwtId);
+    bool FirstLogin);

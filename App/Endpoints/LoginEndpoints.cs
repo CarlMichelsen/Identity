@@ -12,6 +12,7 @@ public static class LoginEndpoints
     {
         var loginGroup = apiGroup
             .MapGroup("login")
+            .AllowAnonymous()
             .WithTags("Login");
         
         loginGroup.MapGet(

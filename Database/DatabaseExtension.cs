@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Domain.OAuth;
+namespace Database.Entity;
 
 public static class DatabaseExtension
 {

@@ -44,6 +44,7 @@ namespace App.Migrations
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     OAuthJson = table.Column<string>(type: "jsonb", maxLength: 1048576, nullable: false),
                     CreatedUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    InvalidatedUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Ip = table.Column<string>(type: "character varying(39)", maxLength: 39, nullable: false),
                     UserAgent = table.Column<string>(type: "character varying(2056)", maxLength: 2056, nullable: false),
                 },
@@ -91,8 +92,9 @@ namespace App.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     LoginRecordId = table.Column<long>(type: "bigint", nullable: false),
-                    JwtId = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: false),
+                    ExpiresUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    InvalidatedUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Ip = table.Column<string>(type: "character varying(39)", maxLength: 39, nullable: false),
                     UserAgent = table.Column<string>(type: "character varying(2056)", maxLength: 2056, nullable: false),
                 },
@@ -116,7 +118,7 @@ namespace App.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RefreshRecordId = table.Column<long>(type: "bigint", nullable: false),
-                    JwtId = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: false),
+                    ExpiresUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Ip = table.Column<string>(type: "character varying(39)", maxLength: 39, nullable: false),
                     UserAgent = table.Column<string>(type: "character varying(2056)", maxLength: 2056, nullable: false),

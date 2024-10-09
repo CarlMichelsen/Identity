@@ -1,6 +1,7 @@
+using Database.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Domain.OAuth;
+namespace Database;
 
 /// <summary>
 /// EntityFramework application context.

@@ -1,3 +1,4 @@
+using Database.Entity;
 using Domain.Abstraction;
 using Domain.Dto;
 using Domain.OAuth;
@@ -10,7 +11,7 @@ namespace Implementation.Service;
 
 public class CompleteLoginService(
     IHttpContextAccessor contextAccessor,
-    IUserRepository userRepository,
+    IUserLoginRepository userLoginRepository,
     IFirstLoginNotifierService firstLoginNotifierService,
     IOAuthClientFactory oAuthClientFactory) : ICompleteLoginService
 {
@@ -43,7 +44,7 @@ public class CompleteLoginService(
             return userResult.Error!;
         }
 
-        var loginUserResult = await userRepository.LoginUser(
+        var loginUserResult = await userLoginRepository.LoginUser(
             loginContext.OAuthUserConvertible,
             loginContext.Identifier);
         if (loginUserResult.IsError)
@@ -52,19 +53,18 @@ public class CompleteLoginService(
         }
         
         var loginUser = loginUserResult.Unwrap();
-        loginContext.RefreshJwtId = loginUser.RefreshJwtId;
-        loginContext.AccessJwtId = loginUser.AccessJwtId;
         loginContext.LoginId = loginUser.LoginId;
         loginContext.RefreshId = loginUser.RefreshId;
         loginContext.AccessId = loginUser.AccessId;
         loginContext.User = new AuthenticatedUser(
-            loginUser.User.Id,
-            loginUser.User.Username,
-            loginUser.User.AvatarUrl);
+            Id: loginUser.User.Id,
+            Username: loginUser.User.Username,
+            Email: loginUser.User.Email,
+            AvatarUrl: loginUser.User.AvatarUrl);
 
         if (loginUser.FirstLogin)
         {
-            await firstLoginNotifierService.FirstLogin(loginUser.User.Id);
+            await firstLoginNotifierService.FirstLogin(loginUser.LoginId);
         }
 
         return loginContext;

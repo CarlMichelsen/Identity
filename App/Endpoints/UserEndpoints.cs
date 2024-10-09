@@ -1,3 +1,6 @@
+using Interface.Handler;
+using Microsoft.AspNetCore.Mvc;
+
 namespace App.Endpoints;
 
 public static class UserEndpoints
@@ -9,8 +12,18 @@ public static class UserEndpoints
             .MapGroup("user")
             .WithTags("User");
 
-        loginGroup.MapGet(string.Empty, () => Results.Ok());
+        loginGroup.MapGet(
+            string.Empty,
+            ([FromServices] IUserReadHandler handler) => handler.GetUser())
+            .AllowAnonymous();
         
-        loginGroup.MapPut(string.Empty, () => Results.Ok());
+        loginGroup.MapDelete(
+            string.Empty,
+            ([FromServices] IUserRefreshHandler handler) => handler.Logout());
+        
+        loginGroup.MapPut(
+                string.Empty,
+                ([FromServices] IUserRefreshHandler handler) => handler.Refresh())
+            .AllowAnonymous();
     }
 }
