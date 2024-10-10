@@ -33,8 +33,7 @@ public static class Dependencies
         builder.Services
             .Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName))
             .Configure<OAuthOptions>(builder.Configuration.GetSection(OAuthOptions.SectionName))
-            .Configure<IdentityCookieOptions>(builder.Configuration.GetSection(IdentityCookieOptions.SectionName))
-            .Configure<FeatureFlagOptions>(builder.Configuration.GetSection(FeatureFlagOptions.SectionName));
+            .Configure<IdentityCookieOptions>(builder.Configuration.GetSection(IdentityCookieOptions.SectionName));
         
         // Configure Serilog from "appsettings.(env).json
         Log.Logger = new LoggerConfiguration()

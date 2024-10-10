@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Implementation.Service;
 
 public class UserLogoutService(
-    IOptions<FeatureFlagOptions> featureFlags,
+    IOptions<OAuthOptions> oAuthOptions,
     IOptions<IdentityCookieOptions> identityOptions,
     IHttpContextAccessor httpContextAccessor,
     IUserLogoutRepository userLogoutRepository) : IUserLogoutService
@@ -39,7 +39,7 @@ public class UserLogoutService(
             return logoutResult.Error!;
         }
         
-        var deleteCookieOptions = CookieOptionsFactory.CreateOptions(featureFlags.Value);
+        var deleteCookieOptions = CookieOptionsFactory.CreateOptions(oAuthOptions.Value);
         httpContextAccessor.HttpContext.Response.Cookies.Delete(
             identityOptions.Value.AccessCookieName,
             deleteCookieOptions);

@@ -5,11 +5,11 @@ namespace Implementation.Util;
 
 public static class CookieOptionsFactory
 {
-    public static CookieOptions CreateOptions(FeatureFlagOptions featureFlagOptions) => new()
+    public static CookieOptions CreateOptions(OAuthOptions oAuthOptions) => new()
     {
         HttpOnly = true,
         SameSite = SameSiteMode.Lax,
-        Secure = !featureFlagOptions.DevelopmentLoginEnabled,
+        Secure = oAuthOptions.Development is null,
         Expires = DateTimeOffset.UtcNow.Add(ApplicationConstants.RefreshTokenLifeTime),
     };
 }

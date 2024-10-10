@@ -10,13 +10,13 @@ using Microsoft.Extensions.Options;
 namespace Implementation.Factory;
 
 public class OAuthClientFactory(
-    IOptions<FeatureFlagOptions> featureFlagOptions,
+    IOptions<OAuthOptions> oAuthOptions,
     IServiceProvider serviceProvider) : IOAuthClientFactory
 {
     public Result<IOAuthClient> Create(OAuthProvider provider)
         => provider switch
         {
-            OAuthProvider.Development => featureFlagOptions.Value.DevelopmentLoginEnabled
+            OAuthProvider.Development => oAuthOptions.Value.Development is not null
                 ? this.GetOAuthLoginClient<DevelopmentLoginClient>()
                 : UnsupportedOAuthClient(provider),
             OAuthProvider.Discord => this.GetOAuthLoginClient<DiscordLoginClient>(),

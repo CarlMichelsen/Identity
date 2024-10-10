@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Implementation.Service;
 
 public class LoginCookieWriterService(
-    IOptions<FeatureFlagOptions> featureFlags,
+    IOptions<OAuthOptions> oAuthOptions,
     IOptions<JwtOptions> jwtOptions,
     IOptions<IdentityCookieOptions> cookieOptions,
     IHttpContextAccessor contextAccessor) : ILoginCookieWriterService
@@ -59,7 +59,7 @@ public class LoginCookieWriterService(
         try
         {
             var tokenPair = tokenPairResult.Unwrap();
-            var cookieConfigurationOptions = CookieOptionsFactory.CreateOptions(featureFlags.Value);
+            var cookieConfigurationOptions = CookieOptionsFactory.CreateOptions(oAuthOptions.Value);
         
             contextAccessor.HttpContext.Response.Cookies.Append(
                 cookieOptions.Value.AccessCookieName,

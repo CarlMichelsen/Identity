@@ -41,8 +41,8 @@ apiGroup.RegisterLoginEndpoints();
 
 apiGroup.RegisterUserEndpoints();
 
-var featureFlags = app.Services.GetRequiredService<IOptions<FeatureFlagOptions>>().Value;
-if (featureFlags.DevelopmentLoginEnabled)
+var oAuthOptions = app.Services.GetRequiredService<IOptions<OAuthOptions>>().Value;
+if (oAuthOptions.Development is not null)
 {
     apiGroup.RegisterDevelopmentEndpoints();
     app.UseStaticFiles(StaticFileOptionsFactory.Create());

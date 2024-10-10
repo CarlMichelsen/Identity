@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace Implementation.Service;
 
 public class UserRefreshService(
-    IOptions<FeatureFlagOptions> featureFlags,
+    IOptions<OAuthOptions> oAuthOptions,
     IOptions<IdentityCookieOptions> cookieOptions,
     IOptions<JwtOptions> jwtOptions,
     IUserRefreshRepository userRefreshRepository,
@@ -74,7 +74,7 @@ public class UserRefreshService(
                 "No loginId claim found");
         }
 
-        var appendCookieOptions = CookieOptionsFactory.CreateOptions(featureFlags.Value);
+        var appendCookieOptions = CookieOptionsFactory.CreateOptions(oAuthOptions.Value);
 
         if (recordPair.NewRefreshRecord is not null)
         {
