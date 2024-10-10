@@ -4,13 +4,25 @@ using System.Text;
 using System.Text.Json;
 using Domain.Abstraction;
 using Domain.Configuration;
-using Domain.Dto;
+using Domain.User;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Implementation.Map;
 
 public static class JwtMapper
 {
+    public const string UserClaim = "user";
+    
+    public const string AccessIdClaim = "jti";
+    
+    public const string RefreshIdClaim = "refresh";
+    
+    public const string LoginIdClaim = "login";
+    
+    private const string EmailClaim = "email";
+    
+    private const string UserIdClaim = "userid";
+    
     public static Result<string> CreateAccessToken(
         JwtOptions jwtOptions,
         Claim[] claims)
@@ -29,7 +41,7 @@ public static class JwtMapper
         long refreshId)
     {
         Claim[] refreshClaims = [
-            new("login", loginId.ToString()),
+            new(LoginIdClaim, loginId.ToString()),
             new("jti", refreshId.ToString()),
         ];
         
@@ -55,12 +67,12 @@ public static class JwtMapper
         }
         
         Claim[] accessClaims = [
-            new("login", loginId.ToString()),
-            new("refresh", refreshId.ToString()),
-            new("jti", accessId.ToString()),
-            new("email", authenticatedUser.Email),
-            new("userid", authenticatedUser.Id.ToString()),
-            new("user", JsonSerializer.Serialize(authenticatedUser))
+            new(LoginIdClaim, loginId.ToString()),
+            new(RefreshIdClaim, refreshId.ToString()),
+            new(AccessIdClaim, accessId.ToString()),
+            new(EmailClaim, authenticatedUser.Email),
+            new(UserIdClaim, authenticatedUser.Id.ToString()),
+            new(UserClaim, JsonSerializer.Serialize(authenticatedUser))
         ];
         
         var accessTokenResult = CreateAccessToken(jwtOptions, accessClaims);

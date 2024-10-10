@@ -1,4 +1,4 @@
-using Domain.Dto;
+using Domain.User;
 
 namespace Domain.OAuth;
 

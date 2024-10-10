@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Domain.Dto;
+namespace Domain.User;
 
 public record AuthenticatedUser(
     [property: JsonPropertyName("id")] long Id,

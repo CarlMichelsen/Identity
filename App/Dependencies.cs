@@ -1,6 +1,7 @@
 using App.Middleware;
 using Database;
 using Domain.Configuration;
+using Implementation.Accessor;
 using Implementation.Factory;
 using Implementation.Handler;
 using Implementation.Repository;
@@ -8,6 +9,7 @@ using Implementation.Service;
 using Implementation.Service.OAuth;
 using Implementation.Service.OAuth.Client;
 using Implementation.Util;
+using Interface.Accessor;
 using Interface.Factory;
 using Interface.Handler;
 using Interface.OAuth;
@@ -90,9 +92,15 @@ public static class Dependencies
         
         // Repositories
         builder.Services
+            .AddScoped<ISessionReadRepository, SessionReadRepository>()
+            .AddScoped<ISessionInvalidationRepository, SessionInvalidationRepository>()
             .AddScoped<IUserLogoutRepository, UserLogoutRepository>()
             .AddScoped<IUserRefreshRepository, UserRefreshRepository>()
             .AddScoped<IUserLoginRepository, UserLoginRepository>();
+        
+        // Accessors
+        builder.Services
+            .AddScoped<IUserContextAccessor, UserContextAccessor>();
         
         // Services
         builder.Services
@@ -105,12 +113,14 @@ public static class Dependencies
             .AddScoped<IErrorLogService, ErrorLogService>()
             .AddScoped<IOAuthRedirectService, OAuthRedirectService>()
             .AddScoped<ICacheService, CacheService>()
+            .AddScoped<ISessionService, SessionService>()
             .AddScoped<ICompleteLoginService, CompleteLoginService>()
             .AddScoped<IDevelopmentUserService, DevelopmentUserService>()
             .AddScoped<ICompleteLoginService, CompleteLoginService>();
         
         // Handlers
         builder.Services
+            .AddScoped<ISessionHandler, SessionHandler>()
             .AddScoped<IUserReadHandler, UserReadHandler>()
             .AddScoped<IUserRefreshHandler, UserRefreshHandler>()
             .AddScoped<IOAuthRedirectHandler, OAuthRedirectHandler>()

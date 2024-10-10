@@ -41,6 +41,8 @@ apiGroup.RegisterLoginEndpoints();
 
 apiGroup.RegisterUserEndpoints();
 
+apiGroup.RegisterSessionEndpoints();
+
 var oAuthOptions = app.Services.GetRequiredService<IOptions<OAuthOptions>>().Value;
 if (oAuthOptions.Development is not null)
 {

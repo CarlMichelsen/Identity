@@ -1,7 +1,7 @@
 using Database.Entity;
 using Domain.Abstraction;
-using Domain.Dto;
 using Domain.OAuth;
+using Domain.User;
 using Interface.Factory;
 using Interface.Repository;
 using Interface.Service;
