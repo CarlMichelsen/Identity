@@ -8,7 +8,10 @@ public static class CookieOptionsFactory
     public static CookieOptions CreateOptions(OAuthOptions oAuthOptions) => new()
     {
         HttpOnly = true,
-        SameSite = SameSiteMode.Lax,
+        IsEssential = true,
+        Domain = oAuthOptions.Development is null ? null : $".{oAuthOptions.AllowedRedirectDomain}",
+        Path = "/",
+        SameSite = SameSiteMode.Strict,
         Secure = oAuthOptions.Development is null,
         Expires = DateTimeOffset.UtcNow.Add(ApplicationConstants.RefreshTokenLifeTime),
     };
