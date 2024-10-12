@@ -33,7 +33,7 @@ public class DiscordLoginClient(
             return new OAuthUriBuilder(new Uri(oAuthOptions.Value.Discord.OAuthEndpoint))
                 .SetQueryParameter("response_type", "code")
                 .SetQueryParameter("client_id", oAuthOptions.Value.Discord.ClientId)
-                .SetQueryParameter("redirect_uri", oAuthOptions.Value.Github.OAuthReturnEndpoint)
+                .SetQueryParameter("redirect_uri", oAuthOptions.Value.Discord.OAuthReturnEndpoint)
                 .SetQueryParameter("scope", string.Join(' ', scopes))
                 .SetQueryParameter("state", processContext.Identifier.State.ToString())
                 .SetQueryParameter("prompt", "consent")
@@ -146,7 +146,7 @@ public class DiscordLoginClient(
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(new Uri(oAuthOptions.Value.Github.OAuthEndpoint), UserPath),
+            RequestUri = new Uri(new Uri(oAuthOptions.Value.Discord.OAuthEndpoint), UserPath),
         };
         request.Headers.Authorization =
             new AuthenticationHeaderValue("Bearer", accessToken);
