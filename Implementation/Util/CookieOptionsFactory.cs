@@ -9,7 +9,7 @@ public static class CookieOptionsFactory
     {
         HttpOnly = true,
         IsEssential = true,
-        Domain = oAuthOptions.Development is null ? null : $".{oAuthOptions.AllowedRedirectDomain}",
+        Domain = oAuthOptions.Development is null ? $".{oAuthOptions.AllowedRedirectDomain}" : null,
         Path = "/",
         SameSite = SameSiteMode.Strict,
         Secure = oAuthOptions.Development is null,
