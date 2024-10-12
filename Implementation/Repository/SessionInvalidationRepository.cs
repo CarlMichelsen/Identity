@@ -26,8 +26,8 @@ public class SessionInvalidationRepository(
             var now = DateTime.UtcNow;
             foreach (var login in logins)
             {
-                login.InvalidatedUtc = now;
-                login.RefreshRecords.ForEach(rr => rr.InvalidatedUtc = now);
+                login.InvalidatedUtc ??= now;
+                login.RefreshRecords.ForEach(rr => { rr.InvalidatedUtc ??= now; });
             }
             
             await applicationContext.SaveChangesAsync();

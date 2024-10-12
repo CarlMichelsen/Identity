@@ -111,6 +111,7 @@ public class UserLoginRepository(
             .Include(u => u.LoginRecords)
             .ThenInclude(l => l.RefreshRecords)
             .ThenInclude(r => r.AccessRecords)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(u => u.AuthenticationProvider == oAuthUser.AuthenticationProvider && u.ProviderId == oAuthUser.ProviderId);
         
         if (maybeUser is null)

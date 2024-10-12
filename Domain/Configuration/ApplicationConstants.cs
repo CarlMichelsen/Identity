@@ -17,4 +17,6 @@ public static class ApplicationConstants
     public static TimeSpan AccessTokenLifeTime { get; } = TimeSpan.FromMinutes(30);
     
     public static TimeSpan RefreshTokenLifeTime { get; } = TimeSpan.FromDays(28);
+    
+    public static TimeSpan MinimumRefreshTokenLifeTimeForNewToken { get; } = TimeSpan.FromDays(14);
 }

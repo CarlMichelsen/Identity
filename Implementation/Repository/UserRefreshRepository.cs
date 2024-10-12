@@ -47,7 +47,7 @@ public class UserRefreshRepository(
 
             RefreshRecordEntity actualRefreshRecord;
             var timeToExpiry = existingRefreshRecord.ExpiresUtc - DateTime.UtcNow;
-            var createNewRefreshRecord = timeToExpiry < TimeSpan.FromDays(14);
+            var createNewRefreshRecord = timeToExpiry < ApplicationConstants.MinimumRefreshTokenLifeTimeForNewToken;
             if (createNewRefreshRecord)
             {
                 existingRefreshRecord.InvalidatedUtc = DateTime.UtcNow;
