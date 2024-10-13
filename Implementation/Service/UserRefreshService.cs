@@ -129,7 +129,7 @@ public class UserRefreshService(
         claims.Add(new Claim("jti", accessId.ToString()));
         claims.Add(new Claim("refresh", refreshId.ToString()));
 
-        return claims.ToArray();
+        return [.. claims];
     }
     
     private static Result<ClaimsPrincipal> GetJwtTokenFromCookieClaims(
@@ -176,8 +176,14 @@ public class UserRefreshService(
 
     private static Result<IClientInfo> GetClientInfo(HttpContext httpContext)
     {
-        // Get the client's IP address
-        var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
+        if (!httpContext.Request.Headers.TryGetValue(ApplicationConstants.IdentityIPHeaderName, out var headerIp))
+        {
+            return new ResultError(
+                ResultErrorType.MapError,
+                "Failed to get ip address from request");
+        }
+        
+        var ipAddress = headerIp.FirstOrDefault() ?? httpContext.Connection.RemoteIpAddress?.ToString();
         if (string.IsNullOrWhiteSpace(ipAddress))
         {
             return new ResultError(

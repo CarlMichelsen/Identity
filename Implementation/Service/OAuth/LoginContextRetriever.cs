@@ -1,4 +1,5 @@
 using Domain.Abstraction;
+using Domain.Configuration;
 using Domain.OAuth;
 using Microsoft.AspNetCore.Http;
 
@@ -14,8 +15,15 @@ public static class LoginContextRetriever
                 ResultErrorType.MapError,
                 "No available http context");
         }
+
+        if (!context.Request.Headers.TryGetValue(ApplicationConstants.IdentityIPHeaderName, out var headerIp))
+        {
+            return new ResultError(
+                ResultErrorType.MapError,
+                "Failed to get ip address from request");
+        }
         
-        var ip = context.Connection.RemoteIpAddress?.ToString();
+        var ip = headerIp.FirstOrDefault() ?? context.Connection.RemoteIpAddress?.ToString();
         if (string.IsNullOrWhiteSpace(ip))
         {
             return new ResultError(

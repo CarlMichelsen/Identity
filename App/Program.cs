@@ -3,6 +3,7 @@ using App.Endpoints;
 using App.Middleware;
 using Database.Entity;
 using Domain.Configuration;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,14 +23,18 @@ else
     await app.Services.EnsureDatabaseUpdated();
 }
 
-app.UseMiddleware<EndpointLogMiddleware>();
-
 app.UseMiddleware<UnhandledExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseMiddleware<EndpointLogMiddleware>();
     app.UseCors(ApplicationConstants.DevelopmentCorsPolicyName);
 }
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+});
 
 app.UseAuthentication();
 
