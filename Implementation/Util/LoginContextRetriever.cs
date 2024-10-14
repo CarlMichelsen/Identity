@@ -3,7 +3,7 @@ using Domain.Configuration;
 using Domain.OAuth;
 using Microsoft.AspNetCore.Http;
 
-namespace Implementation.Service.OAuth;
+namespace Implementation.Util;
 
 public static class LoginContextRetriever
 {
@@ -16,21 +16,7 @@ public static class LoginContextRetriever
                 "No available http context");
         }
 
-        if (!context.Request.Headers.TryGetValue(ApplicationConstants.IdentityIPHeaderName, out var headerIp))
-        {
-            return new ResultError(
-                ResultErrorType.MapError,
-                "Failed to get ip address from request");
-        }
-        
-        var ip = headerIp.FirstOrDefault() ?? context.Connection.RemoteIpAddress?.ToString();
-        if (string.IsNullOrWhiteSpace(ip))
-        {
-            return new ResultError(
-                ResultErrorType.MapError,
-                "Failed to get ip address from request");
-        }
-        
+        var ipResult = IpRetriever.GetIp(context);
         var userAgent = context.Request.Headers.UserAgent.FirstOrDefault();
         if (string.IsNullOrWhiteSpace(userAgent))
         {
@@ -41,7 +27,7 @@ public static class LoginContextRetriever
         
         return new Domain.OAuth.LoginProcessIdentifier(
             State: state,
-            Ip: ip,
+            Ip: ipResult.Unwrap(),
             UserAgent: userAgent);
     }
 

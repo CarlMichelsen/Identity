@@ -1,8 +1,10 @@
+using System.Text.Json.Serialization;
+
 namespace Domain.Dto;
 
 public record AccessDto(
-    long AccessId,
-    DateTime ExpiresUtc,
-    DateTime CreatedUtc,
-    string Ip,
-    string UserAgent);
+    [property: JsonPropertyName("accessId")] long AccessId,
+    [property: JsonPropertyName("expiresUtc")] DateTime ExpiresUtc,
+    [property: JsonPropertyName("createdUtc")] DateTime CreatedUtc,
+    [property: JsonPropertyName("ip")] string Ip,
+    [property: JsonPropertyName("userAgent")] string UserAgent);

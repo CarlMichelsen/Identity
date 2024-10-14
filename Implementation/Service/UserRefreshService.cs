@@ -176,23 +176,10 @@ public class UserRefreshService(
 
     private static Result<IClientInfo> GetClientInfo(HttpContext httpContext)
     {
-        if (!httpContext.Request.Headers.TryGetValue(ApplicationConstants.IdentityIPHeaderName, out var headerIp))
-        {
-            return new ResultError(
-                ResultErrorType.MapError,
-                "Failed to get ip address from request");
-        }
-        
-        var ipAddress = headerIp.FirstOrDefault() ?? httpContext.Connection.RemoteIpAddress?.ToString();
-        if (string.IsNullOrWhiteSpace(ipAddress))
-        {
-            return new ResultError(
-                ResultErrorType.MapError,
-                "No IP address found");
-        }
+        var ipResult = IpRetriever.GetIp(httpContext);
 
         // Get the User-Agent string from the request headers
-        var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
+        var userAgent = httpContext.Request.Headers.UserAgent.ToString();
         if (string.IsNullOrWhiteSpace(userAgent))
         {
             return new ResultError(
@@ -200,7 +187,7 @@ public class UserRefreshService(
                 "No userAgent found");
         }
 
-        return new ClientInfoRecord(Ip: ipAddress, UserAgent: userAgent);
+        return new ClientInfoRecord(Ip: ipResult.Unwrap(), UserAgent: userAgent);
     }
 
     private Result<(ClaimsPrincipal AccessPrincipal, ClaimsPrincipal RefreshPrincipal)> GetAccessAndRefreshPrincipal(

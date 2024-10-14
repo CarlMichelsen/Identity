@@ -13,12 +13,12 @@ public static class SessionEndpoints
             .WithTags("Session");
 
         sessionGroup.MapGet(
-            "sessions",
+            string.Empty,
             async ([FromServices] ISessionHandler handler) =>
                 await handler.GetSessions());
         
         sessionGroup.MapDelete(
-            "sessions/{commaSeparatedLongLoginIds}",
+            "{commaSeparatedLongLoginIds}",
             async ([FromServices] ISessionHandler handler, [FromRoute] string commaSeparatedLongLoginIds) =>
                 await handler.InvalidateSessions(commaSeparatedLongLoginIds));
     }
