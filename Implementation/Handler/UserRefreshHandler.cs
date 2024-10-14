@@ -1,3 +1,4 @@
+using Domain.Dto;
 using Interface.Handler;
 using Interface.Service;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +16,7 @@ public class UserRefreshHandler(
         if (refreshResult.IsError)
         {
             errorLogService.Log(refreshResult.Error!);
-            return Results.StatusCode(500);
+            return Results.Ok(new ServiceResponse("failure"));
         }
         
         return Results.Ok(refreshResult.Unwrap());
@@ -27,7 +28,7 @@ public class UserRefreshHandler(
         if (logoutResult.IsError)
         {
             errorLogService.Log(logoutResult.Error!);
-            return Results.StatusCode(500);
+            return Results.Ok(new ServiceResponse("failure"));
         }
 
         return Results.Ok(logoutResult.Unwrap());
