@@ -10,6 +10,8 @@ public static class ApplicationConstants
     public const string UnauthorizedErrorMessage = "unauthorized";
     
     public const string DevelopmentCorsPolicyName = "development-cors-policy";
+
+    public const string ProductionCorsPolicyName = "production-cors-policy";
     
     public const string SecurityAlgorithm = "HS512"; // HmacSha512
 

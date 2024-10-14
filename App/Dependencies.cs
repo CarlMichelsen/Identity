@@ -34,6 +34,7 @@ public static class Dependencies
         
         builder.Services
             .Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName))
+            .Configure<CorsOptions>(builder.Configuration.GetSection(CorsOptions.SectionName))
             .Configure<OAuthOptions>(builder.Configuration.GetSection(OAuthOptions.SectionName))
             .Configure<IdentityCookieOptions>(builder.Configuration.GetSection(IdentityCookieOptions.SectionName));
         
@@ -83,6 +84,27 @@ public static class Dependencies
                     {
                         configurePolicy
                             .WithOrigins([.. ApplicationConstants.DevelopmentCorsUrl])
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                    });
+            });
+        }
+        else
+        {
+            // Production CORS
+            var corsOptions = builder.Configuration
+                .GetSection(CorsOptions.SectionName)
+                .Get<CorsOptions>()!;
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    ApplicationConstants.ProductionCorsPolicyName,
+                    configurePolicy =>
+                    {
+                        configurePolicy
+                            .WithOrigins([.. corsOptions.WhitelistedUrls])
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials();
