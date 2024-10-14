@@ -30,6 +30,10 @@ if (app.Environment.IsDevelopment())
     app.UseMiddleware<EndpointLogMiddleware>();
     app.UseCors(ApplicationConstants.DevelopmentCorsPolicyName);
 }
+else
+{
+    app.UseCors(ApplicationConstants.ProductionCorsPolicyName);
+}
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
