@@ -25,6 +25,8 @@ public static class ApplicationConstants
     [
         "http://localhost:5773",
         "http://localhost:5666",
-        "http://localhost:5667"
+        "http://localhost:5667",
+        "http://localhost:5444",
+        "http://localhost:5445"
     ];
 }
