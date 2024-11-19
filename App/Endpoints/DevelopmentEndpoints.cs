@@ -1,3 +1,5 @@
+using Domain.Dto;
+using Domain.OAuth.Development;
 using Interface.Handler;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,11 +18,13 @@ public static class DevelopmentEndpoints
         developmentGroup.MapPost(
             "registerUser/{testUserId:long}",
             async ([FromServices] IDevelopmentLoginHandler handler, [FromRoute] long testUserId, [FromQuery] string state)
-                => await handler.Login(testUserId, state));
+                => await handler.Login(testUserId, state))
+            .Produces<ServiceResponse<DevelopmentLoginResponse>>();
 
         developmentGroup.MapGet(
             "users",
             async ([FromServices] IDevelopmentLoginHandler handler)
-                => await handler.GetTestUsers());
+                => await handler.GetTestUsers())
+            .Produces<ServiceResponse<List<DevelopmentUserDto>>>();
     }
 }

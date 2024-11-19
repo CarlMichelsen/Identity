@@ -1,3 +1,5 @@
+using Domain.Dto;
+using Domain.User;
 using Interface.Handler;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,15 +17,18 @@ public static class UserEndpoints
         loginGroup.MapGet(
             string.Empty,
             ([FromServices] IUserReadHandler handler) => handler.GetUser())
+            .Produces<ServiceResponse<AuthenticatedUser>>()
             .AllowAnonymous();
         
         loginGroup.MapDelete(
             string.Empty,
-            ([FromServices] IUserRefreshHandler handler) => handler.Logout());
+            ([FromServices] IUserRefreshHandler handler) => handler.Logout())
+            .Produces<ServiceResponse>();
         
         loginGroup.MapPut(
                 string.Empty,
                 ([FromServices] IUserRefreshHandler handler) => handler.Refresh())
+            .Produces<ServiceResponse>()
             .AllowAnonymous();
     }
 }

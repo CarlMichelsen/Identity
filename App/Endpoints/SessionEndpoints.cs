@@ -1,3 +1,4 @@
+using Domain.Dto;
 using Interface.Handler;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,11 +16,13 @@ public static class SessionEndpoints
         sessionGroup.MapGet(
             string.Empty,
             async ([FromServices] ISessionHandler handler) =>
-                await handler.GetSessions());
+                await handler.GetSessions())
+                .Produces<ServiceResponse<List<LoginDto>>>();
         
         sessionGroup.MapDelete(
             "{commaSeparatedLongLoginIds}",
             async ([FromServices] ISessionHandler handler, [FromRoute] string commaSeparatedLongLoginIds) =>
-                await handler.InvalidateSessions(commaSeparatedLongLoginIds));
+                await handler.InvalidateSessions(commaSeparatedLongLoginIds))
+            .Produces<ServiceResponse<List<LoginDto>>>();
     }
 }
