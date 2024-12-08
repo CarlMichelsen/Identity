@@ -18,7 +18,7 @@ namespace App.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("identity")
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -27,181 +27,223 @@ namespace App.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_utc");
 
                     b.Property<DateTime>("ExpiresUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_utc");
 
                     b.Property<string>("Ip")
                         .IsRequired()
                         .HasMaxLength(39)
-                        .HasColumnType("character varying(39)");
+                        .HasColumnType("character varying(39)")
+                        .HasColumnName("ip");
 
                     b.Property<long>("RefreshRecordId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("refresh_record_id");
 
                     b.Property<string>("UserAgent")
                         .IsRequired()
                         .HasMaxLength(2056)
-                        .HasColumnType("character varying(2056)");
+                        .HasColumnType("character varying(2056)")
+                        .HasColumnName("user_agent");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_access_record");
 
-                    b.HasIndex("RefreshRecordId");
+                    b.HasIndex("RefreshRecordId")
+                        .HasDatabaseName("ix_access_record_refresh_record_id");
 
-                    b.ToTable("AccessRecord", "identity");
+                    b.ToTable("access_record", "identity");
                 });
 
             modelBuilder.Entity("Database.Entity.LoginRecordEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_utc");
 
                     b.Property<DateTime?>("InvalidatedUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("invalidated_utc");
 
                     b.Property<string>("Ip")
                         .IsRequired()
                         .HasMaxLength(39)
-                        .HasColumnType("character varying(39)");
+                        .HasColumnType("character varying(39)")
+                        .HasColumnName("ip");
 
                     b.Property<string>("OAuthJson")
                         .IsRequired()
                         .HasMaxLength(1048576)
-                        .HasColumnType("jsonb");
+                        .HasColumnType("jsonb")
+                        .HasColumnName("o_auth_json");
 
                     b.Property<string>("UserAgent")
                         .IsRequired()
                         .HasMaxLength(2056)
-                        .HasColumnType("character varying(2056)");
+                        .HasColumnType("character varying(2056)")
+                        .HasColumnName("user_agent");
 
                     b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_login_record");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_login_record_user_id");
 
-                    b.ToTable("LoginRecord", "identity");
+                    b.ToTable("login_record", "identity");
                 });
 
             modelBuilder.Entity("Database.Entity.OldInformationRecordEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Information")
                         .IsRequired()
                         .HasMaxLength(2056)
-                        .HasColumnType("character varying(2056)");
+                        .HasColumnType("character varying(2056)")
+                        .HasColumnName("information");
 
                     b.Property<DateTime>("ReplacedUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("replaced_utc");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
 
                     b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_old_information_record_entity");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_old_information_record_entity_user_id");
 
-                    b.ToTable("OldInformationRecordEntity", "identity");
+                    b.ToTable("old_information_record_entity", "identity");
                 });
 
             modelBuilder.Entity("Database.Entity.RefreshRecordEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_utc");
 
                     b.Property<DateTime>("ExpiresUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_utc");
 
                     b.Property<DateTime?>("InvalidatedUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("invalidated_utc");
 
                     b.Property<string>("Ip")
                         .IsRequired()
                         .HasMaxLength(39)
-                        .HasColumnType("character varying(39)");
+                        .HasColumnType("character varying(39)")
+                        .HasColumnName("ip");
 
                     b.Property<long>("LoginRecordId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("login_record_id");
 
                     b.Property<string>("UserAgent")
                         .IsRequired()
                         .HasMaxLength(2056)
-                        .HasColumnType("character varying(2056)");
+                        .HasColumnType("character varying(2056)")
+                        .HasColumnName("user_agent");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_refresh_record");
 
-                    b.HasIndex("LoginRecordId");
+                    b.HasIndex("LoginRecordId")
+                        .HasDatabaseName("ix_refresh_record_login_record_id");
 
-                    b.ToTable("RefreshRecord", "identity");
+                    b.ToTable("refresh_record", "identity");
                 });
 
             modelBuilder.Entity("Database.Entity.UserEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<int>("AuthenticationProvider")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("authentication_provider");
 
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
                         .HasMaxLength(2056)
-                        .HasColumnType("character varying(2056)");
+                        .HasColumnType("character varying(2056)")
+                        .HasColumnName("avatar_url");
 
                     b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_utc");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("email");
 
                     b.Property<string>("ProviderId")
                         .IsRequired()
                         .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("provider_id");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("username");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_user");
 
                     b.HasIndex("ProviderId", "AuthenticationProvider")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_provider_id_authentication_provider");
 
-                    b.ToTable("User", "identity");
+                    b.ToTable("user", "identity");
                 });
 
             modelBuilder.Entity("Database.Entity.AccessRecordEntity", b =>
@@ -210,7 +252,8 @@ namespace App.Migrations
                         .WithMany("AccessRecords")
                         .HasForeignKey("RefreshRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_access_record_refresh_record_refresh_record_id");
 
                     b.Navigation("RefreshRecord");
                 });
@@ -221,7 +264,8 @@ namespace App.Migrations
                         .WithMany("LoginRecords")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_login_record_user_user_id");
 
                     b.Navigation("User");
                 });
@@ -232,7 +276,8 @@ namespace App.Migrations
                         .WithMany("OldInformationRecords")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_old_information_record_entity_user_user_id");
 
                     b.Navigation("User");
                 });
@@ -243,7 +288,8 @@ namespace App.Migrations
                         .WithMany("RefreshRecords")
                         .HasForeignKey("LoginRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_refresh_record_login_record_login_record_id");
 
                     b.Navigation("LoginRecord");
                 });

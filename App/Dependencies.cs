@@ -52,7 +52,8 @@ public static class Dependencies
             {
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly("App"));
+                    b => b.MigrationsAssembly("App"))
+                    .UseSnakeCaseNamingConvention();
                 
                 if (builder.Environment.IsDevelopment())
                 {
