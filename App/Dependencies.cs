@@ -54,7 +54,7 @@ public static class Dependencies
                     builder.Configuration.GetConnectionString("DefaultConnection"),
                     b =>
                     {
-                        b.MigrationsAssembly("Api");
+                        b.MigrationsAssembly("App");
                         b.MigrationsHistoryTable("__EFMigrationsHistory", ApplicationContext.SchemaName);
                     })
                     .UseSnakeCaseNamingConvention();
