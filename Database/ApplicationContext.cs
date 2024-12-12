@@ -13,7 +13,7 @@ namespace Database;
 public class ApplicationContext(
     DbContextOptions<ApplicationContext> options) : DbContext(options)
 {
-    private const string SchemaName = "identity";
+    public const string SchemaName = "identity";
     
     public DbSet<UserEntity> User { get; init; }
     
