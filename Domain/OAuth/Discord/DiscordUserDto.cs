@@ -36,7 +36,7 @@ public class DiscordUserDto : IOAuthUserConvertible
     public string? BannerColor { get; init; }
 
     [JsonPropertyName("accent_color")]
-    public required long AccentColor { get; init; }
+    public required long? AccentColor { get; init; }
 
     [JsonPropertyName("global_name")]
     public required string GlobalName { get; init; }
