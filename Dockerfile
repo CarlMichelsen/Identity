@@ -1,4 +1,4 @@
-FROM node AS frontend
+FROM node:slim AS frontend
 
 WORKDIR /src
 
