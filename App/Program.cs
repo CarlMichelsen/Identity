@@ -17,11 +17,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    // "We are all born ignorant, but one must work hard to remain stupid." - unknown
-    await app.Services.EnsureDatabaseUpdated();
-}
+
+// "We are all born ignorant, but one must work hard to remain stupid." - unknown
+await app.Services.EnsureDatabaseUpdated();
 
 app.UseMiddleware<UnhandledExceptionMiddleware>();
 

@@ -27,3 +27,11 @@ dotnet ef migrations add IdentityInitialCreate --project App
 ```bash
 dotnet ef database update --project App
 ```
+
+# Docker Database
+create a folder on your host pc
+"C:\Users\carll\Documents\postgres-volume"
+
+```bash
+docker run -p 5432:5432 --restart unless-stopped --name postgresdb -e "POSTGRES_USER=postgres" -e "POSTGRES_PASSWORD=developer-password" -e "POSTGRES_DB=devdb" -v C:\Users\carll\Documents\postgres-volume:/var/lib/postgresql/data -d postgres
+```
