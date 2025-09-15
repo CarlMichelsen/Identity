@@ -30,7 +30,8 @@ public static class Dependencies
         builder.Configuration.AddJsonFile(
             "secrets.json",
             optional: true,
-            reloadOnChange: true);
+            reloadOnChange: true)
+            .AddEnvironmentVariables();
         
         builder.Services
             .Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName))
