@@ -29,7 +29,7 @@ public static class Dependencies
         // Configuration
         builder.Configuration.AddJsonFile(
             "secrets.json",
-            optional: builder.Environment.IsDevelopment(),
+            optional: true,
             reloadOnChange: true);
         
         builder.Services
