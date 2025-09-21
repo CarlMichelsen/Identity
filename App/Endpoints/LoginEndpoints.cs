@@ -1,5 +1,3 @@
-using Domain.Configuration;
-using Domain.OAuth;
 using Interface.Handler;
 using Microsoft.AspNetCore.Mvc;
 

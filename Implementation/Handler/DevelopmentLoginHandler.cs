@@ -2,6 +2,7 @@ using Domain.Abstraction;
 using Domain.Dto;
 using Domain.OAuth;
 using Domain.OAuth.Development;
+using Implementation.Configuration;
 using Implementation.Service;
 using Interface.Handler;
 using Interface.Service;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Options;
 namespace Implementation.Handler;
 
 public class DevelopmentLoginHandler(
-    IOptions<Domain.Configuration.OAuthOptions> oAuthOptions,
+    IOptions<OAuthOptions> oAuthOptions,
     IErrorLogService errorLogService,
     IDevelopmentUserService developmentUserService) : IDevelopmentLoginHandler
 {

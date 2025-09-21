@@ -1,8 +1,10 @@
-namespace Domain.Configuration;
+using Interface.Configuration;
 
-public class OAuthOptions
+namespace Implementation.Configuration;
+
+public class OAuthOptions : IOptionsSection
 {
-    public const string SectionName = "OAuth";
+    public static string SectionName => "OAuth";
     
     public required string AllowedRedirectDomain { get; init; } 
     

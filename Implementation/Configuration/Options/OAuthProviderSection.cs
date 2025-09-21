@@ -1,4 +1,4 @@
-namespace Domain.Configuration;
+namespace Implementation.Configuration;
 
 public sealed record OAuthProviderSection(
     string ClientId,

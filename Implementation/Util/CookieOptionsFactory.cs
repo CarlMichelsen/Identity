@@ -1,4 +1,4 @@
-using Domain.Configuration;
+using Implementation.Configuration;
 using Microsoft.AspNetCore.Http;
 
 namespace Implementation.Util;

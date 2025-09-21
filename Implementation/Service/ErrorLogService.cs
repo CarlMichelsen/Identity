@@ -1,5 +1,5 @@
 using Domain.Abstraction;
-using Domain.Configuration;
+using Implementation.Configuration;
 using Interface.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

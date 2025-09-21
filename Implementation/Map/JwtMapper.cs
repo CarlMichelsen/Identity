@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using Domain.Abstraction;
-using Domain.Configuration;
 using Domain.User;
+using Implementation.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Implementation.Map;

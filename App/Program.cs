@@ -1,8 +1,9 @@
 using App;
 using App.Endpoints;
+using App.Extensions;
 using App.Middleware;
 using Database.Entity;
-using Domain.Configuration;
+using Implementation.Configuration;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Options;
 
@@ -12,14 +13,11 @@ builder.RegisterApplicationDependencies();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsProduction())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // "We are all born ignorant, but one must work hard to remain stupid." - unknown
+    await app.Services.EnsureDatabaseUpdated();
 }
-
-// "We are all born ignorant, but one must work hard to remain stupid." - unknown
-await app.Services.EnsureDatabaseUpdated();
 
 app.UseMiddleware<UnhandledExceptionMiddleware>();
 
@@ -37,6 +35,9 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
 });
+
+// OpenApi and Scalar endpoints - only enabled in development mode
+app.MapOpenApiAndScalarForDevelopment();
 
 app.UseAuthentication();
 
@@ -60,7 +61,6 @@ if (oAuthOptions.Development is not null)
 
 app.MapGet("health", () => Results.Ok());
 
-app.Services.GetRequiredService<ILogger<Program>>()
-    .LogInformation("Identity service has started");
+app.LogStartup();
 
 app.Run();

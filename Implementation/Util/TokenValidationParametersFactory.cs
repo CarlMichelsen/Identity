@@ -1,5 +1,5 @@
 using System.Text;
-using Domain.Configuration;
+using Implementation.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Implementation.Util;

@@ -1,8 +1,10 @@
-namespace Domain.Configuration;
+using Interface.Configuration;
 
-public class JwtOptions
+namespace Implementation.Configuration;
+
+public class JwtOptions : IOptionsSection
 {
-    public const string SectionName = "Jwt";
+    public static string SectionName => "Jwt";
     
     public required string AccessSecret { get; init; }
     

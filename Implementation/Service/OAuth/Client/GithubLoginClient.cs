@@ -2,9 +2,9 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Domain.Abstraction;
-using Domain.Configuration;
 using Domain.OAuth;
 using Domain.OAuth.Github;
+using Implementation.Configuration;
 using Implementation.Util;
 using Interface.OAuth;
 using Microsoft.Extensions.Options;
@@ -138,7 +138,7 @@ public class GithubLoginClient(
             RequestUri = new Uri(new Uri($"https://{UserSubdomain}.{baseUri.Host}"), UserPath),
         };
         request.Headers.UserAgent.Add(
-            new ProductInfoHeaderValue(ApplicationConstants.ApplicationName, "1.0"));
+            new ProductInfoHeaderValue(ApplicationConstants.Name, "1.0"));
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         var response = await httpClient.SendAsync(request);
