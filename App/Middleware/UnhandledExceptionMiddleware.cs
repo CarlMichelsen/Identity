@@ -1,4 +1,4 @@
-using Domain.Configuration;
+using Implementation.Configuration;
 
 namespace App.Middleware;
 

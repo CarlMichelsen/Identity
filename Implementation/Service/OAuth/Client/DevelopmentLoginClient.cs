@@ -1,7 +1,7 @@
 using Domain.Abstraction;
-using Domain.Configuration;
 using Domain.OAuth;
 using Domain.OAuth.Development;
+using Implementation.Configuration;
 using Implementation.Util;
 using Interface.OAuth;
 using Interface.Service;

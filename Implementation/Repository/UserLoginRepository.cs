@@ -2,8 +2,8 @@ using System.Text.Json;
 using Database;
 using Database.Entity;
 using Domain.Abstraction;
-using Domain.Configuration;
 using Domain.OAuth;
+using Implementation.Configuration;
 using Interface.Repository;
 using Microsoft.EntityFrameworkCore;
 

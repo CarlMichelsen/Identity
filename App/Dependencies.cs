@@ -1,7 +1,11 @@
+using System.Threading.Channels;
+using App.Extensions;
+using App.HostedServices;
 using App.Middleware;
 using Database;
-using Domain.Configuration;
 using Implementation.Accessor;
+using Implementation.Configuration;
+using Implementation.Configuration.Options;
 using Implementation.Factory;
 using Implementation.Handler;
 using Implementation.Repository;
@@ -17,7 +21,6 @@ using Interface.Repository;
 using Interface.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 namespace App;
 
@@ -32,20 +35,13 @@ public static class Dependencies
             optional: true,
             reloadOnChange: true)
             .AddEnvironmentVariables();
-        
-        builder.Services
-            .Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName))
-            .Configure<CorsOptions>(builder.Configuration.GetSection(CorsOptions.SectionName))
-            .Configure<OAuthOptions>(builder.Configuration.GetSection(OAuthOptions.SectionName))
-            .Configure<IdentityCookieOptions>(builder.Configuration.GetSection(IdentityCookieOptions.SectionName));
-        
-        // Configure Serilog from "appsettings.(env).json
-        Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Configuration)
-            .Enrich.WithProperty("Application", ApplicationConstants.ApplicationName)
-            .Enrich.WithProperty("Environment", GetEnvironmentName(builder))
-            .CreateLogger();
-        builder.Host.UseSerilog();
+
+        builder
+            .AddConfigurationSection<JwtOptions>()
+            .AddConfigurationSection<CorsOptions>()
+            .AddConfigurationSection<OAuthOptions>()
+            .AddConfigurationSection<DiscordWebhookOptions>()
+            .AddConfigurationSection<IdentityCookieOptions>();
         
         // Database
         builder.Services.AddDbContext<ApplicationContext>(
@@ -74,7 +70,6 @@ public static class Dependencies
         builder.RegisterHttpClients();
         builder.Services
             .AddEndpointsApiExplorer()
-            .AddSwaggerGen()
             .AddHttpContextAccessor()
             .AddScoped<EndpointLogMiddleware>()
             .AddScoped<UnhandledExceptionMiddleware>();
@@ -117,7 +112,10 @@ public static class Dependencies
                     });
             });
         }
-        
+
+        // Logging
+        builder.ApplicationUseSerilog();
+
         // Repositories
         builder.Services
             .AddScoped<ISessionReadRepository, SessionReadRepository>()
@@ -129,7 +127,7 @@ public static class Dependencies
         // Accessors
         builder.Services
             .AddScoped<IUserContextAccessor, UserContextAccessor>();
-        
+
         // Services
         builder.Services
             .AddScoped<IFirstLoginNotifierService, FirstLoginNotifierService>()

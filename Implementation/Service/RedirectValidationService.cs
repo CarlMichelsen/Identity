@@ -1,7 +1,7 @@
 using Database.Entity;
 using Domain.Abstraction;
-using Domain.Configuration;
 using Domain.OAuth;
+using Implementation.Configuration;
 using Interface.Service;
 using Microsoft.Extensions.Options;
 

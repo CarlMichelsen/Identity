@@ -1,6 +1,6 @@
 using Domain.Abstraction;
-using Domain.Configuration;
 using Domain.Dto;
+using Implementation.Configuration;
 using Implementation.Util;
 using Interface.Repository;
 using Interface.Service;

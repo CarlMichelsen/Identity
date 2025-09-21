@@ -1,5 +1,4 @@
 using Domain.Abstraction;
-using Domain.Configuration;
 using Domain.OAuth;
 using Microsoft.AspNetCore.Http;
 
@@ -25,7 +24,7 @@ public static class LoginContextRetriever
                 "Failed to get user-agent from request");
         }
         
-        return new Domain.OAuth.LoginProcessIdentifier(
+        return new LoginProcessIdentifier(
             State: state,
             Ip: ipResult.Unwrap(),
             UserAgent: userAgent);
