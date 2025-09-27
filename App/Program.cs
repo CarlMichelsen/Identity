@@ -2,7 +2,6 @@ using App;
 using App.Endpoints;
 using App.Extensions;
 using App.Middleware;
-using Database.Entity;
 using Implementation.Configuration;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Options;
@@ -12,12 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.RegisterApplicationDependencies();
 
 var app = builder.Build();
-
-if (app.Environment.IsProduction())
-{
-    // "We are all born ignorant, but one must work hard to remain stupid." - unknown
-    await app.Services.EnsureDatabaseUpdated();
-}
 
 app.UseMiddleware<UnhandledExceptionMiddleware>();
 
@@ -51,7 +44,9 @@ apiGroup.RegisterUserEndpoints();
 
 apiGroup.RegisterSessionEndpoints();
 
-var oAuthOptions = app.Services.GetRequiredService<IOptions<OAuthOptions>>().Value;
+var oAuthOptions = app.Services
+    .GetRequiredService<IOptions<OAuthOptions>>()
+    .Value;
 if (oAuthOptions.Development is not null)
 {
     apiGroup.RegisterDevelopmentEndpoints();

@@ -14,7 +14,7 @@ public static class OpenApiExtensions
         app
             .MapOpenApi()
             .CacheOutput();
-    
+
         app
             .MapScalarApiReference()
             .CacheOutput();
