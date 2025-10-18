@@ -9,7 +9,6 @@ public abstract class BaseProvider
     public required string ClientId { get; init; }
     
     [Required]
-    [MinLength(1)]
     public required string ClientSecret { get; init; }
     
     [Required]

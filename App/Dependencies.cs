@@ -32,11 +32,33 @@ public static class Dependencies
         // OpenApi
         builder.Services
             .AddOpenApi();
+        
+        // Cors
+        builder.Services.AddCors(options =>
+        {
+            var whitelistedDomainsConfigKey =
+                $"{AuthOptions.SectionName}:{nameof(AuthOptions.WhitelistedDomains)}";
+            var whitelistedHosts = builder
+                .Configuration
+                .GetSection(whitelistedDomainsConfigKey)
+                .Get<List<Uri>>()?
+                .Select(uri => uri.Host) ?? throw new NullReferenceException($"Unable to find {whitelistedDomainsConfigKey} when configuring cors");
+            
+            options.AddPolicy("whitelist", corsPolicyBuilder =>
+            {
+                corsPolicyBuilder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .SetIsOriginAllowed(origin => whitelistedHosts.Contains(new Uri(origin).Host));
+            });
+        });
 
         // Logging
         builder.ApplicationUseSerilog();
 
-        // HealthChecks
+        // HealthChecks / Middleware
+        builder.Services.AddExceptionHandler(_ => {});
         builder.Services
             .AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy());
