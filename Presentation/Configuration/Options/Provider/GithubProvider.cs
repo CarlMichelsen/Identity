@@ -1,4 +1,6 @@
-﻿namespace Presentation.Configuration.Options.Provider;
+﻿using Domain.User;
+
+namespace Presentation.Configuration.Options.Provider;
 
 public class GithubProvider : BaseProvider
 {

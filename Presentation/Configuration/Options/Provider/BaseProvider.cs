@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.User;
 
 namespace Presentation.Configuration.Options.Provider;
 

@@ -6,10 +6,10 @@ using App.JsonConverters;
 using Application.Client.Discord;
 using Application.Configuration.Options;
 using Database;
+using Domain.User;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
-using Presentation.Configuration.Options.Provider;
 
 namespace App;
 

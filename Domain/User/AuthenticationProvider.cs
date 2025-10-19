@@ -1,4 +1,4 @@
-﻿namespace Presentation.Configuration.Options.Provider;
+﻿namespace Domain.User;
 
 public enum AuthenticationProvider
 {

@@ -1,6 +1,8 @@
-﻿namespace Presentation.Configuration.Options.Provider;
+﻿using Domain.User;
+
+namespace Presentation.Configuration.Options.Provider;
 
 public class TestProvider : BaseProvider
 {
-    public override AuthenticationProvider ProviderType { get; } =  AuthenticationProvider.Test;
+    public override AuthenticationProvider ProviderType { get; } = AuthenticationProvider.Test;
 }

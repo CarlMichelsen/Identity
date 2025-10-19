@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.User;
+using Microsoft.AspNetCore.Mvc;
 using Presentation.Configuration.Options.Provider;
 using Presentation.Dto;
 

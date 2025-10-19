@@ -8,6 +8,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["App/App.csproj", "App/"]
 COPY ["Application/Application.csproj", "Application/"]
+COPY ["AuthProvider/AuthProvider.csproj", "AuthProvider/"]
 COPY ["Presentation/Presentation.csproj", "Presentation/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Database/Database.csproj", "Database/"]
