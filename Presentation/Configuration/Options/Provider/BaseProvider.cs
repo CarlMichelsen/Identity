@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Configuration.Options.Provider;
+namespace Presentation.Configuration.Options.Provider;
 
 public abstract class BaseProvider
 {

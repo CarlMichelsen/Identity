@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Application.Configuration.Options.Provider;
-using Presentation.Configuration;
+using Application.Configuration.Options;
+using Presentation.Configuration.Options.Provider;
 
-namespace Application.Configuration.Options;
+namespace Presentation.Configuration.Options;
 
 public class AuthOptions : IConfigurationOptions
 {

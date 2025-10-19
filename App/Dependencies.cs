@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using App.Constraints;
 using App.Extensions;
 using App.HostedServices;
 using App.JsonConverters;
@@ -7,6 +8,8 @@ using Application.Configuration.Options;
 using Database;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Presentation.Client.Discord;
+using Presentation.Configuration.Options;
+using Presentation.Configuration.Options.Provider;
 
 namespace App;
 
@@ -26,6 +29,10 @@ public static class Dependencies
             .AddControllers()
             .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter()));
+        builder.Services.Configure<RouteOptions>(options =>
+        {
+            options.ConstraintMap.Add("provider", typeof(EnumConstraint<AuthenticationProvider>));
+        });
         
         builder.Services
             .AddSingleton(TimeProvider.System)

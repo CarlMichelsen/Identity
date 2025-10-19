@@ -17,6 +17,4 @@ app.MapHealthChecks("health");
 
 app.MapControllers();
 
-app.LogStartup();
-
 app.Run();

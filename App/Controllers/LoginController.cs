@@ -1,6 +1,6 @@
-﻿using App.ModelBinder;
-using Application.Configuration.Options.Provider;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Presentation.Configuration.Options.Provider;
+using Presentation.Dto;
 
 namespace App.Controllers;
 
@@ -9,12 +9,23 @@ namespace App.Controllers;
 public class LoginController(
     ILogger<LoginController> logger) : ControllerBase
 {
-    [HttpGet("{provider}")]
+    [HttpGet("{provider:provider}")]
     public async Task<ActionResult> Login(
-        [FromRoute, ModelBinder(typeof(CaseInsensitiveEnumBinder<AuthenticationProvider>))] AuthenticationProvider provider)
+        [FromRoute] string provider,
+        [FromQuery] LoginQueryDto loginQueryDto)
     {
-        logger.LogInformation("{Provider}", provider);
-        await Task.Delay(TimeSpan.FromSeconds(1));
-        throw  new NotImplementedException();
+        if (!Enum.TryParse<AuthenticationProvider>(provider, ignoreCase: true, out var authenticationProvider))
+        {
+            return this.NotFound();
+        }
+
+        logger.LogInformation(
+            "{Provider}\nSuccess: {SuccessRedirectUri}\nError: {ErrorRedirectUri}",
+            authenticationProvider,
+            loginQueryDto.SuccessRedirectUri,
+            loginQueryDto.ErrorRedirectUri);
+
+        await Task.Delay(TimeSpan.FromMilliseconds(1));
+        return this.Ok(authenticationProvider);
     }
 }

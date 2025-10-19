@@ -1,7 +1,7 @@
 ﻿using Presentation.Dto.Validation;
 using Shouldly;
 
-namespace Test.Validation.Attribute;
+namespace Test.Unit.Validation.Attribute;
 
 public class UtcDateTimeAttributeTests
 {
