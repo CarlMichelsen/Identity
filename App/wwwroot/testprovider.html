@@ -122,11 +122,12 @@
 
 <script>
     let stateParam = null;
+    let redirectParam = null;
 
     // Read state query parameter
-    function getStateParameter() {
+    function getQueryParameter(paramName) {
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('state');
+        return urlParams.get(paramName);
     }
 
     // Display state parameter if it exists
@@ -218,7 +219,8 @@
 
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {
-        stateParam = getStateParameter();
+        stateParam = getQueryParameter("state");
+        redirectParam = getQueryParameter("RedirectSuccess");
         displayState(stateParam);
         fetchUsers();
     });

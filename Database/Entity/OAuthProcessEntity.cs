@@ -13,6 +13,8 @@ public class OAuthProcessEntity : IEntity
     [MaxLength(1028)]
     public required string State { get; init; }
     
+    public required Uri LoginRedirectUri { get; init; }
+    
     public required Uri SuccessRedirectUri { get; init; }
     
     public required Uri ErrorRedirectUri { get; init; }

@@ -17,8 +17,4 @@ public abstract class BaseProvider
     [Required]
     [Url]
     public required Uri OAuthEndpoint { get; init; }
-    
-    [Required]
-    [Url]
-    public required Uri OAuthReturnEndpoint { get; init; }
 }
