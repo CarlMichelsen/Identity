@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.Configuration.Options;
+using Database;
 using Presentation.Configuration.Options.Provider;
 
 namespace Presentation.Configuration.Options;
@@ -36,24 +37,24 @@ public class AuthOptions : IConfigurationOptions
     
     public DiscordProvider? Discord { get; init; }
     
-    public GithubProvider? Github { get; init; }
+    public GitHubProvider? GitHub { get; init; }
 
-    public Dictionary<string, BaseProvider> Providers()
+    public Dictionary<AuthenticationProvider, BaseProvider> GetProviders()
     {
-        var dict =  new Dictionary<string, BaseProvider>();
+        var dict =  new Dictionary<AuthenticationProvider, BaseProvider>();
         if (this.Test is not null)
         {
-            dict.Add("test", Test);
+            dict.Add(AuthenticationProvider.Test, Test);
         }
         
         if (this.Discord is not null)
         {
-            dict.Add("discord", Discord);
+            dict.Add(AuthenticationProvider.Discord, Discord);
         }
         
-        if (this.Github is not null)
+        if (this.GitHub is not null)
         {
-            dict.Add("github", Github);
+            dict.Add(AuthenticationProvider.GitHub, GitHub);
         }
 
         return dict;

@@ -1,6 +1,5 @@
-﻿using Domain.User;
-using Microsoft.AspNetCore.Mvc;
-using Presentation.Configuration.Options.Provider;
+﻿using Microsoft.AspNetCore.Mvc;
+using Presentation;
 using Presentation.Dto;
 
 namespace App.Controllers;

@@ -6,8 +6,8 @@ using App.JsonConverters;
 using Application.Client.Discord;
 using Application.Configuration.Options;
 using Database;
-using Domain.User;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Presentation;
 using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
 
@@ -33,7 +33,7 @@ public static class Dependencies
         {
             options.ConstraintMap.Add("provider", typeof(EnumConstraint<AuthenticationProvider>));
         });
-        
+
         builder.Services
             .AddSingleton(TimeProvider.System)
             .AddConfigurationOptions<DiscordWebhookOptions>(builder.Configuration)
@@ -42,7 +42,7 @@ public static class Dependencies
         // OpenApi
         builder.Services
             .AddOpenApi();
-        
+
         // Cors
         builder.Services.AddCors(options =>
         {

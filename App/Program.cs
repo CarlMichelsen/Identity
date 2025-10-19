@@ -1,5 +1,6 @@
 using App;
 using App.Extensions;
+using AuthProvider.Providers.Test;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,7 @@ app.UseCors("whitelist");
 if (app.Environment.IsDevelopment())
 {
     app.UseStaticFiles();
-    app.MapGet("/api/v1/test-users", () => "Hello Development!");
+    app.MapGet("/api/v1/test-users", () => TestUserContainer.GetUsers);
 }
 
 app.MapOpenApiAndScalar();

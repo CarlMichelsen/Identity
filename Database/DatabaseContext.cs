@@ -9,19 +9,29 @@ public class DatabaseContext(
 {
     public const string SchemaName = "identity";
     
-    public DbSet<IdentityEntity> Identity => Set<IdentityEntity>();
-    
-    public DbSet<AttachmentEntity> Attachment => Set<AttachmentEntity>();
-    
     public DbSet<ContentEntity> Content => Set<ContentEntity>();
+
+    public DbSet<OAuthProcessEntity> OAuthProcess => Set<OAuthProcessEntity>();
+
+    public DbSet<UserEntity> User => Set<UserEntity>();
     
+    public DbSet<LoginEntity> Login => Set<LoginEntity>();
+    
+    public DbSet<RefreshEntity> Refresh => Set<RefreshEntity>();
+    
+    public DbSet<AccessEntity> Access => Set<AccessEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(SchemaName);
         
-        IdentityEntity.Configure(modelBuilder);
-        AttachmentEntity.Configure(modelBuilder);
         ContentEntity.Configure(modelBuilder);
+        OAuthProcessEntity.Configure(modelBuilder);
+
+        UserEntity.Configure(modelBuilder);
+        LoginEntity.Configure(modelBuilder);
+        RefreshEntity.Configure(modelBuilder);
+        AccessEntity.Configure(modelBuilder);
         
         base.OnModelCreating(modelBuilder);
     }
