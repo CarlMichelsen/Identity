@@ -4,6 +4,8 @@ namespace Application.Configuration.Options.Provider;
 
 public abstract class BaseProvider
 {
+    public abstract AuthenticationProvider ProviderType { get; }
+    
     [Required]
     [MinLength(1)]
     public required string ClientId { get; init; }

@@ -37,4 +37,25 @@ public class AuthOptions : IConfigurationOptions
     public DiscordProvider? Discord { get; init; }
     
     public GithubProvider? Github { get; init; }
+
+    public Dictionary<string, BaseProvider> Providers()
+    {
+        var dict =  new Dictionary<string, BaseProvider>();
+        if (this.Test is not null)
+        {
+            dict.Add("test", Test);
+        }
+        
+        if (this.Discord is not null)
+        {
+            dict.Add("discord", Discord);
+        }
+        
+        if (this.Github is not null)
+        {
+            dict.Add("github", Github);
+        }
+
+        return dict;
+    }
 }

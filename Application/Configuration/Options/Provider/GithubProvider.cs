@@ -1,3 +1,6 @@
 ﻿namespace Application.Configuration.Options.Provider;
 
-public class GithubProvider : BaseProvider;
+public class GithubProvider : BaseProvider
+{
+    public override AuthenticationProvider ProviderType { get; } =  AuthenticationProvider.Github;
+}

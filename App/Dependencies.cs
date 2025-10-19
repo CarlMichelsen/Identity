@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using App.Extensions;
 using App.HostedServices;
 using App.JsonConverters;
@@ -23,7 +24,9 @@ public static class Dependencies
             .AddEnvironmentVariables();
         builder.Services
             .AddControllers()
+            .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter()));
+        
         builder.Services
             .AddSingleton(TimeProvider.System)
             .AddConfigurationOptions<DiscordWebhookOptions>(builder.Configuration)

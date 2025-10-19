@@ -7,11 +7,11 @@ builder.RegisterIdentityDependencies();
 
 var app = builder.Build();
 
-app.UseExceptionHandler(_ => {});
-
 app.UseCors("whitelist");
 
 app.MapOpenApiAndScalar();
+
+app.UseGlobalExceptionHandler(app.Logger);
 
 app.MapHealthChecks("health");
 
