@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 using Presentation.Dto.Validation;
 
 namespace Presentation.Dto;

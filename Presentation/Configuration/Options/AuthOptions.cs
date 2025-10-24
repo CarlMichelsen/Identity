@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.Configuration.Options;
-using Database;
 using Presentation.Configuration.Options.Provider;
 
 namespace Presentation.Configuration.Options;

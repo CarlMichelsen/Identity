@@ -31,16 +31,62 @@ public class RedirectUriFactory(
 
     private Uri CreateTestRedirectUri(string state, TestProvider provider)
     {
-        throw new NotImplementedException(nameof(TestProvider));
+        var testOptions = authOptions.Value.Test;
+        ArgumentNullException.ThrowIfNull(testOptions);
+        var endpointProviderName = Enum.GetName(provider.ProviderType);
+        ArgumentNullException.ThrowIfNull(endpointProviderName);
+        
+        return new OAuthUriBuilder(testOptions.OAuthEndpoint)
+            .AddQueryParam("response_type", "code")
+            .AddQueryParam("client_id", testOptions.ClientId)
+            .AddQueryParam("redirect_uri", this.GetRedirectUri(endpointProviderName))
+            .AddQueryParam("scope", string.Join(' ', testOptions.Scopes))
+            .AddQueryParam("state", state)
+            .Build();
     }
     
     private Uri CreateDiscordRedirectUri(string state, DiscordProvider provider)
     {
-        throw new NotImplementedException(nameof(DiscordProvider));
+        var discordOptions = authOptions.Value.Discord;
+        ArgumentNullException.ThrowIfNull(discordOptions);
+        var endpointProviderName = Enum.GetName(provider.ProviderType);
+        ArgumentNullException.ThrowIfNull(endpointProviderName);
+        
+        return new OAuthUriBuilder(discordOptions.OAuthEndpoint)
+            .AddQueryParam("response_type", "code")
+            .AddQueryParam("client_id", discordOptions.ClientId)
+            .AddQueryParam("redirect_uri", this.GetRedirectUri(endpointProviderName))
+            .AddQueryParam("scope", string.Join(' ', discordOptions.Scopes))
+            .AddQueryParam("prompt", "consent")
+            .AddQueryParam("state", state)
+            .Build();
     }
     
     private Uri CreateGitHubRedirectUri(string state, GitHubProvider provider)
     {
-        throw new NotImplementedException(nameof(GitHubProvider));
+        var gitHubOptions = authOptions.Value.GitHub;
+        ArgumentNullException.ThrowIfNull(gitHubOptions);
+        var endpointProviderName = Enum.GetName(provider.ProviderType);
+        ArgumentNullException.ThrowIfNull(endpointProviderName);
+        
+        return new OAuthUriBuilder(gitHubOptions.OAuthEndpoint)
+            .AddQueryParam("response_type", "token")
+            .AddQueryParam("client_id", gitHubOptions.ClientId)
+            .AddQueryParam("redirect_uri", this.GetRedirectUri(endpointProviderName))
+            .AddQueryParam("scope", string.Join(' ', gitHubOptions.Scopes))
+            .AddQueryParam("allow_signup", "false")
+            .AddQueryParam("state", state)
+            .Build();
+    }
+
+    private string GetRedirectUri(string providerName)
+    {
+        var url = new OAuthUriBuilder(authOptions.Value.Self)
+            .SetPath($"api/v1/oauth/authorize/{providerName}")
+            .ClearQueryParams()
+            .Build()
+            .AbsoluteUri;
+
+        return Uri.EscapeDataString(url);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Database;
 
 namespace Presentation.Configuration.Options.Provider;
 
@@ -13,6 +12,9 @@ public abstract class BaseProvider
     
     [Required]
     public required string ClientSecret { get; init; }
+    
+    [Required]
+    public required List<string> Scopes { get; init; }
     
     [Required]
     [Url]

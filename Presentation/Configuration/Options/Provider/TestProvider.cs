@@ -1,6 +1,4 @@
-﻿using Database;
-
-namespace Presentation.Configuration.Options.Provider;
+﻿namespace Presentation.Configuration.Options.Provider;
 
 public class TestProvider : BaseProvider
 {
