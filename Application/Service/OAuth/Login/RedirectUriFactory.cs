@@ -3,8 +3,9 @@ using Presentation;
 using Presentation.Configuration.Options;
 using Presentation.Configuration.Options.Provider;
 using Presentation.Service.OAuth;
+using Presentation.Service.OAuth.Login;
 
-namespace Application.Service.OAuth;
+namespace Application.Service.OAuth.Login;
 
 public class RedirectUriFactory(
     IOptionsSnapshot<AuthOptions> authOptions) : IRedirectUriFactory
@@ -22,9 +23,9 @@ public class RedirectUriFactory(
         
         return authenticationProvider switch
         {
-            AuthenticationProvider.Test => this.CreateTestRedirectUri(state, (TestProvider)provider),
-            AuthenticationProvider.Discord => this.CreateDiscordRedirectUri(state, (DiscordProvider)provider),
-            AuthenticationProvider.GitHub => this.CreateGitHubRedirectUri(state, (GitHubProvider)provider),
+            AuthenticationProvider.Test => this.CreateTestRedirectUri(state, (provider as TestProvider)!),
+            AuthenticationProvider.Discord => this.CreateDiscordRedirectUri(state, (provider as DiscordProvider)!),
+            AuthenticationProvider.GitHub => this.CreateGitHubRedirectUri(state, (provider as GitHubProvider)!),
             _ => throw new ArgumentOutOfRangeException(nameof(authenticationProvider), authenticationProvider, null)
         };
     }

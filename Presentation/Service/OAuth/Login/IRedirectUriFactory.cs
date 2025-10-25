@@ -1,4 +1,4 @@
-﻿namespace Presentation.Service.OAuth;
+﻿namespace Presentation.Service.OAuth.Login;
 
 public interface IRedirectUriFactory
 {

@@ -1,10 +1,8 @@
-﻿using Presentation;
+﻿namespace Presentation.Service.OAuth.Model;
 
-namespace AuthProvider;
-
-public record AuthProviderUser(
+public record AuthenticatedUser(
     string AuthenticationProviderId,
     AuthenticationProvider AuthenticationProvider,
     string Username,
     string Email,
-    Uri? AvatarUrl);
+    Uri AvatarUrl);

@@ -12,6 +12,8 @@ namespace Test.Integration.Util;
 
 public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
 {
+    public string InMemoryDatabaseName { get; } = Guid.NewGuid().ToString();
+    
     protected override IHost CreateHost(IHostBuilder builder)
     {
         // Configure the host BEFORE it's built
@@ -28,7 +30,6 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
     
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        
         builder.ConfigureServices(services =>
         {
             var descriptor = services.SingleOrDefault(
@@ -42,7 +43,7 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
             // Add in-memory database for testing
             services.AddDbContext<DatabaseContext>(options =>
             {
-                options.UseInMemoryDatabase("TestDatabase");
+                options.UseInMemoryDatabase(InMemoryDatabaseName);
             });
             
             // Override other services as needed for testing

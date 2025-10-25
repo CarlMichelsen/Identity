@@ -24,6 +24,8 @@ public class UserEntity : IEntity
     [MinLength(2)]
     [MaxLength(256)]
     public required string Email { get; init; }
+    
+    public required Uri RawAvatarUrl { get; init; }
 
     public List<LoginEntity> Login { get; init; } = [];
     

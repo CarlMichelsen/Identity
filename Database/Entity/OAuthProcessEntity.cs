@@ -7,12 +7,19 @@ namespace Database.Entity;
 
 public class OAuthProcessEntity : IEntity
 {
-    public required LoginProcessEntityId Id { get; init; }
+    public required OAuthProcessEntityId Id { get; init; }
     
     [MinLength(12)]
     [MaxLength(1028)]
     public required string State { get; init; }
     
+    [MinLength(12)]
+    [MaxLength(1028)]
+    public required string AuthenticationProvider { get; init; }
+    
+    /// <summary>
+    /// The Uri the user is redirected to in order to login using a provider.
+    /// </summary>
     public required Uri LoginRedirectUri { get; init; }
     
     public required Uri SuccessRedirectUri { get; init; }
@@ -31,7 +38,7 @@ public class OAuthProcessEntity : IEntity
     [MaxLength(1028)]
     public string? Error { get; set; }
     
-    public DateTime CreatedAt { get; init; }
+    public required DateTime CreatedAt { get; init; }
     
     public static void Configure(ModelBuilder modelBuilder)
     {
@@ -39,8 +46,8 @@ public class OAuthProcessEntity : IEntity
         
         entityBuilder
             .Property(x => x.Id)
-            .RegisterTypedKeyConversion<OAuthProcessEntity, LoginProcessEntityId>(x =>
-                new LoginProcessEntityId(x, true));
+            .RegisterTypedKeyConversion<OAuthProcessEntity, OAuthProcessEntityId>(x =>
+                new OAuthProcessEntityId(x, true));
         
         entityBuilder
             .Property(x => x.UserId)!
@@ -59,7 +66,11 @@ public class OAuthProcessEntity : IEntity
         
         entityBuilder
             .HasOne<LoginEntity>(x => x.Login)
-            .WithOne(x => x.LoginProcess)
+            .WithOne(x => x.OAuthProcess)
             .HasForeignKey<OAuthProcessEntity>(x => x.LoginId);
+
+        entityBuilder
+            .HasIndex(x => x.State)
+            .IsUnique();
     }
 }

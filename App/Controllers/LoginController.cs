@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Presentation;
 using Presentation.Dto;
+using Presentation.Service.OAuth.Login;
 
 namespace App.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
 public class LoginController(
-    ILogger<LoginController> logger) : ControllerBase
+    ILoginRedirectService loginRedirectService) : ControllerBase
 {
     [HttpGet("{provider:provider}")]
     public async Task<ActionResult> Login(
@@ -19,13 +20,8 @@ public class LoginController(
             return this.NotFound();
         }
 
-        logger.LogInformation(
-            "{Provider}\nSuccess: {SuccessRedirectUri}\nError: {ErrorRedirectUri}",
-            authenticationProvider,
-            loginQueryDto.SuccessRedirectUri,
-            loginQueryDto.ErrorRedirectUri);
-
-        await Task.Delay(TimeSpan.FromMilliseconds(1));
-        return this.Ok(authenticationProvider);
+        var uri = await loginRedirectService
+            .GetLoginRedirectUri(authenticationProvider, loginQueryDto);
+        return this.Redirect(uri.AbsoluteUri);
     }
 }

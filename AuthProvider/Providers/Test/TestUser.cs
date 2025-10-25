@@ -1,6 +1,9 @@
-﻿namespace AuthProvider.Providers.Test;
+﻿using Presentation;
+using Presentation.Service.OAuth.Model;
 
-public class TestUser : IAuthProviderUserConvertible
+namespace AuthProvider.Providers.Test;
+
+public class TestUser : IAuthenticatedUserConvertible
 {
     public required string AuthenticationProviderId { get; init; }
     
@@ -10,8 +13,13 @@ public class TestUser : IAuthProviderUserConvertible
     
     public required Uri AvatarUrl { get; init; }
     
-    public AuthProviderUser GetAuthUser()
+    public AuthenticatedUser GetAuthenticatedUser()
     {
-        throw new NotImplementedException();
+        return new AuthenticatedUser(
+            AuthenticationProviderId,
+            AuthenticationProvider.Test,
+            Username,
+            Email,
+            AvatarUrl);
     }
 }

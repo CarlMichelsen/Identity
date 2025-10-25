@@ -4,5 +4,5 @@ using Presentation.Dto.Validation;
 namespace Presentation.Dto;
 
 public record LoginQueryDto(
-    [param: Required, Url, WhitelistedDomain] Uri SuccessRedirectUri,
-    [param: Required, Url, WhitelistedDomain] Uri ErrorRedirectUri);
+    [param: Required, Url, WhitelistedDomain] Uri SuccessRedirectUrl,
+    [param: Required, Url, WhitelistedDomain] Uri ErrorRedirectUrl);

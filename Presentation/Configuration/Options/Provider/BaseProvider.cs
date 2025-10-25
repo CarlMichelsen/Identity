@@ -12,9 +12,9 @@ public abstract class BaseProvider
     
     [Required]
     public required string ClientSecret { get; init; }
-    
+
     [Required]
-    public required List<string> Scopes { get; init; }
+    public List<string> Scopes { get; init; } = [];
     
     [Required]
     [Url]

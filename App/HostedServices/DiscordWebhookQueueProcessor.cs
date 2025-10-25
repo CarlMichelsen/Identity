@@ -23,6 +23,9 @@ public class DiscordWebhookQueueProcessor(
                 await discordWebhookMessageClient.SendMessage(
                     webhookMessage,
                     stoppingToken);
+                
+                // Wait 5 seconds between each discord api call.
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
             }
             catch (OperationCanceledException)
             {

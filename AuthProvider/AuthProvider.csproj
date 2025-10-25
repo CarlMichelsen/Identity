@@ -11,8 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Providers\Discord\" />
-      <Folder Include="Providers\GitHub\" />
+      <Folder Include="Receive\" />
     </ItemGroup>
 
 </Project>

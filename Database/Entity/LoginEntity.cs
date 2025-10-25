@@ -12,13 +12,15 @@ public class LoginEntity : IEntity
     
     public UserEntity? User { get; init; }
     
-    public required LoginProcessEntityId LoginProcessId { get; init; }
+    public required OAuthProcessEntityId OAuthProcessId { get; init; }
     
-    public OAuthProcessEntity? LoginProcess { get; init; }
+    public OAuthProcessEntity? OAuthProcess { get; init; }
 
     public List<RefreshEntity> Refresh { get; init; } = [];
     
     public List<AccessEntity> Access { get; init; } = [];
+
+    public bool FirstLogin { get; init; } = false;
     
     public DateTime CreatedAt { get; init; }
     
@@ -42,14 +44,14 @@ public class LoginEntity : IEntity
             .HasForeignKey(x => x.UserId);
         
         entityBuilder
-            .Property(x => x.LoginProcessId)!
-            .RegisterTypedKeyConversion<OAuthProcessEntity, LoginProcessEntityId>(x =>
-                new LoginProcessEntityId(x, true));
+            .Property(x => x.OAuthProcessId)!
+            .RegisterTypedKeyConversion<OAuthProcessEntity, OAuthProcessEntityId>(x =>
+                new OAuthProcessEntityId(x, true));
 
         entityBuilder
-            .HasOne(x => x.LoginProcess)
+            .HasOne(x => x.OAuthProcess)
             .WithOne(x => x.Login)
-            .HasForeignKey<LoginEntity>(x => x.LoginProcessId);
+            .HasForeignKey<LoginEntity>(x => x.OAuthProcessId);
         
         entityBuilder
             .HasMany(x => x.Refresh)

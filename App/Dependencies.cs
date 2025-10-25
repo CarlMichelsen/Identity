@@ -5,13 +5,19 @@ using App.HostedServices;
 using App.JsonConverters;
 using Application.Client.Discord;
 using Application.Configuration.Options;
-using Application.Service.OAuth;
+using Application.Service.OAuth.Login;
+using Application.Service.OAuth.Login.Receive;
+using AuthProvider.Providers;
+using AuthProvider.Providers.Discord;
+using AuthProvider.Providers.GitHub;
+using AuthProvider.Providers.Test;
 using Database;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Presentation;
 using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
-using Presentation.Service.OAuth;
+using Presentation.Service.OAuth.Login;
+using Presentation.Service.OAuth.Login.Receive;
 
 namespace App;
 
@@ -92,8 +98,21 @@ public static class Dependencies
             .AddHttpClient<IDiscordWebhookMessageClient, DiscordWebhookMessageClient>()
             .AddStandardResilienceHandler();
         
-        // Services
+        // Login
         builder.Services
+            .AddScoped<ILoginRedirectService, LoginRedirectService>()
+            .AddScoped<IOAuthProcessEntityFactory, OAuthProcessEntityFactory>()
             .AddScoped<IRedirectUriFactory, RedirectUriFactory>();
+        
+        // Login Receiver
+        builder.Services
+            .AddScoped<DiscordLoginReceiver>()
+            .AddScoped<GitHubLoginReceiver>()
+            .AddScoped<TestLoginReceiver>()
+            .AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
+        
+        builder.Services
+            .AddScoped<ILoginReceiverRedirectService, LoginReceiverRedirectService>()
+            .AddScoped<ILoginEntityFactory, LoginEntityFactory>();
     }
 }

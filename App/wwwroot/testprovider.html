@@ -121,6 +121,7 @@
 </div>
 
 <script>
+    let retryCounter = 0;
     let stateParam = null;
     let redirectParam = null;
 
@@ -208,19 +209,25 @@
     function handleError(error) {
         alert(`Error loading users: ${error.message}`);
         // Clear content and retry
-        document.getElementById('content').innerHTML = '<p class="loading">Retrying...</p>';
-        fetchUsers();
+        if (retryCounter < 3) {
+            document.getElementById('content').innerHTML = '<p class="loading">Retrying...</p>';
+            fetchUsers();
+        } else {
+            document.getElementById('content').innerHTML = '<p class="loading">Failed to get test-users</p>';
+        }
+        
+        retryCounter++
     }
 
     // Button click handler (does nothing for now)
     function selectUser(user) {
-        console.log(user);
+        window.location.replace(`api/v1/OAuth/Authorize/Test/?redirect_uri=${encodeURIComponent(redirectParam)}&state=${stateParam}&code=${user.authenticationProviderId}`);
     }
 
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {
         stateParam = getQueryParameter("state");
-        redirectParam = getQueryParameter("RedirectSuccess");
+        redirectParam = getQueryParameter("redirect_uri");
         displayState(stateParam);
         fetchUsers();
     });
