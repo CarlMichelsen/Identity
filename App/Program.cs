@@ -14,9 +14,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseStaticFiles();
     app.MapGet("/api/v1/test-users", () => TestUserContainer.GetUsers);
+    app.MapOpenApiAndScalar();
 }
-
-app.MapOpenApiAndScalar();
 
 app.UseGlobalExceptionHandler(app.Logger);
 

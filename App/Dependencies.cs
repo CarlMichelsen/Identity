@@ -5,11 +5,13 @@ using App.HostedServices;
 using App.JsonConverters;
 using Application.Client.Discord;
 using Application.Configuration.Options;
+using Application.Service.OAuth;
 using Database;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Presentation;
 using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
+using Presentation.Service.OAuth;
 
 namespace App;
 
@@ -91,5 +93,7 @@ public static class Dependencies
             .AddStandardResilienceHandler();
         
         // Services
+        builder.Services
+            .AddScoped<IRedirectUriFactory, RedirectUriFactory>();
     }
 }
