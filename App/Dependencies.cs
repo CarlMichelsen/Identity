@@ -4,6 +4,7 @@ using App.Extensions;
 using App.HostedServices;
 using App.JsonConverters;
 using Application.Client.Discord;
+using Application.Configuration;
 using Application.Configuration.Options;
 using Application.Service.OAuth.Login;
 using Application.Service.OAuth.Login.Receive;
@@ -35,12 +36,14 @@ public static class Dependencies
             .AddEnvironmentVariables();
         builder.Services
             .AddControllers()
+            .AddApplicationPart(typeof(Program).Assembly)
             .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter()));
         builder.Services.Configure<RouteOptions>(options =>
         {
             options.ConstraintMap.Add("provider", typeof(EnumConstraint<AuthenticationProvider>));
         });
+        builder.Environment.ApplicationName = ApplicationConstants.Name;
 
         builder.Services
             .AddSingleton(TimeProvider.System)

@@ -14,7 +14,7 @@ public class HealthCheckTest(IdentityWebApplicationFactory factory)
     {
         // Arrange
         // Act
-        var response = await client.GetAsync("/health", CancellationToken.None);
+        var response = await client.GetAsync("/health", TestContext.Current.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299

@@ -51,7 +51,7 @@ public class LoginReceiverRedirectService(
             oAuthProcessEntity.Error = e.Message;
             await databaseContext.SaveChangesAsync();
             return new OAuthUriBuilder(oAuthProcessEntity.ErrorRedirectUri)
-                .AddQueryParam("error", oAuthProcessEntity.Error)
+                .AddQueryParam("error", Uri.EscapeDataString(oAuthProcessEntity.Error))
                 .Build();;
         }
     }

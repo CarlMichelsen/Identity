@@ -16,6 +16,11 @@ public static class DatabaseExtensions
     public static void AddDatabase<TContext>(this WebApplicationBuilder builder)
         where TContext : DbContext
     {
+        if (builder.Configuration.GetValue<string>("IntegrationTest") == "true")
+        {
+            return;
+        }
+        
         builder.Services.AddDbContext<TContext>(options =>
         {
             options.UseNpgsql(

@@ -1,5 +1,4 @@
-﻿using App.Controllers;
-using Database;
+﻿using Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +23,11 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
             config
                 .AddJsonFile("appsettings.testing.json", optional: false)
                 .AddEnvironmentVariables();
+
+            config.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                ["IntegrationTest"] = "true",
+            }!);
         });
 
         return base.CreateHost(builder);
@@ -33,17 +37,29 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureServices(services =>
         {
-            services.RemoveAllEfCoreServices();
+            // Find and remove the original DbContext registration
+            var dbContextDescriptor = services
+                .FirstOrDefault(d => d.ServiceType == typeof(DbContextOptions<DatabaseContext>));
+    
+            if (dbContextDescriptor != null)
+            {
+                services.Remove(dbContextDescriptor);
+            }
+
+            // Also remove the DbContext itself
+            var contextDescriptor = services
+                .FirstOrDefault(d => d.ServiceType == typeof(DatabaseContext));
+    
+            if (contextDescriptor != null)
+            {
+                services.Remove(contextDescriptor);
+            }
             
             // Add in-memory database for testing
             services.AddDbContext<DatabaseContext>(options =>
             {
                 options.UseInMemoryDatabase(InMemoryDatabaseName);
             });
-            
-            // There are assembly issues when registering controllers, so I have to do this :'(
-            services.AddControllers()
-                .AddApplicationPart(typeof(LoginController).Assembly);
             
             // Override other services as needed for testing
             services

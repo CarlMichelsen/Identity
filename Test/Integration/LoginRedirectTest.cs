@@ -1,6 +1,9 @@
 ﻿using System.Net;
 using Application.Service.OAuth;
+using Database;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Test.Integration.Util;
 
@@ -21,7 +24,8 @@ public class LoginRedirectTest(IdentityWebApplicationFactory factory)
     public async Task TestLoginCreatesAProcess()
     {
         // Arrange
-        var successUri = factory.Server.BaseAddress.AbsoluteUri + "success";
+        using var scope = factory.Services.CreateScope();
+        var successUri = factory.Server.BaseAddress.AbsoluteUri + "success"; // this is the final redirect.
         var errorUri = factory.Server.BaseAddress.AbsoluteUri + "error";
         var uri = new OAuthUriBuilder(factory.Server.BaseAddress)
             .SetPath("/api/v1/Login/Test")
@@ -30,7 +34,14 @@ public class LoginRedirectTest(IdentityWebApplicationFactory factory)
             .Build();
         
         // Act
-        var response = await client.GetAsync(uri, CancellationToken.None);
+        var response = await client.GetAsync(uri, TestContext.Current.CancellationToken);
+        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        
+        // Get newest created OAuthProcess from the database
+        var oAuthProcesses = await context
+            .OAuthProcess
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync(TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
@@ -39,6 +50,11 @@ public class LoginRedirectTest(IdentityWebApplicationFactory factory)
         var list = locationHeader?.ToList();
         list.ShouldNotBeNull();
         list.ShouldNotBeEmpty();
-        list.First().ShouldBe(successUri);
+        list.First().ShouldStartWith("http://localhost:5220/testprovider.html");
+        
+        oAuthProcesses.ShouldNotBeEmpty();
+        oAuthProcesses.First().SuccessRedirectUri.ShouldBe(new Uri(successUri));
+        oAuthProcesses.First().ErrorRedirectUri.ShouldBe(new Uri(errorUri));
+        oAuthProcesses.First().LoginRedirectUri.ShouldBe(new Uri(list.First()));
     }
 }

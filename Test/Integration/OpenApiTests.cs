@@ -14,7 +14,7 @@ public class OpenApiTests(IdentityWebApplicationFactory factory)
     {
         // Arrange
         // Act
-        var response = await client.GetAsync("/openapi/v1.json", CancellationToken.None);
+        var response = await client.GetAsync("/openapi/v1.json", TestContext.Current.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299

@@ -28,7 +28,9 @@ public class LoginRedirectService(
         catch (Exception e)
         {
             logger.LogError(e, "Failed to get login redirect uri");
-            return loginQueryDto.ErrorRedirectUrl;
+            return new OAuthUriBuilder(loginQueryDto.ErrorRedirectUrl)
+                .AddQueryParam("error", Uri.EscapeDataString(e.Message))
+                .Build();
         }
     }
 }
