@@ -20,7 +20,7 @@ public class LoginEntity : IEntity
     
     public List<AccessEntity> Access { get; init; } = [];
 
-    public bool FirstLogin { get; init; } = false;
+    public bool FirstLogin { get; init; }
     
     public DateTime CreatedAt { get; init; }
     
@@ -34,7 +34,7 @@ public class LoginEntity : IEntity
                 new LoginEntityId(x, true));
         
         entityBuilder
-            .Property(x => x.UserId)!
+            .Property(x => x.UserId)
             .RegisterTypedKeyConversion<UserEntity, UserEntityId>(x =>
                 new UserEntityId(x, true));
         
@@ -44,7 +44,7 @@ public class LoginEntity : IEntity
             .HasForeignKey(x => x.UserId);
         
         entityBuilder
-            .Property(x => x.OAuthProcessId)!
+            .Property(x => x.OAuthProcessId)
             .RegisterTypedKeyConversion<OAuthProcessEntity, OAuthProcessEntityId>(x =>
                 new OAuthProcessEntityId(x, true));
 

@@ -4,17 +4,17 @@ using Test.Integration.Util;
 
 namespace Test.Integration;
 
-public class HealthCheckTest(IdentityWebApplicationFactory factory)
+public class OpenApiTests(IdentityWebApplicationFactory factory)
     : IClassFixture<IdentityWebApplicationFactory>
 {
     private readonly HttpClient client = factory.CreateClient();
     
     [Fact]
-    public async Task Health_Endpoint_Returns_Success()
+    public async Task OpenApiTest()
     {
         // Arrange
         // Act
-        var response = await client.GetAsync("/health", CancellationToken.None);
+        var response = await client.GetAsync("/openapi/v1.json", CancellationToken.None);
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299

@@ -1,4 +1,5 @@
-﻿using Database;
+﻿using App.Controllers;
+using Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ namespace Test.Integration.Util;
 public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
 {
     public string InMemoryDatabaseName { get; } = Guid.NewGuid().ToString();
-    
+
     protected override IHost CreateHost(IHostBuilder builder)
     {
         // Configure the host BEFORE it's built
@@ -32,19 +33,17 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureServices(services =>
         {
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<DatabaseContext>));
-            
-            if (descriptor != null)
-            {
-                services.Remove(descriptor);
-            }
+            services.RemoveAllEfCoreServices();
             
             // Add in-memory database for testing
             services.AddDbContext<DatabaseContext>(options =>
             {
                 options.UseInMemoryDatabase(InMemoryDatabaseName);
             });
+            
+            // There are assembly issues when registering controllers, so I have to do this :'(
+            services.AddControllers()
+                .AddApplicationPart(typeof(LoginController).Assembly);
             
             // Override other services as needed for testing
             services
