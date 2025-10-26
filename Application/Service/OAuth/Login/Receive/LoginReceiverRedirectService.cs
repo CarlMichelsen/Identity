@@ -60,24 +60,16 @@ public class LoginReceiverRedirectService(
     {
         channel.Writer.TryWrite(new WebhookMessage(
             Username: $"{ApplicationConstants.Name} - {ApplicationConstants.Version}",
-            Content: $"New user '{user.Username}' signed up",
+            Content: $"New user **{user.Id.Value}** signed up",
             Embeds:
             [
                 new WebhookEmbed
                 {
-                    Title = "Id",
-                    Description = user.Id.Value.ToString(),
+                    Title = user.Username,
+                    Description = user.Email,
+                    Timestamp = timeProvider.GetUtcNow().UtcDateTime,
+                    Url = user.RawAvatarUrl.AbsoluteUri,
                 },
-                new WebhookEmbed
-                {
-                    Title = "Email",
-                    Url = user.Email
-                },
-                new WebhookEmbed
-                {
-                    Title = "Signed up",
-                    Description = user.CreatedAt.ToString("o")
-                }
             ]));
     }
 

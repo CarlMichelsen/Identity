@@ -1,7 +1,7 @@
 ## Testing
 ### Useful urls
 ```bash
-
+http://localhost:5220/api/v1/Login/Test?SuccessRedirectUrl=http%3A%2F%2Flocalhost%3A5220%2Fscalar&ErrorRedirectUrl=http%3A%2F%2Flocalhost%3A5220%2Fscalar
 ```
 
 

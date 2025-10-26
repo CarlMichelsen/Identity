@@ -24,7 +24,4 @@ public class LoginController(
             .GetLoginRedirectUri(authenticationProvider, loginQueryDto);
         return this.Redirect(uri.AbsoluteUri);
     }
-
-    [HttpGet]
-    public ActionResult Get() => Ok("Hello World");
 }
