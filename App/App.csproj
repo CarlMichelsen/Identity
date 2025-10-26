@@ -26,6 +26,10 @@
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
     <PackageReference Include="EFCore.NamingConventions" Version="10.0.0-rc.2" />
+
+    <!-- Override the vulnerable transitive dependency -->
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.14.28" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.14.28" />
   </ItemGroup>
 
   <ItemGroup>
