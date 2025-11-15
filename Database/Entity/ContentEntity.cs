@@ -20,6 +20,8 @@ public class ContentEntity : IEntity
     {
         var entityBuilder = modelBuilder.Entity<ContentEntity>();
         
+        entityBuilder.HasKey(e => e.Id);
+        
         entityBuilder
             .Property(x => x.Id)
             .RegisterTypedKeyConversion<ContentEntity, ContentEntityId>(x =>

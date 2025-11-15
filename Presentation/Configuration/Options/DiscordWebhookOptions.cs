@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Presentation.Configuration;
 
-namespace Application.Configuration.Options;
+namespace Presentation.Configuration.Options;
 
 public class DiscordWebhookOptions : IConfigurationOptions
 {

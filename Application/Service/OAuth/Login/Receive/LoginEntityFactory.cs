@@ -11,18 +11,19 @@ namespace Application.Service.OAuth.Login.Receive;
 // ReSharper disable EntityFramework.NPlusOne.IncompleteDataUsage
 public class LoginEntityFactory(
     TimeProvider timeProvider,
-    DatabaseContext databaseContext) : ILoginEntityFactory
+    DatabaseContext databaseContext,
+    IFirstLoginNotifier firstLoginNotifier) : ILoginEntityFactory
 {
     public async Task<LoginEntity> CreateLogin(
         AuthenticatedUser user,
-        OAuthProcessEntity process,
-        Action<UserEntity> onNewUser)
+        OAuthProcessEntity process)
     {
         var firstLogin = false;
         var userEntity = await databaseContext
             .User
             .FirstOrDefaultAsync(u => u.AuthenticationProviderId == user.AuthenticationProviderId);
 
+        var now = timeProvider.GetUtcNow().UtcDateTime;
         if (userEntity is null)
         {
             userEntity = new UserEntity
@@ -33,7 +34,7 @@ public class LoginEntityFactory(
                 AuthenticationProvider = process.AuthenticationProvider,
                 Email =  user.Email,
                 RawAvatarUrl = user.AvatarUrl,
-                CreatedAt = timeProvider.GetUtcNow().UtcDateTime,
+                CreatedAt = now,
             };
             
             firstLogin = true;
@@ -47,14 +48,14 @@ public class LoginEntityFactory(
             OAuthProcessId =  process.Id,
             OAuthProcess = process,
             FirstLogin = firstLogin,
-            CreatedAt = timeProvider.GetUtcNow().UtcDateTime,
+            CreatedAt = now,
         };
         
         userEntity.Login.Add(loginEntity);
 
         if (firstLogin)
         {
-            onNewUser(userEntity);
+            firstLoginNotifier.NotifyFirstLogin(userEntity);
         }
 
         return loginEntity;

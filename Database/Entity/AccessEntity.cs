@@ -19,15 +19,21 @@ public class AccessEntity : BaseConnectionMetadata, IEntity
     
     public required LoginEntityId LoginId { get; init; }
     
+    // ReSharper disable once EntityFramework.ModelValidation.CircularDependency
     public LoginEntity? Login { get; init; }
     
     public required UserEntityId UserId { get; init; }
     
+    // ReSharper disable once EntityFramework.ModelValidation.CircularDependency
     public UserEntity? User { get; init; }
+    
+    public required DateTime ValidUntil { get; init; }
     
     public static void Configure(ModelBuilder modelBuilder)
     {
         var entityBuilder = modelBuilder.Entity<AccessEntity>();
+        
+        entityBuilder.HasKey(e => e.Id);
         
         entityBuilder
             .Property(x => x.Id)

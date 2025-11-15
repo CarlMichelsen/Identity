@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Application.Configuration.Options;
 using Presentation.Configuration.Options.Provider;
 
 namespace Presentation.Configuration.Options;

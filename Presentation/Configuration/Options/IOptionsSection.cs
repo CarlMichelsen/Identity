@@ -1,4 +1,4 @@
-namespace Presentation.Configuration;
+namespace Presentation.Configuration.Options;
 
 public interface IConfigurationOptions
 {

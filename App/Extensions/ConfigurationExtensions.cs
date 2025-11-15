@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Presentation.Configuration;
+using Presentation.Configuration.Options;
 
 namespace App.Extensions;
 

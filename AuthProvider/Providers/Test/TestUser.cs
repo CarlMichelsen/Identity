@@ -1,4 +1,6 @@
-﻿using Presentation;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Presentation;
 using Presentation.Service.OAuth.Model;
 
 namespace AuthProvider.Providers.Test;
@@ -22,4 +24,7 @@ public class TestUser : IAuthenticatedUserConvertible
             Email,
             AvatarUrl);
     }
+    
+    [JsonIgnore]
+    public string UserJson => JsonSerializer.Serialize(this);
 }

@@ -10,6 +10,5 @@ public interface ILoginEntityFactory
 {
     Task<LoginEntity> CreateLogin(
         AuthenticatedUser user,
-        OAuthProcessEntity process,
-        Action<UserEntity> onNewUser);
+        OAuthProcessEntity process);
 }

@@ -38,11 +38,16 @@ public class OAuthProcessEntity : IEntity
     [MaxLength(1028)]
     public string? Error { get; set; }
     
+    [MaxLength(int.MaxValue)]
+    public string? FullUserJson { get; set; }
+    
     public required DateTime CreatedAt { get; init; }
     
     public static void Configure(ModelBuilder modelBuilder)
     {
         var entityBuilder = modelBuilder.Entity<OAuthProcessEntity>();
+        
+        entityBuilder.HasKey(e => e.Id);
         
         entityBuilder
             .Property(x => x.Id)
@@ -50,7 +55,8 @@ public class OAuthProcessEntity : IEntity
                 new OAuthProcessEntityId(x, true));
         
         entityBuilder
-            .Property(x => x.UserId)!
+            .Property(x => x.UserId)
+            .IsRequired(false)!
             .RegisterTypedKeyConversion<UserEntity, UserEntityId>(x =>
                 new UserEntityId(x, true));
         
@@ -60,7 +66,8 @@ public class OAuthProcessEntity : IEntity
             .HasForeignKey(x => x.UserId);
         
         entityBuilder
-            .Property(x => x.LoginId)!
+            .Property(x => x.LoginId)
+            .IsRequired(false)!
             .RegisterTypedKeyConversion<LoginEntity, LoginEntityId>(x =>
                 new LoginEntityId(x, true));
         
@@ -72,5 +79,9 @@ public class OAuthProcessEntity : IEntity
         entityBuilder
             .HasIndex(x => x.State)
             .IsUnique();
+        
+        entityBuilder
+            .Property(x => x.FullUserJson)
+            .HasColumnType("jsonb");
     }
 }

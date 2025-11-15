@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using Application.Configuration.Options;
 using Microsoft.Extensions.Options;
 using Presentation.Client.Discord;
+using Presentation.Configuration.Options;
 
 namespace Application.Client.Discord;
 

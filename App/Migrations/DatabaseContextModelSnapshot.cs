@@ -66,6 +66,10 @@ namespace App.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("valid_until");
+
                     b.HasKey("Id")
                         .HasName("pk_access");
 
@@ -163,6 +167,11 @@ namespace App.Migrations
                         .HasColumnType("text")
                         .HasColumnName("error_redirect_uri");
 
+                    b.Property<string>("FullUserJson")
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("jsonb")
+                        .HasColumnName("full_user_json");
+
                     b.Property<Guid?>("LoginId")
                         .HasColumnType("uuid")
                         .HasColumnName("login_id");
@@ -210,15 +219,15 @@ namespace App.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<Guid>("LoginId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("login_id");
-
-                    b.Property<string>("RefreshToken")
+                    b.Property<string>("HashedRefreshToken")
                         .IsRequired()
                         .HasMaxLength(16384)
                         .HasColumnType("character varying(16384)")
-                        .HasColumnName("refresh_token");
+                        .HasColumnName("hashed_refresh_token");
+
+                    b.Property<Guid>("LoginId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("login_id");
 
                     b.Property<string>("RemoteIpAddress")
                         .IsRequired()
@@ -238,6 +247,10 @@ namespace App.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("valid_until");
 
                     b.HasKey("Id")
                         .HasName("pk_refresh");
@@ -283,6 +296,11 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("raw_avatar_url");
+
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("roles");
 
                     b.Property<string>("Username")
                         .IsRequired()

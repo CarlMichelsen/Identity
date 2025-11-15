@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database.Entity;
 
+
 public class LoginEntity : IEntity
 {
     public required LoginEntityId Id { get; init; }
-    
+
     public required UserEntityId UserId { get; init; }
     
     public UserEntity? User { get; init; }
@@ -27,6 +28,8 @@ public class LoginEntity : IEntity
     public static void Configure(ModelBuilder modelBuilder)
     {
         var entityBuilder = modelBuilder.Entity<LoginEntity>();
+        
+        entityBuilder.HasKey(e => e.Id);
         
         entityBuilder
             .Property(x => x.Id)

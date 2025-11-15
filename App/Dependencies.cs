@@ -5,7 +5,7 @@ using App.HostedServices;
 using App.JsonConverters;
 using Application.Client.Discord;
 using Application.Configuration;
-using Application.Configuration.Options;
+using Application.Service.OAuth.JsonWebToken;
 using Application.Service.OAuth.Login;
 using Application.Service.OAuth.Login.Receive;
 using AuthProvider.Providers;
@@ -17,6 +17,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Presentation;
 using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
+using Presentation.Service.OAuth.JsonWebToken;
 using Presentation.Service.OAuth.Login;
 using Presentation.Service.OAuth.Login.Receive;
 
@@ -98,6 +99,7 @@ public static class Dependencies
         
         // Client
         builder.Services
+            .AddHttpContextAccessor()
             .AddHttpClient<IDiscordWebhookMessageClient, DiscordWebhookMessageClient>()
             .AddStandardResilienceHandler();
         
@@ -115,6 +117,10 @@ public static class Dependencies
             .AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
         
         builder.Services
+            .AddScoped<IFirstLoginNotifier, FirstLoginNotifier>()
+            .AddScoped<ICookieApplier, CookieApplier>()
+            .AddScoped<IJsonWebTokenFactory, JsonWebTokenFactory>()
+            .AddScoped<ITokenPersistenceService, TokenPersistenceService>()
             .AddScoped<ILoginReceiverRedirectService, LoginReceiverRedirectService>()
             .AddScoped<ILoginEntityFactory, LoginEntityFactory>();
     }

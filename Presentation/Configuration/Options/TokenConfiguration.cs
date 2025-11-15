@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Configuration.Options;
+namespace Presentation.Configuration.Options;
 
 public class TokenConfiguration : IValidatableObject
 {

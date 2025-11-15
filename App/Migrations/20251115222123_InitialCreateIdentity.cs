@@ -39,6 +39,7 @@ namespace App.Migrations
                     username = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     raw_avatar_url = table.Column<string>(type: "text", nullable: false),
+                    roles = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -60,6 +61,7 @@ namespace App.Migrations
                     user_id = table.Column<Guid>(type: "uuid", nullable: true),
                     login_id = table.Column<Guid>(type: "uuid", nullable: true),
                     error = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: true),
+                    full_user_json = table.Column<string>(type: "jsonb", maxLength: 2147483647, nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -109,9 +111,10 @@ namespace App.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    refresh_token = table.Column<string>(type: "character varying(16384)", maxLength: 16384, nullable: false),
+                    hashed_refresh_token = table.Column<string>(type: "character varying(16384)", maxLength: 16384, nullable: false),
                     login_id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    valid_until = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     remote_ip_address = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     remote_port = table.Column<int>(type: "integer", nullable: false),
                     user_agent = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: true),
@@ -146,6 +149,7 @@ namespace App.Migrations
                     refresh_id = table.Column<Guid>(type: "uuid", nullable: false),
                     login_id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    valid_until = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     remote_ip_address = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     remote_port = table.Column<int>(type: "integer", nullable: false),
                     user_agent = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: true),

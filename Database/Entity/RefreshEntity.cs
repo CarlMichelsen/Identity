@@ -11,7 +11,7 @@ public class RefreshEntity : BaseConnectionMetadata, IEntity
     
     [MinLength(16)]
     [MaxLength(16384)]
-    public required string RefreshToken { get; init; }
+    public required string HashedRefreshToken { get; init; }
     
     public required LoginEntityId LoginId { get; init; }
     
@@ -19,13 +19,18 @@ public class RefreshEntity : BaseConnectionMetadata, IEntity
     
     public required UserEntityId UserId { get; init; }
     
+    // ReSharper disable once EntityFramework.ModelValidation.CircularDependency
     public UserEntity? User { get; init; }
 
     public List<AccessEntity> Access { get; init; } = [];
     
+    public required DateTime ValidUntil { get; set; }
+    
     public static void Configure(ModelBuilder modelBuilder)
     {
         var entityBuilder = modelBuilder.Entity<RefreshEntity>();
+        
+        entityBuilder.HasKey(e => e.Id);
         
         entityBuilder
             .Property(x => x.Id)

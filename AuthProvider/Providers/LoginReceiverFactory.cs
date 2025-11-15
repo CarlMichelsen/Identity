@@ -8,15 +8,16 @@ using Presentation.Service.OAuth.Login.Receive;
 namespace AuthProvider.Providers;
 
 public class LoginReceiverFactory(
-    IServiceProvider serviceProvider) : ILoginReceiverFactory
+    IServiceScopeFactory serviceScopeFactory) : ILoginReceiverFactory
 {
     public ILoginReceiver Create(AuthenticationProvider provider)
     {
+        using var scope = serviceScopeFactory.CreateScope();
         return provider switch
         {
-            AuthenticationProvider.Test => serviceProvider.GetRequiredService<TestLoginReceiver>(),
-            AuthenticationProvider.Discord => serviceProvider.GetRequiredService<DiscordLoginReceiver>(),
-            AuthenticationProvider.GitHub => serviceProvider.GetRequiredService<GitHubLoginReceiver>(),
+            AuthenticationProvider.Test => scope.ServiceProvider.GetRequiredService<TestLoginReceiver>(),
+            AuthenticationProvider.Discord => scope.ServiceProvider.GetRequiredService<DiscordLoginReceiver>(),
+            AuthenticationProvider.GitHub => scope.ServiceProvider.GetRequiredService<GitHubLoginReceiver>(),
             _ => throw new ArgumentOutOfRangeException(nameof(provider), provider, null)
         };
     }
