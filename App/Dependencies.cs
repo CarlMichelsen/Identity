@@ -117,7 +117,11 @@ public static class Dependencies
             .AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
         
         builder.Services
+            .AddScoped<ILogoutService, LogoutService>()
+            .AddScoped<IRefreshService, RefreshService>()
+            .AddScoped<ITokenRefreshPersistenceService, TokenRefreshPersistenceService>()
             .AddScoped<IFirstLoginNotifier, FirstLoginNotifier>()
+            .AddScoped<ITokenValidator, TokenValidator>()
             .AddScoped<ICookieApplier, CookieApplier>()
             .AddScoped<IJsonWebTokenFactory, JsonWebTokenFactory>()
             .AddScoped<ITokenPersistenceService, TokenPersistenceService>()

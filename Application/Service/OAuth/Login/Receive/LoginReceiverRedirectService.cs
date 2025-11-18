@@ -39,9 +39,14 @@ public class LoginReceiverRedirectService(
             var tokenPair = await tokenPersistenceService.CreateAndPersistTokenPair(
                 login,
                 oAuthProcessEntity);
-            
+
+            var refresh = login.Refresh.First();
+            logger.LogARefreshTokenWasMintedByUserUseridWithIdRefreshEntityId(login.UserId, refresh.Id);
             cookieApplier.SetCookie(TokenType.Refresh, tokenPair.RefreshToken.Token);
+            
+            logger.LogAnAccessTokenWasMintedByUserUseridWithIdAccessEntityId(login.UserId, refresh.Access.First().Id);
             cookieApplier.SetCookie(TokenType.Access, tokenPair.AccessToken.Token);
+            
             return oAuthProcessEntity.SuccessRedirectUri;
         }
         catch (Exception e)
@@ -61,7 +66,7 @@ public class LoginReceiverRedirectService(
             await databaseContext.SaveChangesAsync();
             return new OAuthUriBuilder(oAuthProcessEntity.ErrorRedirectUri)
                 .AddQueryParam("error", Uri.EscapeDataString(oAuthProcessEntity.Error))
-                .Build();;
+                .Build();
         }
     }
 

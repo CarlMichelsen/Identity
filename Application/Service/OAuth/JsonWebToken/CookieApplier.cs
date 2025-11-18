@@ -36,7 +36,21 @@ public class CookieApplier(
             throw ex;
         }
     }
-    
+
+    public void DeleteCookie(TokenType tokenType)
+    {
+        var httpContext = httpContextAccessor.HttpContext ?? throw new OAuthException("HttpContext is null");
+        var tokenConfiguration = tokenType switch
+        {
+            TokenType.Access => authOptions.Value.AccessToken,
+            TokenType.Refresh => authOptions.Value.RefreshToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(tokenType), tokenType, null)
+        };
+        
+        httpContext.Response.Cookies.Delete(
+            tokenConfiguration.CookieName);
+    }
+
     private static Exception? SetAuthCookie(
         HttpResponse httpResponse,
         TimeProvider timeProvider,

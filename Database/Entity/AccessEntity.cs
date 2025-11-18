@@ -27,6 +27,7 @@ public class AccessEntity : BaseConnectionMetadata, IEntity
     // ReSharper disable once EntityFramework.ModelValidation.CircularDependency
     public UserEntity? User { get; init; }
     
+    // This should only be set once - access-tokens cannot be invalidated. 
     public required DateTime ValidUntil { get; init; }
     
     public static void Configure(ModelBuilder modelBuilder)
