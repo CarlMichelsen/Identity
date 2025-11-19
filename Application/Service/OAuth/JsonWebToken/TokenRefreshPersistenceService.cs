@@ -4,6 +4,7 @@ using Database.Entity;
 using Database.Entity.Id;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Presentation.Configuration.Options;
 using Presentation.Service.OAuth;
@@ -15,7 +16,8 @@ public class TokenRefreshPersistenceService(
     TimeProvider timeProvider,
     IOptionsSnapshot<AuthOptions> authOptions,
     IHttpContextAccessor httpContextAccessor,
-    DatabaseContext databaseContext) : ITokenRefreshPersistenceService
+    DatabaseContext databaseContext,
+    IHostEnvironment hostEnvironment) : ITokenRefreshPersistenceService
 {
     public Task<RefreshEntity?> GetRefreshEntity(
         RefreshEntityId refreshEntityId)
@@ -46,7 +48,7 @@ public class TokenRefreshPersistenceService(
             AuthenticationProviderId: user.AuthenticationProviderId);
         var refreshToken = JwtCreator.CreateJwt(tokenConfiguration, jwtData, now);
         
-        var connectionMetadata = httpContextAccessor.GetConnectionMetadata(timeProvider);
+        var connectionMetadata = httpContextAccessor.GetConnectionMetadata(timeProvider, hostEnvironment);
         var newRefreshEntity = new RefreshEntity
         {
             Id = tokenId,
@@ -86,7 +88,7 @@ public class TokenRefreshPersistenceService(
             AuthenticationProviderId: user.AuthenticationProviderId);
         var accessToken = JwtCreator.CreateJwt(tokenConfiguration, jwtData, now);
         
-        var connectionMetadata = httpContextAccessor.GetConnectionMetadata(timeProvider);
+        var connectionMetadata = httpContextAccessor.GetConnectionMetadata(timeProvider, hostEnvironment);
         var newAccessEntity = new AccessEntity
         {
             Id = tokenId,

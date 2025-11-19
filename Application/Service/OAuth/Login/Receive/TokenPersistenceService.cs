@@ -2,6 +2,7 @@
 using Database.Entity;
 using Database.Entity.Id;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Presentation.Configuration.Options;
 using Presentation.Service.OAuth.JsonWebToken;
@@ -16,13 +17,14 @@ public class TokenPersistenceService(
     DatabaseContext databaseContext,
     TimeProvider timeProvider,
     IHttpContextAccessor httpContextAccessor,
+    IHostEnvironment hostEnvironment,
     IJsonWebTokenFactory jsonWebTokenFactory) : ITokenPersistenceService
 {
     public async Task<TokenPair> CreateAndPersistTokenPair(
         LoginEntity loginEntity,
         OAuthProcessEntity oAuthProcessEntity)
     {
-        var connectionMetadata = httpContextAccessor.GetConnectionMetadata(timeProvider);
+        var connectionMetadata = httpContextAccessor.GetConnectionMetadata(timeProvider, hostEnvironment);
         var refreshId = new RefreshEntityId(Guid.CreateVersion7());
         var accessId = new AccessEntityId(Guid.CreateVersion7());
         var tokenPair = jsonWebTokenFactory.CreateTokenPairFromNewLoginEntity(

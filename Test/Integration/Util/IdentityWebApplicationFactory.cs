@@ -1,10 +1,12 @@
-﻿using Database;
+﻿using Application.Configuration;
+using Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.Internal;
 using Presentation.Client.Discord;
 using Test.Fakes;
 
@@ -13,6 +15,12 @@ namespace Test.Integration.Util;
 public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
 {
     public string InMemoryDatabaseName { get; } = Guid.NewGuid().ToString();
+    
+    /// <summary>
+    /// Optional custom TimeProvider for testing time-dependent behavior.
+    /// If set, this will replace the default TimeProvider in the DI container.
+    /// </summary>
+    public TimeProvider? CustomTimeProvider { get; set; }
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
@@ -61,11 +69,30 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>
                 options.UseInMemoryDatabase(InMemoryDatabaseName);
             });
             
+            // Replace TimeProvider if a custom one is provided
+            if (CustomTimeProvider != null)
+            {
+                var timeProviderDescriptor = services
+                    .FirstOrDefault(d => d.ServiceType == typeof(TimeProvider));
+                
+                if (timeProviderDescriptor != null)
+                {
+                    services.Remove(timeProviderDescriptor);
+                }
+                
+                services.AddSingleton(CustomTimeProvider);
+            }
+            
+            services.AddSingleton<IHostEnvironment>(new HostingEnvironment
+            {
+                EnvironmentName = ApplicationConstants.TestEnvironment
+            });
+            
             // Override other services as needed for testing
             services
                 .AddScoped<IDiscordWebhookMessageClient, FakeDiscordWebhookMessageClient>();
         });
         
-        builder.UseEnvironment("testing");
+        builder.UseEnvironment(ApplicationConstants.TestEnvironment);
     }
 }

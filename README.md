@@ -4,7 +4,7 @@
 
 **A modern OAuth 2.0 identity provider built with ASP.NET Core**
 
-[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -83,7 +83,7 @@ sequenceDiagram
 
 ### Prerequisites
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download)
 - [Docker](https://www.docker.com/get-started) (for PostgreSQL)
 - [Entity Framework Core CLI](https://docs.microsoft.com/en-us/ef/core/cli/dotnet)
 

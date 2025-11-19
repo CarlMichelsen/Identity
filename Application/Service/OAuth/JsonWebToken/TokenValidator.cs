@@ -10,6 +10,7 @@ using Presentation.Service.OAuth.JsonWebToken;
 namespace Application.Service.OAuth.JsonWebToken;
 
 public class TokenValidator(
+    TimeProvider timeProvider,
     IHttpContextAccessor contextAccessor,
     IOptionsSnapshot<AuthOptions> authOptions)
     : ITokenValidator
@@ -49,7 +50,19 @@ public class TokenValidator(
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = validateLifetime,
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
+                    LifetimeValidator = (notBefore, expires, _, _) =>
+                    {
+                        var now = timeProvider.GetUtcNow().UtcDateTime;
+        
+                        if (notBefore.HasValue && now < notBefore.Value)
+                            return false;
+            
+                        if (expires.HasValue && now > expires.Value)
+                            return false;
+            
+                        return true;
+                    }
                 };
 
                 return (ClaimsPrincipal : handler.ValidateToken(token, parameters, out _), JwtValue: token);
