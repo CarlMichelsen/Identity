@@ -29,12 +29,34 @@ namespace App.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "user",
+                schema: "identity",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    authentication_provider_id = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: false),
+                    authentication_provider = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: false),
+                    username = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    raw_avatar_url = table.Column<string>(type: "text", nullable: false),
+                    image_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    image_processing_attempts = table.Column<int>(type: "integer", nullable: false),
+                    roles = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_user", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "image",
                 schema: "identity",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     source = table.Column<string>(type: "text", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     small_id = table.Column<Guid>(type: "uuid", nullable: false),
                     medium_id = table.Column<Guid>(type: "uuid", nullable: false),
                     large_id = table.Column<Guid>(type: "uuid", nullable: false)
@@ -63,32 +85,11 @@ namespace App.Migrations
                         principalTable: "content",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "user",
-                schema: "identity",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    authentication_provider_id = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: false),
-                    authentication_provider = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: false),
-                    username = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    raw_avatar_url = table.Column<string>(type: "text", nullable: false),
-                    image_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    image_processing_attempts = table.Column<int>(type: "integer", nullable: false),
-                    roles = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_user", x => x.id);
                     table.ForeignKey(
-                        name: "fk_user_image_image_id",
-                        column: x => x.image_id,
+                        name: "fk_image_user_user_id",
+                        column: x => x.user_id,
                         principalSchema: "identity",
-                        principalTable: "image",
+                        principalTable: "user",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -264,6 +265,13 @@ namespace App.Migrations
                 column: "small_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_image_user_id",
+                schema: "identity",
+                table: "image",
+                column: "user_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_login_o_auth_process_id",
                 schema: "identity",
                 table: "login",
@@ -300,12 +308,6 @@ namespace App.Migrations
                 schema: "identity",
                 table: "refresh",
                 column: "user_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_user_image_id",
-                schema: "identity",
-                table: "user",
-                column: "image_id");
         }
 
         /// <inheritdoc />
@@ -316,7 +318,15 @@ namespace App.Migrations
                 schema: "identity");
 
             migrationBuilder.DropTable(
+                name: "image",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
                 name: "refresh",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "content",
                 schema: "identity");
 
             migrationBuilder.DropTable(
@@ -329,14 +339,6 @@ namespace App.Migrations
 
             migrationBuilder.DropTable(
                 name: "user",
-                schema: "identity");
-
-            migrationBuilder.DropTable(
-                name: "image",
-                schema: "identity");
-
-            migrationBuilder.DropTable(
-                name: "content",
                 schema: "identity");
         }
     }

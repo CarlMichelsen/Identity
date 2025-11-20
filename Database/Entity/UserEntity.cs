@@ -84,8 +84,8 @@ public class UserEntity : IEntity
                 new ImageEntityId(x, true));
         entityBuilder
             .HasOne(x => x.Image)
-            .WithMany()
-            .HasForeignKey(x => x.ImageId)
+            .WithOne(x => x.User)
+            .HasForeignKey<UserEntity>(x => x.ImageId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

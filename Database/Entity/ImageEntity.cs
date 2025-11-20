@@ -10,17 +10,21 @@ public class ImageEntity : IEntity
     
     public required Uri Source { get; init; }
     
+    // User
+    public required UserEntityId UserId { get; init; }
+    public UserEntity? User { get; init; }
+    
     // Small
     public required ContentEntityId SmallId { get; init; }
-    public required ContentEntity Small { get; init; }
+    public ContentEntity? Small { get; init; }
     
     // Medium
     public required ContentEntityId MediumId { get; init; }
-    public required ContentEntity Medium { get; init; }
+    public ContentEntity? Medium { get; init; }
     
     // Large
     public required ContentEntityId LargeId { get; init; }
-    public required ContentEntity Large { get; init; }
+    public ContentEntity? Large { get; init; }
     
     public static void Configure(ModelBuilder modelBuilder)
     {
@@ -32,6 +36,16 @@ public class ImageEntity : IEntity
             .Property(x => x.Id)
             .RegisterTypedKeyConversion<ImageEntity, ImageEntityId>(x =>
                 new ImageEntityId(x, true));
+        
+        // Small
+        entityBuilder
+            .Property(x => x.UserId)
+            .RegisterTypedKeyConversion<UserEntity, UserEntityId>(x =>
+                new UserEntityId(x, true));
+        entityBuilder
+            .HasOne(x => x.User)
+            .WithOne(x => x.Image)
+            .HasForeignKey<ImageEntity>(x => x.UserId);
         
         // Small
         entityBuilder

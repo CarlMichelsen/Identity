@@ -21,6 +21,7 @@ public class UserImageProcessor(
     
     /// <inheritdoc />
     public async Task<ImageEntity> ProcessImage(
+        UserEntityId userId,
         Uri imageUri,
         CancellationToken cancellationToken = default)
     {
@@ -55,7 +56,7 @@ public class UserImageProcessor(
                 outputStream,
                 new JpegEncoder
                 {
-                    Quality = 100,
+                    Quality = 85,
                 },
                 cancellationToken);
             
@@ -70,6 +71,7 @@ public class UserImageProcessor(
         return new ImageEntity
         {
             Id = new ImageEntityId(Guid.CreateVersion7()),
+            UserId = userId,
             Source = imageUri,
             SmallId = smallId,
             Small = new ContentEntity

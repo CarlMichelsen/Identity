@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using App.Constraints;
 using App.Extensions;
 using App.HostedServices;
@@ -14,6 +15,7 @@ using AuthProvider.Providers.Discord;
 using AuthProvider.Providers.GitHub;
 using AuthProvider.Providers.Test;
 using Database;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Presentation;
 using Presentation.Client.Discord;
@@ -86,6 +88,19 @@ public static class Dependencies
         builder.Services
             .AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy());
+        
+        // Rate-limiting
+        builder.Services.AddRateLimiter(options =>
+        {
+            // Fixed window rate limiter for images
+            options.AddFixedWindowLimiter("images", limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 25;
+                limiterOptions.Window = TimeSpan.FromMinutes(1); // per minute
+                limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                limiterOptions.QueueLimit = 10; // Queue up to 10 requests
+            });
+        });
 
         // Queue
         builder.Services

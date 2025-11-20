@@ -16,26 +16,34 @@ public class ProfileImageProcessor(
             using var scope = serviceScopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
             var imageProcessor = scope.ServiceProvider.GetRequiredService<IUserImageProcessor>();
-            var user = await GetUserToBeProcessed(dbContext, stoppingToken);
+            var waitTime = TimeSpan.FromMinutes(1);
             
+            UserEntity? user = null;
             try
             {
+                user = await GetUserToBeProcessed(dbContext, stoppingToken);
                 if (user is null)
                 {
-                    // All users have an image - hibernate a bit
-                    var timespan = TimeSpan.FromHours(2);
-                    logger.LogInformation("All users have an image - hibernating a for {TimeSpan}", timespan);
-                    await Task.Delay(timespan, stoppingToken);
-                    continue;
+                    // All users have an image - hibernate for a bit
+                    waitTime = TimeSpan.FromHours(1);
+                    logger.LogInformation(
+                        "All users have an image - hibernating a for {TimeSpan}",
+                        waitTime);
+                    throw new SkipException();
                 }
 
                 var imageEntity = await imageProcessor
-                    .ProcessImage(user.RawAvatarUrl, stoppingToken);
+                    .ProcessImage(user.Id, user.RawAvatarUrl, stoppingToken);
 
                 user.ImageId = imageEntity.Id;
                 user.Image = imageEntity;
-                logger.LogInformation("User {UserId} has been updated", user.Id);
-                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                logger.LogInformation(
+                    "User {UserId} has had their images updated",
+                    user.Id);
+            }
+            catch (SkipException)
+            {
+                /* Do nothing here - just run delay in finally block */
             }
             catch (OperationCanceledException)
             {
@@ -45,13 +53,12 @@ public class ProfileImageProcessor(
             }
             catch (Exception e)
             {
-                var waitTime = TimeSpan.FromMinutes(15);
+                waitTime = TimeSpan.FromMinutes(15);
                 logger.LogError(
                     e,
                     "{Processor} failed - further image processing will be delayed by {TimeSpan}",
                     nameof(ProfileImageProcessor),
                     waitTime);
-                await Task.Delay(waitTime, stoppingToken);
             }
             finally
             {
@@ -61,6 +68,7 @@ public class ProfileImageProcessor(
                 }
                 
                 await dbContext.SaveChangesAsync(stoppingToken);
+                await Task.Delay(waitTime, stoppingToken);
             }
         }
     }
@@ -71,9 +79,11 @@ public class ProfileImageProcessor(
     {
         return dbContext
             .User
-            .OrderByDescending(u => u.CreatedAt)
+            .OrderBy(u => u.CreatedAt)
             .ThenBy(u => u.ImageProcessingAttempts)
             .Where(u => u.ImageProcessingAttempts < 5 && u.ImageId == null)
             .FirstOrDefaultAsync(stoppingToken);
     }
+
+    private class SkipException : Exception;
 }

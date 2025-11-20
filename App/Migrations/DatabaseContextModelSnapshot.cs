@@ -129,6 +129,10 @@ namespace App.Migrations
                         .HasColumnType("text")
                         .HasColumnName("source");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
                     b.HasKey("Id")
                         .HasName("pk_image");
 
@@ -140,6 +144,10 @@ namespace App.Migrations
 
                     b.HasIndex("SmallId")
                         .HasDatabaseName("ix_image_small_id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_image_user_id");
 
                     b.ToTable("image", "identity");
                 });
@@ -357,9 +365,6 @@ namespace App.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user");
 
-                    b.HasIndex("ImageId")
-                        .HasDatabaseName("ix_user_image_id");
-
                     b.ToTable("user", "identity");
                 });
 
@@ -416,11 +421,20 @@ namespace App.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_image_content_small_id");
 
+                    b.HasOne("Database.Entity.UserEntity", "User")
+                        .WithOne("Image")
+                        .HasForeignKey("Database.Entity.ImageEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_image_user_user_id");
+
                     b.Navigation("Large");
 
                     b.Navigation("Medium");
 
                     b.Navigation("Small");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Database.Entity.LoginEntity", b =>
@@ -475,17 +489,6 @@ namespace App.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Database.Entity.UserEntity", b =>
-                {
-                    b.HasOne("Database.Entity.ImageEntity", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_user_image_image_id");
-
-                    b.Navigation("Image");
-                });
-
             modelBuilder.Entity("Database.Entity.LoginEntity", b =>
                 {
                     b.Navigation("Access");
@@ -506,6 +509,8 @@ namespace App.Migrations
             modelBuilder.Entity("Database.Entity.UserEntity", b =>
                 {
                     b.Navigation("Access");
+
+                    b.Navigation("Image");
 
                     b.Navigation("Login");
 
