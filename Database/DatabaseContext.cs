@@ -15,6 +15,8 @@ public class DatabaseContext(
 
     public DbSet<UserEntity> User => Set<UserEntity>();
     
+    public DbSet<ImageEntity> Image => Set<ImageEntity>();
+    
     public DbSet<LoginEntity> Login => Set<LoginEntity>();
     
     public DbSet<RefreshEntity> Refresh => Set<RefreshEntity>();
@@ -29,6 +31,7 @@ public class DatabaseContext(
         OAuthProcessEntity.Configure(modelBuilder);
 
         UserEntity.Configure(modelBuilder);
+        ImageEntity.Configure(modelBuilder);
         LoginEntity.Configure(modelBuilder);
         RefreshEntity.Configure(modelBuilder);
         AccessEntity.Configure(modelBuilder);

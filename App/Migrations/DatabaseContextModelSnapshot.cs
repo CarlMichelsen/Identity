@@ -106,6 +106,44 @@ namespace App.Migrations
                     b.ToTable("content", "identity");
                 });
 
+            modelBuilder.Entity("Database.Entity.ImageEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("LargeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("large_id");
+
+                    b.Property<Guid>("MediumId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("medium_id");
+
+                    b.Property<Guid>("SmallId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("small_id");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("source");
+
+                    b.HasKey("Id")
+                        .HasName("pk_image");
+
+                    b.HasIndex("LargeId")
+                        .HasDatabaseName("ix_image_large_id");
+
+                    b.HasIndex("MediumId")
+                        .HasDatabaseName("ix_image_medium_id");
+
+                    b.HasIndex("SmallId")
+                        .HasDatabaseName("ix_image_small_id");
+
+                    b.ToTable("image", "identity");
+                });
+
             modelBuilder.Entity("Database.Entity.LoginEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -292,6 +330,14 @@ namespace App.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("email");
 
+                    b.Property<Guid?>("ImageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_id");
+
+                    b.Property<int>("ImageProcessingAttempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("image_processing_attempts");
+
                     b.Property<string>("RawAvatarUrl")
                         .IsRequired()
                         .HasColumnType("text")
@@ -310,6 +356,9 @@ namespace App.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_user");
+
+                    b.HasIndex("ImageId")
+                        .HasDatabaseName("ix_user_image_id");
 
                     b.ToTable("user", "identity");
                 });
@@ -342,6 +391,36 @@ namespace App.Migrations
                     b.Navigation("Refresh");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Database.Entity.ImageEntity", b =>
+                {
+                    b.HasOne("Database.Entity.ContentEntity", "Large")
+                        .WithMany()
+                        .HasForeignKey("LargeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_image_content_large_id");
+
+                    b.HasOne("Database.Entity.ContentEntity", "Medium")
+                        .WithMany()
+                        .HasForeignKey("MediumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_image_content_medium_id");
+
+                    b.HasOne("Database.Entity.ContentEntity", "Small")
+                        .WithMany()
+                        .HasForeignKey("SmallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_image_content_small_id");
+
+                    b.Navigation("Large");
+
+                    b.Navigation("Medium");
+
+                    b.Navigation("Small");
                 });
 
             modelBuilder.Entity("Database.Entity.LoginEntity", b =>
@@ -394,6 +473,17 @@ namespace App.Migrations
                     b.Navigation("Login");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Database.Entity.UserEntity", b =>
+                {
+                    b.HasOne("Database.Entity.ImageEntity", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_user_image_image_id");
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("Database.Entity.LoginEntity", b =>

@@ -35,6 +35,6 @@ public static class TestUserContainer
 
     private static Uri GetAvatarUri(string authenticationProviderId)
     {
-        return new Uri($"https://api.dicebear.com/9.x/initials/svg?seed={authenticationProviderId}");
+        return new Uri($"https://api.dicebear.com/9.x/initials/png?seed={authenticationProviderId}");
     }
 }

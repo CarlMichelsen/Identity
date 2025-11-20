@@ -54,12 +54,14 @@ public class LoginEntity : IEntity
         entityBuilder
             .HasOne(x => x.OAuthProcess)
             .WithOne(x => x.Login)
-            .HasForeignKey<LoginEntity>(x => x.OAuthProcessId);
+            .HasForeignKey<LoginEntity>(x => x.OAuthProcessId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         entityBuilder
             .HasMany(x => x.Refresh)
             .WithOne(x => x.Login)
-            .HasForeignKey(x => x.LoginId);
+            .HasForeignKey(x => x.LoginId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         entityBuilder
             .HasMany(x => x.Access)

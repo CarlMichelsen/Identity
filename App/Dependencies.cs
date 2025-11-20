@@ -5,6 +5,7 @@ using App.HostedServices;
 using App.JsonConverters;
 using Application.Client.Discord;
 using Application.Configuration;
+using Application.Service.Image;
 using Application.Service.OAuth.JsonWebToken;
 using Application.Service.OAuth.Login;
 using Application.Service.OAuth.Login.Receive;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Presentation;
 using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
+using Presentation.Service.Image;
 using Presentation.Service.OAuth.JsonWebToken;
 using Presentation.Service.OAuth.Login;
 using Presentation.Service.OAuth.Login.Receive;
@@ -94,6 +96,10 @@ public static class Dependencies
             .AddSingleton<DiscordWebhookQueueProcessor>()
             .AddHostedService<DiscordWebhookQueueProcessor>();
         
+        builder.Services
+            .AddSingleton<ProfileImageProcessor>()
+            .AddHostedService<ProfileImageProcessor>();
+        
         // Database
         builder.AddDatabase<DatabaseContext>();
         
@@ -117,6 +123,7 @@ public static class Dependencies
             .AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
         
         builder.Services
+            .AddScoped<IUserImageProcessor, UserImageProcessor>()
             .AddScoped<ILogoutService, LogoutService>()
             .AddScoped<IRefreshService, RefreshService>()
             .AddScoped<ITokenRefreshPersistenceService, TokenRefreshPersistenceService>()

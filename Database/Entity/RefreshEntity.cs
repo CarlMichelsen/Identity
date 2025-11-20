@@ -55,6 +55,7 @@ public class RefreshEntity : BaseConnectionMetadata, IEntity
         entityBuilder
             .HasMany(x => x.Access)
             .WithOne(x => x.Refresh)
-            .HasForeignKey(x => x.RefreshId);
+            .HasForeignKey(x => x.RefreshId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

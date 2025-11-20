@@ -27,6 +27,16 @@ public class UserEntity : IEntity
     public required string Email { get; init; }
     
     public required Uri RawAvatarUrl { get; init; }
+    
+    public ImageEntityId? ImageId { get; set; }
+    
+    public ImageEntity? Image { get; set; }
+    
+    /// <summary>
+    /// The amount of image processing attempts that have been made on this entity.
+    /// Ideally 1 attempt per entity.
+    /// </summary>
+    public int ImageProcessingAttempts { get; set; }
 
     public List<LoginEntity> Login { get; init; } = [];
     
@@ -66,5 +76,16 @@ public class UserEntity : IEntity
         entityBuilder
             .HasMany(x => x.Access)
             .WithOne(x => x.User);
+        
+        // Image
+        entityBuilder
+            .Property(x => x.ImageId)!
+            .RegisterTypedKeyConversion<ImageEntity, ImageEntityId>(x =>
+                new ImageEntityId(x, true));
+        entityBuilder
+            .HasOne(x => x.Image)
+            .WithMany()
+            .HasForeignKey(x => x.ImageId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
