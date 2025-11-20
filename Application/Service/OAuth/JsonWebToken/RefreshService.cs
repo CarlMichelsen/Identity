@@ -10,7 +10,7 @@ using Presentation.Service.OAuth.JsonWebToken;
 
 namespace Application.Service.OAuth.JsonWebToken;
 
-public partial class RefreshService(
+public class RefreshService(
     ILogger<RefreshService> logger,
     TimeProvider timeProvider,
     IOptionsSnapshot<AuthOptions> authOptions,

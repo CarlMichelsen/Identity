@@ -18,16 +18,16 @@ Identity Service is a secure, production-ready OAuth 2.0 identity provider that 
 
 ### ✨ Key Features
 
-| Feature | Description |
-|---------|-------------|
-| 🔑 **Multi-Provider OAuth** | Discord, GitHub, and Test (development) authentication |
-| 🎫 **JWT Authentication** | Secure token-based auth with access & refresh tokens |
-| 🍪 **Cookie Management** | Automatic cookie handling for web applications |
-| 🔄 **Token Refresh** | Built-in refresh mechanism for maintaining sessions |
-| 🗄️ **PostgreSQL Database** | Persistent storage for users, logins, and tokens |
-| 🛡️ **Domain Whitelisting** | CORS configuration with secure domain whitelisting |
-| 💚 **Health Checks** | Built-in monitoring endpoints |
-| 📚 **OpenAPI/Scalar** | Interactive API documentation |
+| Feature                         | Description                                            |
+|---------------------------------|--------------------------------------------------------|
+| 🔑 **Multi-Provider OAuth**     | Discord, GitHub, and Test (development) authentication |
+| 🎫 **JWT Authentication**       | Secure token-based auth with access & refresh tokens   |
+| 🍪 **Cookie Management**        | Automatic cookie handling for web applications         |
+| 🔄 **Token Refresh**            | Built-in refresh mechanism for maintaining sessions    |
+| 🗄️ **PostgreSQL Database**     | Persistent storage for users, logins, and tokens       |
+| 🛡️ **Domain Whitelisting**     | CORS configuration with secure domain whitelisting     |
+| 💚 **Health Checks**            | Built-in monitoring endpoints                          |
+| 📚 **OpenAPI/Scalar**           | Interactive API documentation                          |
 
 ---
 
