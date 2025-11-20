@@ -33,48 +33,34 @@ Identity Service is a secure, production-ready OAuth 2.0 identity provider that 
 
 ## 🔄 Authentication Flow
 
-The following diagram illustrates the complete OAuth authentication flow:
+The following diagram illustrates the OAuth authentication flow:
 
 ```mermaid
 sequenceDiagram
     participant User
     participant Client as Client App
-    participant Identity as Identity Service
-    participant Provider as OAuth Provider<br/>(Discord/GitHub)
-    participant DB as Database
+    participant API as Identity Service
+    participant Provider as OAuth Provider
 
-    Note over User,DB: Login Flow
-    User->>Client: Click "Login with Provider"
-    Client->>Identity: GET /api/v1/Login/{provider}?SuccessRedirectUrl&ErrorRedirectUrl
-    Identity->>DB: Create OAuthProcessEntity (state)
-    Identity->>Client: Redirect to OAuth Provider
+    Note over User,Provider: Login Flow
+    User->>Client: Click "Login"
+    Client->>API: GET /api/v1/Login/{provider}
+    API->>Client: Redirect to OAuth Provider
     Client->>Provider: Authorization Request
     Provider->>User: Login & Authorize
     User->>Provider: Credentials & Consent
-    Provider->>Identity: Redirect to /api/v1/OAuth/Authorize/{provider}?code&state
-    Identity->>Provider: Exchange code for user info
-    Provider->>Identity: User profile data
-    Identity->>DB: Create/Update User, LoginEntity
-    Identity->>DB: Create AccessEntity & RefreshEntity
-    Identity->>Identity: Generate JWT tokens (access + refresh)
-    Identity->>Client: Set cookies & redirect to SuccessRedirectUrl
+    Provider->>API: Callback with code & state
+    API->>Provider: Exchange code for user info
+    Provider->>API: User profile data
+    API->>Client: Set auth cookies & redirect to success URL
     
-    Note over User,DB: Authenticated Requests
-    Client->>Identity: API Request with JWT cookie
-    Identity->>Identity: Validate access token
-    Identity->>Client: Protected resource
+    Note over User,Provider: Authenticated Requests
+    Client->>API: API Request with auth cookies
+    API->>Client: Protected resource
 
-    Note over User,DB: Token Refresh Flow
-    Client->>Identity: GET /api/v1/Auth/Refresh (with refresh token)
-    Identity->>DB: Validate RefreshEntity
-    Identity->>DB: Create new AccessEntity
-    Identity->>Identity: Generate new access JWT
-    Identity->>Client: Set new access cookie, return 200 OK
-
-    Note over User,DB: Logout Flow
-    Client->>Identity: DELETE /api/v1/Auth/Logout
-    Identity->>DB: Invalidate tokens
-    Identity->>Client: Clear cookies, return 200 OK
+    Note over User,Provider: Token Refresh
+    Client->>API: GET /api/v1/Auth/Refresh
+    API->>Client: Refresh tokens & return 200 OK
 ```
 
 ---

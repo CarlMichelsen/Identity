@@ -56,11 +56,15 @@ public class TokenValidator(
                         var now = timeProvider.GetUtcNow().UtcDateTime;
         
                         if (notBefore.HasValue && now < notBefore.Value)
+                        {
                             return false;
-            
+                        }
+
                         if (expires.HasValue && now > expires.Value)
+                        {
                             return false;
-            
+                        }
+
                         return true;
                     }
                 };
