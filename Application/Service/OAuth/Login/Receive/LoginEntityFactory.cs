@@ -21,6 +21,7 @@ public class LoginEntityFactory(
         var firstLogin = false;
         var userEntity = await databaseContext
             .User
+            .Include(u => u.Image)
             .FirstOrDefaultAsync(u => u.AuthenticationProviderId == user.AuthenticationProviderId);
 
         var now = timeProvider.GetUtcNow().UtcDateTime;

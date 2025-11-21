@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Presentation.Configuration.Options;
+using Presentation.Service;
 using Presentation.Service.OAuth;
 using Presentation.Service.OAuth.JsonWebToken;
 
@@ -17,7 +18,8 @@ public class TokenRefreshPersistenceService(
     IOptionsSnapshot<AuthOptions> authOptions,
     IHttpContextAccessor httpContextAccessor,
     DatabaseContext databaseContext,
-    IHostEnvironment hostEnvironment) : ITokenRefreshPersistenceService
+    IHostEnvironment hostEnvironment,
+    IUserImageUriFactory userImageUriFactory) : ITokenRefreshPersistenceService
 {
     public Task<RefreshEntity?> GetRefreshEntity(
         RefreshEntityId refreshEntityId)
@@ -25,6 +27,7 @@ public class TokenRefreshPersistenceService(
         return databaseContext
             .Refresh
             .Include(r => r.User)
+            .ThenInclude(u => u!.Image)
             .FirstOrDefaultAsync(r => r.Id == refreshEntityId);
     }
 
@@ -43,7 +46,9 @@ public class TokenRefreshPersistenceService(
             Email: user.Email,
             Jti: tokenId.ToString(),
             Roles: user.Roles,
-            Profile: user.RawAvatarUrl,
+            Small: user.Image is null ? user.RawAvatarUrl : userImageUriFactory.GetSmallImageUri(user.Image),
+            Medium: user.Image is null ? null : userImageUriFactory.GetMediumImageUri(user.Image),
+            Large: user.Image is null ? null : userImageUriFactory.GetLargeImageUri(user.Image),
             AuthenticationProvider: user.AuthenticationProvider,
             AuthenticationProviderId: user.AuthenticationProviderId);
         var refreshToken = JwtCreator.CreateJwt(tokenConfiguration, jwtData, now);
@@ -83,7 +88,9 @@ public class TokenRefreshPersistenceService(
             Email: user.Email,
             Jti: tokenId.ToString(),
             Roles: user.Roles,
-            Profile: user.RawAvatarUrl,
+            Small: user.Image is null ? user.RawAvatarUrl : userImageUriFactory.GetSmallImageUri(user.Image),
+            Medium: user.Image is null ? null : userImageUriFactory.GetMediumImageUri(user.Image),
+            Large: user.Image is null ? null : userImageUriFactory.GetLargeImageUri(user.Image),
             AuthenticationProvider: user.AuthenticationProvider,
             AuthenticationProviderId: user.AuthenticationProviderId);
         var accessToken = JwtCreator.CreateJwt(tokenConfiguration, jwtData, now);

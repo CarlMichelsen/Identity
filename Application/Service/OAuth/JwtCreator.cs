@@ -26,10 +26,20 @@ public static class JwtCreator
             new(JwtRegisteredClaimNames.Jti, jwtData.Jti),
             new(JwtRegisteredClaimNames.Iat, now.ToUnixTimeSeconds().ToString()),
             new(ClaimTypes.Role, string.Join(',', jwtData.Roles)),
-            new("profile", jwtData.Profile.AbsoluteUri),
+            new("profile", jwtData.Small.AbsoluteUri),
             new("provider", jwtData.AuthenticationProvider),
             new("provider-id", jwtData.AuthenticationProviderId),
         ];
+
+        if (jwtData.Medium?.AbsoluteUri is not null)
+        {
+            claims.Add(new Claim("profile-medium", jwtData.Medium.AbsoluteUri));
+        }
+        
+        if (jwtData.Large?.AbsoluteUri is not null)
+        {
+            claims.Add(new Claim("profile-large", jwtData.Large.AbsoluteUri));
+        }
         
         var token = new JwtSecurityToken(
             issuer: tokenConfiguration.JwtIssuer,
@@ -47,7 +57,9 @@ public static class JwtCreator
         string Email,
         string Jti,
         List<string> Roles,
-        Uri Profile,
+        Uri Small,
+        Uri? Medium,
+        Uri? Large,
         string AuthenticationProvider,
         string AuthenticationProviderId);
 }

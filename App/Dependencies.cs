@@ -6,6 +6,7 @@ using App.HostedServices;
 using App.JsonConverters;
 using Application.Client.Discord;
 using Application.Configuration;
+using Application.Service;
 using Application.Service.Image;
 using Application.Service.OAuth.JsonWebToken;
 using Application.Service.OAuth.Login;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Presentation;
 using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
+using Presentation.Service;
 using Presentation.Service.Image;
 using Presentation.Service.OAuth.JsonWebToken;
 using Presentation.Service.OAuth.Login;
@@ -95,7 +97,7 @@ public static class Dependencies
             // Fixed window rate limiter for images
             options.AddFixedWindowLimiter("images", limiterOptions =>
             {
-                limiterOptions.PermitLimit = 25;
+                limiterOptions.PermitLimit = 3;
                 limiterOptions.Window = TimeSpan.FromMinutes(1); // per minute
                 limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                 limiterOptions.QueueLimit = 10; // Queue up to 10 requests
@@ -138,6 +140,7 @@ public static class Dependencies
             .AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
         
         builder.Services
+            .AddScoped<IUserImageUriFactory, UserImageUriFactory>()
             .AddScoped<IUserImageProcessor, UserImageProcessor>()
             .AddScoped<ILogoutService, LogoutService>()
             .AddScoped<IRefreshService, RefreshService>()

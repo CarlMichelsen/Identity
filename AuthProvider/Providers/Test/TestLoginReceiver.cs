@@ -20,7 +20,9 @@ public class TestLoginReceiver(
             ? await Task.FromResult<IAuthenticatedUserConvertible>(user)
             : throw new OAuthException($"Test-user with {nameof(TestUser.AuthenticationProviderId)} was not found");
         
-        logger.LogInformation("Test-user: {UserJson}", JsonSerializer.Serialize(testUser as TestUser));
+        logger.LogInformation(
+            "Test-user: {UserJson}",
+            JsonSerializer.Serialize(testUser as TestUser));
         return testUser;
     }
 }

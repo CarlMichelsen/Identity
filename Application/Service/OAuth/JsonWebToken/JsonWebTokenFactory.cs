@@ -2,6 +2,7 @@
 using Database.Entity.Id;
 using Microsoft.Extensions.Options;
 using Presentation.Configuration.Options;
+using Presentation.Service;
 using Presentation.Service.OAuth;
 using Presentation.Service.OAuth.JsonWebToken;
 using Presentation.Service.OAuth.Model.Token;
@@ -10,7 +11,8 @@ namespace Application.Service.OAuth.JsonWebToken;
 
 public class JsonWebTokenFactory(
     TimeProvider timeProvider,
-    IOptionsSnapshot<AuthOptions> authOptions) : IJsonWebTokenFactory
+    IOptionsSnapshot<AuthOptions> authOptions,
+    IUserImageUriFactory userImageUriFactory) : IJsonWebTokenFactory
 {
     public TokenPair CreateTokenPairFromNewLoginEntity(
         LoginEntity loginEntity,
@@ -45,7 +47,9 @@ public class JsonWebTokenFactory(
             Email: user.Email,
             Jti: tokenId,
             Roles: user.Roles,
-            Profile: user.RawAvatarUrl,
+            Small: user.Image is null ? user.RawAvatarUrl : userImageUriFactory.GetSmallImageUri(user.Image),
+            Medium: user.Image is null ? null :  userImageUriFactory.GetMediumImageUri(user.Image),
+            Large: user.Image is null ? null :userImageUriFactory.GetLargeImageUri(user.Image) ,
             AuthenticationProvider: user.AuthenticationProvider,
             AuthenticationProviderId: user.AuthenticationProviderId);
 
