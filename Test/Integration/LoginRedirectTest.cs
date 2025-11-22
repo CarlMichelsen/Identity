@@ -28,7 +28,7 @@ public class LoginRedirectTest(IdentityWebApplicationFactory factory)
         var successUri = factory.Server.BaseAddress.AbsoluteUri + "success"; // this is the final redirect.
         var errorUri = factory.Server.BaseAddress.AbsoluteUri + "error";
         var uri = new OAuthUriBuilder(factory.Server.BaseAddress)
-            .SetPath("/api/v1/Login/Test")
+            .SetPath("/api/v1/Auth/Login/Test")
             .AddQueryParam("SuccessRedirectUrl", Uri.EscapeDataString(successUri))
             .AddQueryParam("ErrorRedirectUrl", Uri.EscapeDataString(errorUri))
             .Build();

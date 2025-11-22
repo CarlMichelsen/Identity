@@ -60,7 +60,7 @@ public class LoginFlowTest
         // Step 1: Initiate login flow
         var successUri = factory.Server.BaseAddress!.AbsoluteUri + "success";
         var errorUri = factory.Server.BaseAddress.AbsoluteUri + "error";
-        var loginUri = $"/api/v1/Login/Test?SuccessRedirectUrl={Uri.EscapeDataString(successUri)}&ErrorRedirectUrl={Uri.EscapeDataString(errorUri)}";
+        var loginUri = $"/api/v1/Auth/Login/Test?SuccessRedirectUrl={Uri.EscapeDataString(successUri)}&ErrorRedirectUrl={Uri.EscapeDataString(errorUri)}";
         
         var loginResponse = await client.GetAsync(loginUri, TestContext.Current.CancellationToken);
         
