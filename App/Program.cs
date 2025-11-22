@@ -1,61 +1,26 @@
 using App;
-using App.Endpoints;
 using App.Extensions;
-using App.Middleware;
-using Implementation.Configuration;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Options;
+using AuthProvider.Providers.Test;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.RegisterApplicationDependencies();
+builder.RegisterIdentityDependencies();
 
 var app = builder.Build();
 
-app.UseMiddleware<UnhandledExceptionMiddleware>();
+app.UseCors("whitelist");
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseMiddleware<EndpointLogMiddleware>();
-    app.UseCors(ApplicationConstants.DevelopmentCorsPolicyName);
-}
-else
-{
-    app.UseCors(ApplicationConstants.ProductionCorsPolicyName);
+    app.UseStaticFiles();
+    app.MapGet("/api/v1/test-users", () => TestUserContainer.GetUsers);
+    app.MapOpenApiAndScalar();
 }
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-});
+app.UseGlobalExceptionHandler(app.Logger);
 
-// OpenApi and Scalar endpoints - only enabled in development mode
-app.MapOpenApiAndScalarForDevelopment();
+app.MapHealthChecks("health");
 
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-var apiGroup = app.MapGroup("api/v1").RequireAuthorization();
-
-apiGroup.RegisterLoginEndpoints();
-
-apiGroup.RegisterUserEndpoints();
-
-apiGroup.RegisterSessionEndpoints();
-
-var oAuthOptions = app.Services
-    .GetRequiredService<IOptions<OAuthOptions>>()
-    .Value;
-if (oAuthOptions.Development is not null)
-{
-    apiGroup.RegisterDevelopmentEndpoints();
-    app.UseStaticFiles(StaticFileOptionsFactory.Create());
-    app.MapFallbackToFile("index.html");
-}
-
-app.MapGet("health", () => Results.Ok());
-
-app.LogStartup();
+app.MapControllers();
 
 app.Run();

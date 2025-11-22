@@ -4,20 +4,10 @@ namespace App.Extensions;
 
 public static class OpenApiExtensions
 {
-    public static WebApplication MapOpenApiAndScalarForDevelopment(this WebApplication app)
+    public static WebApplication MapOpenApiAndScalar(this WebApplication app)
     {
-        if (!app.Environment.IsDevelopment())
-        {
-            return app;
-        }
-
-        app
-            .MapOpenApi()
-            .CacheOutput();
-
-        app
-            .MapScalarApiReference()
-            .CacheOutput();
+        app.MapOpenApi();
+        app.MapScalarApiReference();
 
         return app;
     }
