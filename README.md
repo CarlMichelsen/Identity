@@ -38,29 +38,27 @@ The following diagram illustrates the OAuth authentication flow:
 ```mermaid
 sequenceDiagram
     participant User
-    participant Client as Client App
     participant API as Identity Service
     participant Provider as OAuth Provider
 
     Note over User,Provider: Login Flow
-    User->>Client: Click "Login"
-    Client->>API: GET /api/v1/Login/{provider}
-    API->>Client: Redirect to OAuth Provider
-    Client->>Provider: Authorization Request
+    User->>API: GET /api/v1/Login/{provider}
+    API->>User: Redirect to OAuth Provider
+    User->>Provider: Authorization Request
     Provider->>User: Login & Authorize
     User->>Provider: Credentials & Consent
     Provider->>API: Callback with code & state
     API->>Provider: Exchange code for user info
     Provider->>API: User profile data
-    API->>Client: Set auth cookies & redirect to success URL
+    API->>User: Set auth cookies & redirect to success URL
     
     Note over User,Provider: Authenticated Requests
-    Client->>API: API Request with auth cookies
-    API->>Client: Protected resource
+    User->>API: API Request with auth cookies
+    API->>User: Protected resource
 
     Note over User,Provider: Token Refresh
-    Client->>API: GET /api/v1/Auth/Refresh
-    API->>Client: Refresh tokens & return 200 OK
+    User->>API: GET /api/v1/Auth/Refresh
+    API->>User: Refresh tokens & return 200 OK
 ```
 
 ---
@@ -127,7 +125,7 @@ dotnet ef database update --project ./App
 Use the Test provider for local development:
 
 ```
-http://localhost:5220/api/v1/Login/Test?SuccessRedirectUrl=http%3A%2F%2Flocalhost%3A5220%2Fscalar&ErrorRedirectUrl=http%3A%2F%2Flocalhost%3A5220%2Fscalar
+http://localhost:5220/api/v1/Auth/Login/Test?SuccessRedirectUrl=http%3A%2F%2Flocalhost%3A5220%2Fscalar&ErrorRedirectUrl=http%3A%2F%2Flocalhost%3A5220%2Fscalar
 ```
 
 ### Expose Local Server with ngrok
@@ -142,12 +140,12 @@ ngrok http http://localhost:5220
 
 ## 📡 API Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/v1/Login/{provider}` | GET | Initiate OAuth login flow |
-| `/api/v1/OAuth/Authorize/{provider}` | GET | OAuth callback endpoint |
-| `/api/v1/Auth/Refresh` | GET | Refresh access token |
-| `/api/v1/Auth/Logout` | DELETE | Logout and invalidate tokens |
+| Endpoint                              | Method | Description                  |
+|---------------------------------------|--------|------------------------------|
+| `/api/v1/Auth/Login{provider}`        | GET    | Initiate OAuth login flow    |
+| `/api/v1/OAuth/Authorize/{provider}`  | GET    | OAuth callback endpoint      |
+| `/api/v1/Auth/Refresh`                | GET    | Refresh access token         |
+| `/api/v1/Auth/Logout`                 | DELETE | Logout and invalidate tokens |
 
 **Supported Providers:** `Discord`, `GitHub`, `Test`
 

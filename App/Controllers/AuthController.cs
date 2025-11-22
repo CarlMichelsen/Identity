@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Presentation;
+using Presentation.Dto;
 using Presentation.Service.OAuth.JsonWebToken;
 using Presentation.Service.OAuth.Login;
 
@@ -8,6 +10,22 @@ namespace App.Controllers;
 [Route("api/v1/[controller]")]
 public class AuthController : ControllerBase
 {
+    [HttpGet("Login/{provider:provider}")]
+    public async Task<ActionResult> Login(
+        [FromServices] ILoginRedirectService loginRedirectService,
+        [FromRoute] string provider,
+        [FromQuery] LoginQueryDto loginQueryDto)
+    {
+        if (!Enum.TryParse<AuthenticationProvider>(provider, ignoreCase: true, out var authenticationProvider))
+        {
+            return this.NotFound();
+        }
+
+        var uri = await loginRedirectService
+            .GetLoginRedirectUri(authenticationProvider, loginQueryDto);
+        return this.Redirect(uri.AbsoluteUri);
+    }
+    
     [HttpGet("Refresh")]
     public async Task<ActionResult> Refresh([FromServices] IRefreshService refreshService)
     {
