@@ -23,7 +23,7 @@ public class RefreshService(
         var now = timeProvider.GetUtcNow();
         var refreshToken = tokenValidator.Validate(TokenType.Refresh, validateLifetime: true);
         var accessToken = tokenValidator.Validate(TokenType.Access, validateLifetime: false);
-        if (refreshToken is null || accessToken is null)
+        if (refreshToken is null)
         {
             return false;
         }
@@ -35,11 +35,12 @@ public class RefreshService(
             // Unable to find refresh-token in the database
             return false;
         }
-
+        
+        // This is a double verification because the tokenValidator does almost the exact same thing - keeping this as a sanity check.
         if (!RefreshTokenHasher.Verify(refreshToken.Value.JwtValue, refreshEntity.HashedRefreshToken))
         {
             logger.LogCritical(
-                "This refresh token <{RefreshEntityId}> was created by this login service but does not exist in the database",
+                "This refresh token <{RefreshEntityId}> was created by this login service but differs from the version in the database (extremely scary)",
                 refreshEntityId);
             return false;
         }
@@ -70,7 +71,7 @@ public class RefreshService(
         string? accessJsonWebToken = null;
         AccessEntity? accessEntity = null;
         var accessTokenShouldBeRefreshed =
-            TokenShouldBeRefreshed(TokenType.Access, accessToken.Value.ClaimsPrincipal, now);
+            TokenShouldBeRefreshed(TokenType.Access, accessToken?.ClaimsPrincipal, now);
         if (accessTokenShouldBeRefreshed || refreshTokenShouldBeRefreshed)
         {
             accessEntity = tokenRefreshPersistenceService.CreateAccessEntityFromRefreshEntity(refreshEntity, now);
@@ -116,8 +117,13 @@ public class RefreshService(
         return Guid.Parse(accessJtiClaim.Value);
     }
 
-    private bool TokenShouldBeRefreshed(TokenType tokenType, ClaimsPrincipal principal, DateTimeOffset now)
+    private bool TokenShouldBeRefreshed(TokenType tokenType, ClaimsPrincipal? principal, DateTimeOffset now)
     {
+        if (principal is null)
+        {
+            return true;
+        }
+        
         var accessExpirationTime = GetExpirationTime(principal, now);
         var timeToAccessExpiration = accessExpirationTime - now;
 

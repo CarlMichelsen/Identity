@@ -135,7 +135,7 @@ http://localhost:5220/api/v1/Login/Test?SuccessRedirectUrl=http%3A%2F%2Flocalhos
 For testing OAuth callbacks with external providers:
 
 ```bash
-ngrok http http://localhost:5089
+ngrok http http://localhost:5220
 ```
 
 ---

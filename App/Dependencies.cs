@@ -18,6 +18,7 @@ using AuthProvider.Providers.Test;
 using Database;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Presentation;
 using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
@@ -133,13 +134,18 @@ public static class Dependencies
             .AddScoped<IRedirectUriFactory, RedirectUriFactory>();
         
         // Login Receiver
-        builder.Services
-            .AddScoped<DiscordLoginReceiver>()
-            .AddScoped<GitHubLoginReceiver>()
-            .AddScoped<TestLoginReceiver>()
-            .AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
+        builder.Services.AddHttpClient<DiscordLoginReceiver>((sp, client) =>
+        {
+            using var scope = sp.CreateScope();
+            var authOptions = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<AuthOptions>>().Value;
+            client.BaseAddress = authOptions.Discord?.ApiUrl;
+        });
+        builder.Services.AddScoped<GitHubLoginReceiver>();
+        builder.Services.AddScoped<TestLoginReceiver>();
+        builder.Services.AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
         
         builder.Services
+            .AddScoped<IOAuthRedirectUriFactory, OAuthRedirectUriFactory>()
             .AddScoped<IUserImageUriFactory, UserImageUriFactory>()
             .AddScoped<IUserImageProcessor, UserImageProcessor>()
             .AddScoped<ILogoutService, LogoutService>()

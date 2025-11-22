@@ -2,12 +2,14 @@
 using Presentation;
 using Presentation.Configuration.Options;
 using Presentation.Configuration.Options.Provider;
+using Presentation.Service;
 using Presentation.Service.OAuth;
 using Presentation.Service.OAuth.Login;
 
 namespace Application.Service.OAuth.Login;
 
 public class RedirectUriFactory(
+    IOAuthRedirectUriFactory  oAuthRedirectUriFactory,
     IOptionsSnapshot<AuthOptions> authOptions) : IRedirectUriFactory
 {
     public Uri CreateRedirectUri(
@@ -34,13 +36,11 @@ public class RedirectUriFactory(
     {
         var testOptions = authOptions.Value.Test;
         ArgumentNullException.ThrowIfNull(testOptions);
-        var endpointProviderName = Enum.GetName(provider.ProviderType);
-        ArgumentNullException.ThrowIfNull(endpointProviderName);
         
         return new OAuthUriBuilder(testOptions.OAuthEndpoint)
             .AddQueryParam("response_type", "code")
             .AddQueryParam("client_id", testOptions.ClientId)
-            .AddQueryParam("redirect_uri", this.GetRedirectUri(endpointProviderName))
+            .AddQueryParam("redirect_uri", this.GetRedirectUri(provider.ProviderType))
             .AddQueryParam("scope", string.Join(' ', testOptions.Scopes))
             .AddQueryParam("state", state)
             .Build();
@@ -50,13 +50,11 @@ public class RedirectUriFactory(
     {
         var discordOptions = authOptions.Value.Discord;
         ArgumentNullException.ThrowIfNull(discordOptions);
-        var endpointProviderName = Enum.GetName(provider.ProviderType);
-        ArgumentNullException.ThrowIfNull(endpointProviderName);
         
         return new OAuthUriBuilder(discordOptions.OAuthEndpoint)
             .AddQueryParam("response_type", "code")
             .AddQueryParam("client_id", discordOptions.ClientId)
-            .AddQueryParam("redirect_uri", this.GetRedirectUri(endpointProviderName))
+            .AddQueryParam("redirect_uri", this.GetRedirectUri(provider.ProviderType))
             .AddQueryParam("scope", string.Join(' ', discordOptions.Scopes))
             .AddQueryParam("prompt", "consent")
             .AddQueryParam("state", state)
@@ -67,25 +65,20 @@ public class RedirectUriFactory(
     {
         var gitHubOptions = authOptions.Value.GitHub;
         ArgumentNullException.ThrowIfNull(gitHubOptions);
-        var endpointProviderName = Enum.GetName(provider.ProviderType);
-        ArgumentNullException.ThrowIfNull(endpointProviderName);
         
         return new OAuthUriBuilder(gitHubOptions.OAuthEndpoint)
             .AddQueryParam("response_type", "token")
             .AddQueryParam("client_id", gitHubOptions.ClientId)
-            .AddQueryParam("redirect_uri", this.GetRedirectUri(endpointProviderName))
+            .AddQueryParam("redirect_uri", this.GetRedirectUri(provider.ProviderType))
             .AddQueryParam("scope", string.Join(' ', gitHubOptions.Scopes))
             .AddQueryParam("allow_signup", "false")
             .AddQueryParam("state", state)
             .Build();
     }
 
-    private string GetRedirectUri(string providerName)
+    private string GetRedirectUri(AuthenticationProvider provider)
     {
-        var url = new OAuthUriBuilder(authOptions.Value.Self)
-            .SetPath($"api/v1/oauth/authorize/{providerName}")
-            .ClearQueryParams()
-            .Build()
+        var url = oAuthRedirectUriFactory.GetRedirectUri(provider)
             .AbsoluteUri;
 
         return Uri.EscapeDataString(url);

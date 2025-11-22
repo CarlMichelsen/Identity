@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Presentation;
 using Presentation.Configuration.Options;
 
 namespace Application.Service.OAuth;
@@ -20,25 +21,25 @@ public static class JwtCreator
         
         List<Claim> claims =
         [
-            new(JwtRegisteredClaimNames.Sub, jwtData.Sub),
-            new("name", jwtData.Name),
-            new(JwtRegisteredClaimNames.Email, jwtData.Email),
-            new(JwtRegisteredClaimNames.Jti, jwtData.Jti),
-            new(JwtRegisteredClaimNames.Iat, now.ToUnixTimeSeconds().ToString()),
-            new(ClaimTypes.Role, string.Join(',', jwtData.Roles)),
-            new("profile", jwtData.Small.AbsoluteUri),
-            new("provider", jwtData.AuthenticationProvider),
-            new("provider-id", jwtData.AuthenticationProviderId),
+            new(JwtTokenKeys.Sub, jwtData.Sub),
+            new(JwtTokenKeys.Name, jwtData.Name),
+            new(JwtTokenKeys.Email, jwtData.Email),
+            new(JwtTokenKeys.Jti, jwtData.Jti),
+            new(JwtTokenKeys.Iat, now.ToUnixTimeSeconds().ToString()),
+            new(JwtTokenKeys.Role, string.Join(',', jwtData.Roles)),
+            new(JwtTokenKeys.Provider, jwtData.AuthenticationProvider),
+            new(JwtTokenKeys.ProviderId, jwtData.AuthenticationProviderId),
+            new(JwtTokenKeys.Profile, jwtData.Small.AbsoluteUri),
         ];
 
         if (jwtData.Medium?.AbsoluteUri is not null)
         {
-            claims.Add(new Claim("profile-medium", jwtData.Medium.AbsoluteUri));
+            claims.Add(new Claim(JwtTokenKeys.ProfileMedium, jwtData.Medium.AbsoluteUri));
         }
         
         if (jwtData.Large?.AbsoluteUri is not null)
         {
-            claims.Add(new Claim("profile-large", jwtData.Large.AbsoluteUri));
+            claims.Add(new Claim(JwtTokenKeys.ProfileLarge, jwtData.Large.AbsoluteUri));
         }
         
         var token = new JwtSecurityToken(
