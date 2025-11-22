@@ -186,66 +186,6 @@ namespace App.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "access",
-                schema: "identity",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    access_token = table.Column<string>(type: "character varying(16384)", maxLength: 16384, nullable: false),
-                    refresh_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    login_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    valid_until = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    remote_ip_address = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    remote_port = table.Column<int>(type: "integer", nullable: false),
-                    user_agent = table.Column<string>(type: "character varying(1028)", maxLength: 1028, nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_access", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_access_login_login_id",
-                        column: x => x.login_id,
-                        principalSchema: "identity",
-                        principalTable: "login",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_access_refresh_refresh_id",
-                        column: x => x.refresh_id,
-                        principalSchema: "identity",
-                        principalTable: "refresh",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_access_user_user_id",
-                        column: x => x.user_id,
-                        principalSchema: "identity",
-                        principalTable: "user",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "ix_access_login_id",
-                schema: "identity",
-                table: "access",
-                column: "login_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_access_refresh_id",
-                schema: "identity",
-                table: "access",
-                column: "refresh_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_access_user_id",
-                schema: "identity",
-                table: "access",
-                column: "user_id");
-
             migrationBuilder.CreateIndex(
                 name: "ix_image_large_id",
                 schema: "identity",
@@ -313,10 +253,6 @@ namespace App.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "access",
-                schema: "identity");
-
             migrationBuilder.DropTable(
                 name: "image",
                 schema: "identity");

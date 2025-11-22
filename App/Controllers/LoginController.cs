@@ -7,11 +7,11 @@ namespace App.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class LoginController(
-    ILoginRedirectService loginRedirectService) : ControllerBase
+public class LoginController : ControllerBase
 {
     [HttpGet("{provider:provider}")]
     public async Task<ActionResult> Login(
+        [FromServices] ILoginRedirectService loginRedirectService,
         [FromRoute] string provider,
         [FromQuery] LoginQueryDto loginQueryDto)
     {

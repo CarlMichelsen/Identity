@@ -69,11 +69,10 @@ public class TokenRefreshPersistenceService(
         };
         
         databaseContext.Refresh.Add(newRefreshEntity);
-        
         return (Entity: newRefreshEntity, Jwt: refreshToken);
     }
 
-    public AccessEntity CreateAccessEntityFromRefreshEntity(
+    public string CreateNewAccessFromRefreshEntity(
         RefreshEntity refreshEntity,
         DateTimeOffset now)
     {
@@ -81,39 +80,18 @@ public class TokenRefreshPersistenceService(
         var user = refreshEntity.User ?? throw new OAuthException(
             $"Unable to get user when creating token from {nameof(RefreshEntity)}");
 
-        var tokenId = new AccessEntityId(Guid.CreateVersion7());
         var jwtData = new JwtCreator.JwtData(
             Sub: user.Id.ToString(),
             Name: user.Username,
             Email: user.Email,
-            Jti: tokenId.ToString(),
+            Jti: Guid.CreateVersion7().ToString(),
             Roles: user.Roles,
             Small: user.Image is null ? user.RawAvatarUrl : userImageUriFactory.GetSmallImageUri(user.Image),
             Medium: user.Image is null ? null : userImageUriFactory.GetMediumImageUri(user.Image),
             Large: user.Image is null ? null : userImageUriFactory.GetLargeImageUri(user.Image),
             AuthenticationProvider: user.AuthenticationProvider,
             AuthenticationProviderId: user.AuthenticationProviderId);
-        var accessToken = JwtCreator.CreateJwt(tokenConfiguration, jwtData, now);
-        
-        var connectionMetadata = httpContextAccessor.GetConnectionMetadata(timeProvider, hostEnvironment);
-        var newAccessEntity = new AccessEntity
-        {
-            Id = tokenId,
-            AccessToken = accessToken,
-            RefreshId = refreshEntity.Id,
-            Refresh = refreshEntity,
-            LoginId = refreshEntity.LoginId,
-            UserId = refreshEntity.UserId,
-            User = refreshEntity.User,
-            RemoteIpAddress = connectionMetadata.RemoteIpAddress,
-            RemotePort = connectionMetadata.RemotePort,
-            UserAgent = connectionMetadata.UserAgent,
-            CreatedAt = connectionMetadata.CreatedAt,
-            ValidUntil = timeProvider.GetUtcNow().UtcDateTime.Add(tokenConfiguration.Lifetime),
-        };
-        
-        refreshEntity.Access.Add(newAccessEntity);
-        return newAccessEntity;
+        return JwtCreator.CreateJwt(tokenConfiguration, jwtData, now);
     }
 
     public Task SaveDatabaseChangesAsync() => databaseContext.SaveChangesAsync();

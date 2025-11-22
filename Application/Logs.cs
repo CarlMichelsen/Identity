@@ -11,9 +11,8 @@ public static partial class Logs
         UserEntityId userId,
         RefreshEntityId refreshEntityId);
 
-    [LoggerMessage(LogLevel.Information, "An access token was minted by user <{userId}> with id <{accessEntityId}>")]
-    public static partial void LogAnAccessTokenWasMintedByUserUseridWithIdAccessEntityId(
+    [LoggerMessage(LogLevel.Information, "An access token was minted by user <{userId}>")]
+    public static partial void LogAnAccessTokenWasMintedByUser(
         this ILogger logger,
-        UserEntityId userId,
-        AccessEntityId accessEntityId);
+        UserEntityId userId);
 }

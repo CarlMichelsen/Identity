@@ -23,68 +23,6 @@ namespace App.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Database.Entity.AccessEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("AccessToken")
-                        .IsRequired()
-                        .HasMaxLength(16384)
-                        .HasColumnType("character varying(16384)")
-                        .HasColumnName("access_token");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<Guid>("LoginId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("login_id");
-
-                    b.Property<Guid>("RefreshId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("refresh_id");
-
-                    b.Property<string>("RemoteIpAddress")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)")
-                        .HasColumnName("remote_ip_address");
-
-                    b.Property<int>("RemotePort")
-                        .HasColumnType("integer")
-                        .HasColumnName("remote_port");
-
-                    b.Property<string>("UserAgent")
-                        .HasMaxLength(1028)
-                        .HasColumnType("character varying(1028)")
-                        .HasColumnName("user_agent");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.Property<DateTime>("ValidUntil")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("valid_until");
-
-                    b.HasKey("Id")
-                        .HasName("pk_access");
-
-                    b.HasIndex("LoginId")
-                        .HasDatabaseName("ix_access_login_id");
-
-                    b.HasIndex("RefreshId")
-                        .HasDatabaseName("ix_access_refresh_id");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_access_user_id");
-
-                    b.ToTable("access", "identity");
-                });
-
             modelBuilder.Entity("Database.Entity.ContentEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -368,36 +306,6 @@ namespace App.Migrations
                     b.ToTable("user", "identity");
                 });
 
-            modelBuilder.Entity("Database.Entity.AccessEntity", b =>
-                {
-                    b.HasOne("Database.Entity.LoginEntity", "Login")
-                        .WithMany("Access")
-                        .HasForeignKey("LoginId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_access_login_login_id");
-
-                    b.HasOne("Database.Entity.RefreshEntity", "Refresh")
-                        .WithMany("Access")
-                        .HasForeignKey("RefreshId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_access_refresh_refresh_id");
-
-                    b.HasOne("Database.Entity.UserEntity", "User")
-                        .WithMany("Access")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_access_user_user_id");
-
-                    b.Navigation("Login");
-
-                    b.Navigation("Refresh");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Database.Entity.ImageEntity", b =>
                 {
                     b.HasOne("Database.Entity.ContentEntity", "Large")
@@ -491,8 +399,6 @@ namespace App.Migrations
 
             modelBuilder.Entity("Database.Entity.LoginEntity", b =>
                 {
-                    b.Navigation("Access");
-
                     b.Navigation("Refresh");
                 });
 
@@ -501,15 +407,8 @@ namespace App.Migrations
                     b.Navigation("Login");
                 });
 
-            modelBuilder.Entity("Database.Entity.RefreshEntity", b =>
-                {
-                    b.Navigation("Access");
-                });
-
             modelBuilder.Entity("Database.Entity.UserEntity", b =>
                 {
-                    b.Navigation("Access");
-
                     b.Navigation("Image");
 
                     b.Navigation("Login");

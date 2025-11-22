@@ -16,13 +16,12 @@ public class JsonWebTokenFactory(
 {
     public TokenPair CreateTokenPairFromNewLoginEntity(
         LoginEntity loginEntity,
-        RefreshEntityId refreshEntityId,
-        AccessEntityId accessEntityId)
+        RefreshEntityId refreshEntityId)
     {
         return new TokenPair
         {
             RefreshToken = new RefreshToken { Token = CreateJwtToken(TokenType.Refresh, loginEntity, refreshEntityId.Value.ToString()) },
-            AccessToken = new AccessToken { Token = CreateJwtToken(TokenType.Access, loginEntity, accessEntityId.Value.ToString()) },
+            AccessToken = new AccessToken { Token = CreateJwtToken(TokenType.Access, loginEntity, Guid.CreateVersion7().ToString()) },
         };
     }
 

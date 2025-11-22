@@ -8,6 +8,5 @@ public interface IJsonWebTokenFactory
 {
     TokenPair CreateTokenPairFromNewLoginEntity(
         LoginEntity loginEntity,
-        RefreshEntityId refreshEntityId,
-        AccessEntityId accessEntityId);
+        RefreshEntityId refreshEntityId);
 }

@@ -42,8 +42,6 @@ public class UserEntity : IEntity
     
     public List<RefreshEntity> Refresh { get; init; } = [];
     
-    public List<AccessEntity> Access { get; init; } = [];
-    
     public List<string> Roles { get; init; } = [];
     
     public required DateTime CreatedAt { get; init; }
@@ -68,13 +66,9 @@ public class UserEntity : IEntity
         entityBuilder
             .HasMany(x => x.Login)
             .WithOne(x => x.User);
-        
+
         entityBuilder
             .HasMany(x => x.Refresh)
-            .WithOne(x => x.User);
-        
-        entityBuilder
-            .HasMany(x => x.Access)
             .WithOne(x => x.User);
         
         // Image

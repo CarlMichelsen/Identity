@@ -23,6 +23,8 @@ public class LoginReceiverRedirectService(
         Dictionary<string, string> parameters)
     {
         OAuthProcessEntity? oAuthProcessEntity = null;
+        cookieApplier.DeleteCookie(TokenType.Access);
+        cookieApplier.DeleteCookie(TokenType.Refresh);
         
         try
         {
@@ -44,7 +46,7 @@ public class LoginReceiverRedirectService(
             logger.LogARefreshTokenWasMintedByUserUseridWithIdRefreshEntityId(login.UserId, refresh.Id);
             cookieApplier.SetCookie(TokenType.Refresh, tokenPair.RefreshToken.Token);
             
-            logger.LogAnAccessTokenWasMintedByUserUseridWithIdAccessEntityId(login.UserId, refresh.Access.First().Id);
+            logger.LogAnAccessTokenWasMintedByUser(login.UserId);
             cookieApplier.SetCookie(TokenType.Access, tokenPair.AccessToken.Token);
             
             return oAuthProcessEntity.SuccessRedirectUri;

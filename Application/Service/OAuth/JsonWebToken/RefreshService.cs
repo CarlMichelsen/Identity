@@ -1,10 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Application.Service.OAuth.Login;
-using Database.Entity;
 using Database.Entity.Id;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Presentation;
 using Presentation.Configuration.Options;
 using Presentation.Service.OAuth.JsonWebToken;
 
@@ -27,9 +27,9 @@ public class RefreshService(
         {
             return false;
         }
-
-        var refreshEntityId = new RefreshEntityId(GetJti(refreshToken.Value.ClaimsPrincipal));
-        var refreshEntity = await tokenRefreshPersistenceService.GetRefreshEntity(refreshEntityId);
+        
+        var refreshEntity = await tokenRefreshPersistenceService
+            .GetRefreshEntity(GetRefreshEntityId(refreshToken.Value.ClaimsPrincipal));
         if (refreshEntity is null)
         {
             // Unable to find refresh-token in the database
@@ -41,7 +41,7 @@ public class RefreshService(
         {
             logger.LogCritical(
                 "This refresh token <{RefreshEntityId}> was created by this login service but differs from the version in the database (extremely scary)",
-                refreshEntityId);
+                refreshEntity.Id);
             return false;
         }
 
@@ -69,13 +69,11 @@ public class RefreshService(
         }
         
         string? accessJsonWebToken = null;
-        AccessEntity? accessEntity = null;
         var accessTokenShouldBeRefreshed =
             TokenShouldBeRefreshed(TokenType.Access, accessToken?.ClaimsPrincipal, now);
         if (accessTokenShouldBeRefreshed || refreshTokenShouldBeRefreshed)
         {
-            accessEntity = tokenRefreshPersistenceService.CreateAccessEntityFromRefreshEntity(refreshEntity, now);
-            accessJsonWebToken = accessEntity.AccessToken;
+            accessJsonWebToken = tokenRefreshPersistenceService.CreateNewAccessFromRefreshEntity(refreshEntity, now);
         }
 
         await tokenRefreshPersistenceService.SaveDatabaseChangesAsync();
@@ -88,7 +86,7 @@ public class RefreshService(
 
         if (accessJsonWebToken is not null)
         {
-            logger.LogAnAccessTokenWasMintedByUserUseridWithIdAccessEntityId(accessEntity!.UserId, accessEntity.Id);
+            logger.LogAnAccessTokenWasMintedByUser(refreshEntity!.UserId);
             cookieApplier.SetCookie(TokenType.Access, accessJsonWebToken);
         }
 
@@ -108,13 +106,13 @@ public class RefreshService(
         return accessExpiration ?? now;
     }
 
-    private static Guid GetJti(ClaimsPrincipal principal)
+    private static RefreshEntityId GetRefreshEntityId(ClaimsPrincipal principal)
     {
         var accessJtiClaim = principal
             .Claims
-            .First(c => c.Type == JwtRegisteredClaimNames.Jti);
+            .First(c => c.Type == JwtTokenKeys.Jti);
 
-        return Guid.Parse(accessJtiClaim.Value);
+        return new RefreshEntityId(Guid.Parse(accessJtiClaim.Value), true);
     }
 
     private bool TokenShouldBeRefreshed(TokenType tokenType, ClaimsPrincipal? principal, DateTimeOffset now)

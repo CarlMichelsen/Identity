@@ -26,28 +26,18 @@ public class TokenPersistenceService(
     {
         var connectionMetadata = httpContextAccessor.GetConnectionMetadata(timeProvider, hostEnvironment);
         var refreshId = new RefreshEntityId(Guid.CreateVersion7());
-        var accessId = new AccessEntityId(Guid.CreateVersion7());
         var tokenPair = jsonWebTokenFactory.CreateTokenPairFromNewLoginEntity(
             loginEntity,
-            refreshId,
-            accessId);
+            refreshId);
 
         var refreshEntity = this.CreateRefreshEntity(
             refreshId,
             tokenPair.RefreshToken,
             loginEntity,
             connectionMetadata);
-
-        var accessEntity = this.CreateAccessEntityFromRefreshEntity(
-            accessId,
-            refreshEntity,
-            tokenPair.AccessToken,
-            loginEntity,
-            connectionMetadata);
         
         UpdateOAuthProcessEntity(oAuthProcessEntity, loginEntity);
         
-        refreshEntity.Access.Add(accessEntity);
         loginEntity.Refresh.Add(refreshEntity);
         databaseContext.Login.Add(loginEntity);
         await databaseContext.SaveChangesAsync();
@@ -75,32 +65,6 @@ public class TokenPersistenceService(
             UserAgent = connectionMetadata.UserAgent,
             CreatedAt = connectionMetadata.CreatedAt,
             ValidUntil = timeProvider.GetUtcNow().UtcDateTime.Add(refreshLifetime),
-        };
-    }
-    
-    private AccessEntity CreateAccessEntityFromRefreshEntity(
-        AccessEntityId accessEntityId,
-        RefreshEntity refreshEntity,
-        AccessToken accessToken,
-        LoginEntity loginEntity,
-        BaseConnectionMetadata connectionMetadata)
-    {
-        var accessLifetime = authOptions.Value.AccessToken.Lifetime;
-        return new AccessEntity
-        {
-            Id = accessEntityId,
-            AccessToken = accessToken.Token,
-            RefreshId = refreshEntity.Id,
-            Refresh = refreshEntity,
-            LoginId = loginEntity.Id,
-            Login = loginEntity,
-            UserId = loginEntity.UserId,
-            User = loginEntity.User,
-            RemoteIpAddress = connectionMetadata.RemoteIpAddress,
-            RemotePort = connectionMetadata.RemotePort,
-            UserAgent = connectionMetadata.UserAgent,
-            CreatedAt = connectionMetadata.CreatedAt,
-            ValidUntil = timeProvider.GetUtcNow().UtcDateTime.Add(accessLifetime),
         };
     }
 

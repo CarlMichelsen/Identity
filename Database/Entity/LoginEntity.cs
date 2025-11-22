@@ -18,8 +18,6 @@ public class LoginEntity : IEntity
     public OAuthProcessEntity? OAuthProcess { get; init; }
 
     public List<RefreshEntity> Refresh { get; init; } = [];
-    
-    public List<AccessEntity> Access { get; init; } = [];
 
     public bool FirstLogin { get; init; }
     
@@ -62,10 +60,5 @@ public class LoginEntity : IEntity
             .WithOne(x => x.Login)
             .HasForeignKey(x => x.LoginId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        entityBuilder
-            .HasMany(x => x.Access)
-            .WithOne(x => x.Login)
-            .HasForeignKey(x => x.LoginId);
     }
 }

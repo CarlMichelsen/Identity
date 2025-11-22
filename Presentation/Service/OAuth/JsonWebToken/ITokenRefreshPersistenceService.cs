@@ -9,7 +9,7 @@ public interface ITokenRefreshPersistenceService
     
     (RefreshEntity Entity, string Jwt) CreateRefreshEntity(RefreshEntity refreshEntity, DateTimeOffset now);
     
-    AccessEntity CreateAccessEntityFromRefreshEntity(RefreshEntity refreshEntity, DateTimeOffset now);
+    string CreateNewAccessFromRefreshEntity(RefreshEntity refreshEntity, DateTimeOffset now);
 
     Task SaveDatabaseChangesAsync();
 }

@@ -31,7 +31,7 @@ public class LoginFlowTest
         // Create a new factory with updated configuration
         await using var factory = customFactory.WithWebHostBuilder(builder =>
         {
-            builder.ConfigureAppConfiguration((context, config) =>
+            builder.ConfigureAppConfiguration((_, config) =>
             {
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
@@ -110,11 +110,6 @@ public class LoginFlowTest
 
         var refreshResponse = await client.SendAsync(request, TestContext.Current.CancellationToken);
         refreshResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        
-        // Verify new access token was created
-        var accessTokens = await context.Access.ToListAsync(TestContext.Current.CancellationToken);
-        accessTokens.Count.ShouldBe(2); // Original + new one after refresh
-        accessTokens[1].CreatedAt.ShouldBe(fakeTimeProvider.GetUtcNow().UtcDateTime);
     }
     
     private static string? ExtractQueryParameter(string url, string paramName)

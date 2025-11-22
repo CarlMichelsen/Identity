@@ -21,8 +21,6 @@ public class RefreshEntity : BaseConnectionMetadata, IEntity
     
     // ReSharper disable once EntityFramework.ModelValidation.CircularDependency
     public UserEntity? User { get; init; }
-
-    public List<AccessEntity> Access { get; init; } = [];
     
     public required DateTime ValidUntil { get; set; }
     
@@ -51,11 +49,5 @@ public class RefreshEntity : BaseConnectionMetadata, IEntity
             .HasOne(x => x.User)
             .WithMany(x => x.Refresh)
             .HasForeignKey(x => x.UserId);
-        
-        entityBuilder
-            .HasMany(x => x.Access)
-            .WithOne(x => x.Refresh)
-            .HasForeignKey(x => x.RefreshId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

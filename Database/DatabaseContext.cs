@@ -20,8 +20,6 @@ public class DatabaseContext(
     public DbSet<LoginEntity> Login => Set<LoginEntity>();
     
     public DbSet<RefreshEntity> Refresh => Set<RefreshEntity>();
-    
-    public DbSet<AccessEntity> Access => Set<AccessEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,7 +32,6 @@ public class DatabaseContext(
         ImageEntity.Configure(modelBuilder);
         LoginEntity.Configure(modelBuilder);
         RefreshEntity.Configure(modelBuilder);
-        AccessEntity.Configure(modelBuilder);
         
         base.OnModelCreating(modelBuilder);
     }
