@@ -1,11 +1,11 @@
 ﻿using System.Threading.Channels;
-using Application.Configuration;
+using Presentation.Configuration;
 using Database.Entity;
 using Microsoft.Extensions.Hosting;
 using Presentation.Client.Discord;
-using Presentation.Service.OAuth.Login.Receive;
+using Presentation.Service.OAuth.LoginCallback;
 
-namespace Application.Service.OAuth.Login.Receive;
+namespace Application.Service.OAuth.LoginCallback;
 
 public class FirstLoginNotifier(
     TimeProvider timeProvider,

@@ -1,4 +1,4 @@
-using Application.Configuration;
+using Presentation.Configuration;
 using Serilog;
 using Serilog.Enrichers.OpenTelemetry;
 

@@ -4,10 +4,10 @@ using Microsoft.Extensions.Options;
 using Presentation.Configuration.Options;
 using Presentation.Service;
 using Presentation.Service.OAuth;
-using Presentation.Service.OAuth.JsonWebToken;
+using Presentation.Service.OAuth.Refresh;
 using Presentation.Service.OAuth.Model.Token;
 
-namespace Application.Service.OAuth.JsonWebToken;
+namespace Application.Service.OAuth.Refresh;
 
 public class JsonWebTokenFactory(
     TimeProvider timeProvider,

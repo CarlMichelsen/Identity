@@ -5,12 +5,12 @@ using App.Extensions;
 using App.HostedServices;
 using App.JsonConverters;
 using Application.Client.Discord;
-using Application.Configuration;
+using Presentation.Configuration;
 using Application.Service;
 using Application.Service.Image;
-using Application.Service.OAuth.JsonWebToken;
+using Application.Service.OAuth.Refresh;
 using Application.Service.OAuth.Login;
-using Application.Service.OAuth.Login.Receive;
+using Application.Service.OAuth.LoginCallback;
 using AuthProvider.Providers;
 using AuthProvider.Providers.Discord;
 using AuthProvider.Providers.GitHub;
@@ -24,9 +24,9 @@ using Presentation.Client.Discord;
 using Presentation.Configuration.Options;
 using Presentation.Service;
 using Presentation.Service.Image;
-using Presentation.Service.OAuth.JsonWebToken;
+using Presentation.Service.OAuth.Refresh;
 using Presentation.Service.OAuth.Login;
-using Presentation.Service.OAuth.Login.Receive;
+using Presentation.Service.OAuth.LoginCallback;
 
 namespace App;
 

@@ -1,4 +1,4 @@
-﻿namespace Presentation.Service.OAuth.JsonWebToken;
+﻿namespace Presentation.Service.OAuth.Refresh;
 
 public interface IRefreshService
 {

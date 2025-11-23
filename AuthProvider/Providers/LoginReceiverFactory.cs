@@ -3,7 +3,7 @@ using AuthProvider.Providers.GitHub;
 using AuthProvider.Providers.Test;
 using Microsoft.Extensions.DependencyInjection;
 using Presentation;
-using Presentation.Service.OAuth.Login.Receive;
+using Presentation.Service.OAuth.LoginCallback;
 
 namespace AuthProvider.Providers;
 

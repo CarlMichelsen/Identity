@@ -1,7 +1,7 @@
 ﻿using Database.Entity;
 using Database.Entity.Id;
 
-namespace Presentation.Service.OAuth.JsonWebToken;
+namespace Presentation.Service.OAuth.Refresh;
 
 public interface ITokenRefreshPersistenceService
 {

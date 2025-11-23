@@ -2,10 +2,10 @@
 using Database.Entity;
 using Database.Entity.Id;
 using Microsoft.EntityFrameworkCore;
-using Presentation.Service.OAuth.Login.Receive;
+using Presentation.Service.OAuth.LoginCallback;
 using Presentation.Service.OAuth.Model;
 
-namespace Application.Service.OAuth.Login.Receive;
+namespace Application.Service.OAuth.LoginCallback;
 
 // ReSharper disable EntityFramework.NPlusOne.IncompleteDataQuery
 // ReSharper disable EntityFramework.NPlusOne.IncompleteDataUsage

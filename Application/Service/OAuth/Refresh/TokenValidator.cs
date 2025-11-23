@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Presentation.Configuration.Options;
-using Presentation.Service.OAuth.JsonWebToken;
+using Presentation.Service.OAuth.Refresh;
 
-namespace Application.Service.OAuth.JsonWebToken;
+namespace Application.Service.OAuth.Refresh;
 
 public class TokenValidator(
     TimeProvider timeProvider,
