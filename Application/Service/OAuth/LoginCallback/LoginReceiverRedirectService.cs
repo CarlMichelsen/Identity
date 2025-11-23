@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Presentation;
 using Presentation.Service.OAuth;
-using Presentation.Service.OAuth.JsonWebToken;
-using Presentation.Service.OAuth.Login.Receive;
+using Presentation.Service.OAuth.Refresh;
+using Presentation.Service.OAuth.LoginCallback;
 
-namespace Application.Service.OAuth.Login.Receive;
+namespace Application.Service.OAuth.LoginCallback;
 
 public class LoginReceiverRedirectService(
     ILogger<LoginReceiverRedirectService> logger,

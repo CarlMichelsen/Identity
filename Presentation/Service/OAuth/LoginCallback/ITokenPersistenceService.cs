@@ -1,7 +1,7 @@
 ﻿using Database.Entity;
 using Presentation.Service.OAuth.Model.Token;
 
-namespace Presentation.Service.OAuth.Login.Receive;
+namespace Presentation.Service.OAuth.LoginCallback;
 
 /// <summary>
 /// Is responsible for creating a token-pair from a new login.

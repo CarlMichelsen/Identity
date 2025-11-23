@@ -1,15 +1,16 @@
-﻿using Database;
+﻿using Application.Service.OAuth.Login;
+using Database;
 using Database.Entity;
 using Database.Entity.Id;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Presentation.Configuration.Options;
-using Presentation.Service.OAuth.JsonWebToken;
-using Presentation.Service.OAuth.Login.Receive;
+using Presentation.Service.OAuth.Refresh;
+using Presentation.Service.OAuth.LoginCallback;
 using Presentation.Service.OAuth.Model.Token;
 
-namespace Application.Service.OAuth.Login.Receive;
+namespace Application.Service.OAuth.LoginCallback;
 
 /// <inheritdoc />
 public class TokenPersistenceService(

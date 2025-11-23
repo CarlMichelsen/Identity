@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Presentation;
-using Presentation.Service.OAuth.Login.Receive;
+using Presentation.Service.OAuth.LoginCallback;
 
 namespace App.Controllers;
 

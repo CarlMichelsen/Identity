@@ -2,7 +2,7 @@
 using Database.Entity.Id;
 using Presentation.Service.OAuth.Model.Token;
 
-namespace Presentation.Service.OAuth.JsonWebToken;
+namespace Presentation.Service.OAuth.Refresh;
 
 public interface IJsonWebTokenFactory
 {

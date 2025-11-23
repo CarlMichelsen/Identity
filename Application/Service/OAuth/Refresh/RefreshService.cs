@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Presentation;
 using Presentation.Configuration.Options;
-using Presentation.Service.OAuth.JsonWebToken;
+using Presentation.Service.OAuth.Refresh;
 
-namespace Application.Service.OAuth.JsonWebToken;
+namespace Application.Service.OAuth.Refresh;
 
 public class RefreshService(
     ILogger<RefreshService> logger,

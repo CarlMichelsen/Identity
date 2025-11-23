@@ -1,6 +1,6 @@
 ﻿using Presentation.Service.OAuth.Model;
 
-namespace Presentation.Service.OAuth.Login.Receive;
+namespace Presentation.Service.OAuth.LoginCallback;
 
 public interface ILoginReceiver
 {

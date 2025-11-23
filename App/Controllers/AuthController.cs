@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Presentation;
 using Presentation.Dto;
-using Presentation.Service.OAuth.JsonWebToken;
+using Presentation.Service.OAuth.Refresh;
 using Presentation.Service.OAuth.Login;
 
 namespace App.Controllers;

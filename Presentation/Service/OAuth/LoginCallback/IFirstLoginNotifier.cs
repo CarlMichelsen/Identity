@@ -1,6 +1,6 @@
 ﻿using Database.Entity;
 
-namespace Presentation.Service.OAuth.Login.Receive;
+namespace Presentation.Service.OAuth.LoginCallback;
 
 public interface IFirstLoginNotifier
 {

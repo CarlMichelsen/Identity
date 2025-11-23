@@ -5,7 +5,7 @@ using Presentation;
 using Presentation.Configuration.Options;
 using Presentation.Service;
 using Presentation.Service.OAuth;
-using Presentation.Service.OAuth.Login.Receive;
+using Presentation.Service.OAuth.LoginCallback;
 using Presentation.Service.OAuth.Model;
 
 namespace AuthProvider.Providers.Discord;

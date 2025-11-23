@@ -79,7 +79,7 @@ sequenceDiagram
 C:\DockerVolumes\Database
 ```
 
-**2. Start PostgreSQL container:**
+**2. Start Postgres container:**
 
 ```bash
 docker run -d \
@@ -128,6 +128,11 @@ Use the Test provider for local development:
 http://localhost:5220/api/v1/Auth/Login/Test?SuccessRedirectUrl=http%3A%2F%2Flocalhost%3A5220%2Fscalar&ErrorRedirectUrl=http%3A%2F%2Flocalhost%3A5220%2Fscalar
 ```
 
+Deployed endpoint:
+```
+https://identity.survivethething.com/api/v1/Auth/Login/Discord?SuccessRedirectUrl=https%3A%2F%2Ftodo.survivethething.com%2Fsuccess&ErrorRedirectUrl=https%3A%2F%2Ftodo.survivethething.com%2Ferror
+```
+
 ### Expose Local Server with ngrok
 
 For testing OAuth callbacks with external providers:
@@ -153,7 +158,7 @@ ngrok http http://localhost:5220
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ---
 

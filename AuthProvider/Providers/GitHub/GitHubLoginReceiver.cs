@@ -1,4 +1,4 @@
-﻿using Presentation.Service.OAuth.Login.Receive;
+﻿using Presentation.Service.OAuth.LoginCallback;
 using Presentation.Service.OAuth.Model;
 
 namespace AuthProvider.Providers.GitHub;
