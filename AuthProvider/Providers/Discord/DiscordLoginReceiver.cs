@@ -1,7 +1,10 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using AuthProvider.Providers.Discord.model;
+using AuthProvider.Providers.Discord.Model;
 using Microsoft.Extensions.Options;
 using Presentation;
+using Presentation.Configuration;
 using Presentation.Configuration.Options;
 using Presentation.Service;
 using Presentation.Service.OAuth;
@@ -64,6 +67,9 @@ public class DiscordLoginReceiver(
             Method = HttpMethod.Get,
             RequestUri = new Uri(authOptions.Value.Discord.OAuthEndpoint, UserPath),
         };
+        
+        request.Headers.UserAgent.Add(
+            new ProductInfoHeaderValue(ApplicationConstants.Name, ApplicationConstants.Version));
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         
         var response = await httpClient.SendAsync(request);

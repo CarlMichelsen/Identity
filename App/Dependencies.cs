@@ -5,7 +5,7 @@ using App.Extensions;
 using App.HostedServices;
 using App.JsonConverters;
 using Application.Client.Discord;
-using Application.Configuration;
+using Presentation.Configuration;
 using Application.Service;
 using Application.Service.Image;
 using Application.Service.OAuth.Refresh;

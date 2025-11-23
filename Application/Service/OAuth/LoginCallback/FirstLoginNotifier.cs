@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using Application.Configuration;
+using Presentation.Configuration;
 using Database.Entity;
 using Microsoft.Extensions.Hosting;
 using Presentation.Client.Discord;

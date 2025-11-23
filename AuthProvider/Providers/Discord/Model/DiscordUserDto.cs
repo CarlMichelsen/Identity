@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Presentation;
 using Presentation.Service.OAuth.Model;
 
-namespace AuthProvider.Providers.Discord;
+namespace AuthProvider.Providers.Discord.model;
 
 public class DiscordUserDto : IAuthenticatedUserConvertible
 {
