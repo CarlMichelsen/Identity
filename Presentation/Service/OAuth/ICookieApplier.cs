@@ -1,4 +1,6 @@
-﻿namespace Presentation.Service.OAuth.Refresh;
+﻿using Presentation.Service.OAuth.Refresh;
+
+namespace Presentation.Service.OAuth;
 
 public interface ICookieApplier
 {

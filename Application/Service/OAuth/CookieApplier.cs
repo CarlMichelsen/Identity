@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Presentation.Configuration.Options;
 using Presentation.Service.OAuth;
 using Presentation.Service.OAuth.Refresh;
 
-namespace Application.Service.OAuth.Refresh;
+namespace Application.Service.OAuth;
 
 public class CookieApplier(
     IOptionsSnapshot<AuthOptions> authOptions,
     TimeProvider timeProvider,
-    IHttpContextAccessor httpContextAccessor) : ICookieApplier
+    IHttpContextAccessor httpContextAccessor,
+    IHostEnvironment hostEnvironment) : ICookieApplier
 {
     public void SetCookie(
         TokenType tokenType,
@@ -20,12 +22,10 @@ public class CookieApplier(
         {
             TokenType.Access => SetAuthCookie(
                 httpContext.Response,
-                timeProvider,
                 authOptions.Value.AccessToken,
                 value),
             TokenType.Refresh => SetAuthCookie(
                 httpContext.Response,
-                timeProvider,
                 authOptions.Value.RefreshToken,
                 value),
             _ => throw new ArgumentOutOfRangeException(nameof(tokenType), tokenType, null)
@@ -51,9 +51,8 @@ public class CookieApplier(
             tokenConfiguration.CookieName);
     }
 
-    private static Exception? SetAuthCookie(
+    private Exception? SetAuthCookie(
         HttpResponse httpResponse,
-        TimeProvider timeProvider,
         TokenConfiguration tokenConfiguration,
         string value)
     {
@@ -64,9 +63,13 @@ public class CookieApplier(
                 .Add(tokenConfiguration.Lifetime);
             var options = new CookieOptions
             {
+                Domain = CookieMapper.GetCookieDomain(authOptions.Value.Self),
+                Path = "/",
                 Expires = expires,
                 HttpOnly = true,
                 IsEssential = true,
+                Secure = !hostEnvironment.IsDevelopment(), // Make cookie secure in prod
+                SameSite = SameSiteMode.Lax,
             };
         
             httpResponse.Cookies.Delete(

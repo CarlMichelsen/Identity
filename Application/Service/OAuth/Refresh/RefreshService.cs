@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Presentation;
 using Presentation.Configuration.Options;
+using Presentation.Service.OAuth;
 using Presentation.Service.OAuth.Refresh;
 
 namespace Application.Service.OAuth.Refresh;
