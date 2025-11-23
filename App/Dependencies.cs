@@ -142,7 +142,7 @@ public static class Dependencies
             var authOptions = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<AuthOptions>>().Value;
             client.BaseAddress = authOptions.Discord?.ApiUrl;
         });
-        builder.Services.AddScoped<GitHubLoginReceiver>();
+        builder.Services.AddHttpClient<GitHubLoginReceiver>();
         builder.Services.AddScoped<TestLoginReceiver>();
         builder.Services.AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
         
