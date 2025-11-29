@@ -26,11 +26,13 @@ public static class JwtCreator
             new(JwtTokenKeys.Email, jwtData.Email),
             new(JwtTokenKeys.Jti, jwtData.Jti),
             new(JwtTokenKeys.Iat, now.ToUnixTimeSeconds().ToString()),
-            new(JwtTokenKeys.Role, string.Join(',', jwtData.Roles)),
             new(JwtTokenKeys.Provider, jwtData.AuthenticationProvider),
             new(JwtTokenKeys.ProviderId, jwtData.AuthenticationProviderId),
             new(JwtTokenKeys.Profile, jwtData.Small.AbsoluteUri),
         ];
+        
+        // Add role claims
+        claims.AddRange(jwtData.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         if (jwtData.Medium?.AbsoluteUri is not null)
         {
