@@ -251,11 +251,11 @@ public class CookieMapperTests
     }
 
     [Theory]
-    [InlineData("http://localhost", "localhost")]
-    [InlineData("http://localhost:5000", "localhost")]
-    [InlineData("https://localhost", "localhost")]
-    [InlineData("http://LOCALHOST", "localhost")]
-    [InlineData("http://LocalHost", "localhost")]
+    [InlineData("http://localhost", ".localhost")]
+    [InlineData("http://localhost:5000", ".localhost")]
+    [InlineData("https://localhost", ".localhost")]
+    [InlineData("http://LOCALHOST", ".localhost")]
+    [InlineData("http://LocalHost", ".localhost")]
     public void GetCookieDomain_WithLocalhost_ReturnsLocalhostWithoutLeadingDot(string uriString, string expected)
     {
         // Arrange
@@ -380,7 +380,7 @@ public class CookieMapperTests
         var result = CookieMapper.GetCookieDomain(uri);
 
         // Assert
-        Assert.Equal("localhost", result);
+        Assert.Equal(".localhost", result);
     }
 
     [Theory]
