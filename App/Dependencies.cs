@@ -141,8 +141,12 @@ public static class Dependencies
             using var scope = sp.CreateScope();
             var authOptions = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<AuthOptions>>().Value;
             client.BaseAddress = authOptions.Discord?.ApiUrl;
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
-        builder.Services.AddHttpClient<GitHubLoginReceiver>();
+        builder.Services.AddHttpClient<GitHubLoginReceiver>(client =>
+        {
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
         builder.Services.AddScoped<TestLoginReceiver>();
         builder.Services.AddScoped<ILoginReceiverFactory, LoginReceiverFactory>();
         
