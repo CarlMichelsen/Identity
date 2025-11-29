@@ -32,7 +32,7 @@ public static class JwtCreator
         ];
         
         // Add role claims
-        claims.AddRange(jwtData.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        claims.AddRange(jwtData.Roles.Select(role => new Claim(JwtTokenKeys.Role, role)));
 
         if (jwtData.Medium?.AbsoluteUri is not null)
         {

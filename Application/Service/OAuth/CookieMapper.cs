@@ -18,7 +18,7 @@ public static class CookieMapper
         // Handle localhost
         if (host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
         {
-            return host;
+            return $".{host}";
         }
 
         var parts = host.Split('.');
